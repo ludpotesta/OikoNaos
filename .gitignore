@@ -1,0 +1,45 @@
+# =========================
+# Java & Build
+# =========================
+*.class
+*.war
+*.ear
+*.jar
+
+# =========================
+# Maven
+# =========================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+.mvn/wrapper/MavenWrapperDownloader.java
+
+# =========================
+# IntelliJ IDEA
+# =========================
+.idea/
+*.iml
+*.ipr
+*.iws
+out/
+
+# =========================
+# Logs & Temp files
+# =========================
+*.log
+*.swp
+*.swo
+
+# =========================
+# OS Specific
+# =========================
+.DS_Store
+Thumbs.db
