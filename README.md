@@ -1,5 +1,11 @@
 # 🏛️ OikoNaos
 
+![Java](https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white)
+![Maven](https://img.shields.io/badge/Maven-C71A36?style=for-the-badge&logo=apachemaven&logoColor=white)
+![Tomcat](https://img.shields.io/badge/Tomcat-FF9900?style=for-the-badge&logo=apachetomcat&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![IntelliJ IDEA](https://img.shields.io/badge/IntelliJ_IDEA-000000?style=for-the-badge&logo=intellij-idea&logoColor=white)
+
 **OikoNaos** è una piattaforma web per la gestione e l’organizzazione di comunità di *co-housing*.  
 Il nome deriva dal greco:
 - *Oikos* = casa
