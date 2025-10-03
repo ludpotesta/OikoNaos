@@ -1,4 +1,4 @@
-package com.oikonaos.oikonaos;
+package it.unisa.oikonaos;
 
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
