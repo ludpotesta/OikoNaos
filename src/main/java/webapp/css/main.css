@@ -8,6 +8,15 @@
     --shadow: 0 10px 30px rgba(0,0,0,.08);
 }
 
+@font-face {
+    font-family: 'Bryndan Write';
+    src: url('../assets/fonts/BryndanWrite-Regular.woff2') format('woff2'),
+    url('../assets/fonts/BryndanWrite-Regular.ttf') format('truetype');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+}
+
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -85,7 +94,15 @@ body{
     line-height:1.1;
     margin:0 0 8px;
 }
-.title .word{letter-spacing:1px}
+
+.title .word{
+    font-family: 'Bryndan Write', cursive;
+    font-size: 56px;
+    font-weight: 400;     /* i TTF spesso sono 400 reali, evita fake bold */
+    color: var(--ink);
+    letter-spacing: .5px; /* meno tracking sui calligrafici */
+}
+
 .title .greek{display:block; font-size:22px; color:var(--muted); font-weight:600}
 .tagline{font-size:20px; color:var(--muted); margin:8px 0 22px}
 .cta{display:flex; gap:12px}

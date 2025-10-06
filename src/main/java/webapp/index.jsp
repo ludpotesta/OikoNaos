@@ -10,21 +10,25 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
 
+    <!-- CSS generale del sito -->
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
 </head>
 <body>
 
+<!-- NAVBAR LIQUID GLASS (include) -->
+<%@ include file="/views/include/header-navbar.jsp" %>
+
 <main class="hero">
     <section class="hero-copy">
         <h1 class="title">
-            <span class="word">OIKONAOS</span>
+            <span class="word">OikoNaos</span>
             <span class="greek">(οἶκοναός)</span>
         </h1>
         <p class="tagline">Frase ad effetto che racconta la tua co-community 🌿</p>
     </section>
 
     <aside class="mascot">
-        <div class="bubble">Ciao, sono Elate!</div>
+        <div class="bubble">Ciao, sono Ecate!</div>
         <img src="${pageContext.request.contextPath}/assets/ecateMascotte.png" alt="Mascotte Ecate" />
     </aside>
 </main>
@@ -33,6 +37,6 @@
     <small>© 2025 OikoNaos — Co-housing, insieme.</small>
 </footer>
 
-<script src="${pageContext.request.contextPath}/js/menu.js"></script>
+<!-- JS generale del sito -->
 </body>
 </html>
