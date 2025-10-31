@@ -98,9 +98,9 @@ body{
 .title .word{
     font-family: 'Bryndan Write', cursive;
     font-size: 56px;
-    font-weight: 400;     /* i TTF spesso sono 400 reali, evita fake bold */
+    font-weight: 400;
     color: var(--ink);
-    letter-spacing: .5px; /* meno tracking sui calligrafici */
+    letter-spacing: .5px; 
 }
 
 .title .greek{display:block; font-size:22px; color:var(--muted); font-weight:600}
@@ -123,7 +123,7 @@ body{
     position:relative;
     align-self:end;
     text-align:center;
-    overflow:visible; /* allow the speech bubble to appear outside */
+    overflow:visible;
 }
 .mascot img{
     width:min(360px, 70%);
@@ -131,11 +131,10 @@ body{
     filter:drop-shadow(0 20px 30px rgba(0,0,0,.12));
 }
 
-/* Improved bubble positioning and style */
 .bubble{
     position:absolute;
     right:0;
-    top:-1.5rem;       /* position above the mascot image */
+    top:-1.5rem;
     z-index:10;
     background:var(--brand);
     color:#fff;
