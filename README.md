@@ -54,9 +54,9 @@ Il progetto nasce come lavoro universitario per il corso di **Ingegneria del Sof
 
 ## 👥 Team
 - Luigi Potestà [github.com/ludpotesta](https://github.com/ludpotesta)
-- Giulia Buonafine
-- Maria Antonietta Ruggiero
-- Mario Sinopoli
+- Giulia Buonafine [github.com/giub29](https://github.com/giub29)
+- Maria Antonietta Ruggiero [github.com/xxmeryxx](https://github.com/xxmeryxx)
+- Mario Sinopoli [github.com/sinmario39](https://github.com/sinmario39)
 
 ---
 
