@@ -1,0 +1,109 @@
+/* NAVBAR LIQUID GLASS (senza JS) */
+.on-navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 20px;
+    min-height: 60px;
+    backdrop-filter: blur(14px) saturate(120%);
+    background: linear-gradient(135deg, rgba(255,255,255,0.6), rgba(255,255,255,0.8)), rgba(19,34,70,0.25);
+    border-bottom: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 6px 24px rgba(20,31,58,0.15);
+    position: relative;
+}
+
+.on-left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.on-logo {
+    width: 80px;
+    height: auto;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 3px 10px rgba(0,0,0,.08), inset 0 1px 0 rgba(255,255,255,.7);
+}
+
+.on-logo-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.on-right {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+/* Checkbox invisibile */
+.on-toggle {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Hamburger (le tre linee) */
+.on-hamb {
+    background: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 12px;
+    padding: 8px;
+    cursor: pointer;
+    box-shadow: 0 6px 14px rgba(20,31,58,0.18), inset 0 1px 0 rgba(255,255,255,0.8);
+    z-index: 2;
+}
+
+.on-hamb svg {
+    width: 28px;
+    height: 28px;
+    color: #183c7a;
+}
+
+/* Menu a comparsa */
+.on-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 10px);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    width: min(260px, 80vw);
+    border-radius: 16px;
+    background: rgba(255,255,255,0.8);
+    border: 1px solid rgba(255,255,255,0.3);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 28px rgba(20,31,58,0.18);
+    z-index: 9999;
+    opacity: 0;
+    transform: translateY(-6px);
+    pointer-events: none;
+    transition: opacity .18s ease, transform .18s ease;
+}
+
+/* Mostra il menu quando il checkbox è selezionato */
+.on-toggle:checked + .on-hamb + .on-menu {
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.on-navbar .on-menu a {
+    color: #334155;
+    text-decoration: none;
+    font-weight: 700;
+    padding: 10px 12px;
+    border-radius: 12px;
+    white-space: nowrap;
+}
+
+.on-navbar .on-menu a:hover {
+    color: #183c7a;
+    background: rgba(255,255,255,0.65);
+}
