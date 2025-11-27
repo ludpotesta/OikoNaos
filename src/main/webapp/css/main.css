@@ -155,6 +155,45 @@ body{
     filter:drop-shadow(0 -1px 0 #d6f2f2);
 }
 
+/* Test */
+.form-section{
+    text-align: center;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+    min-height:60vh;
+    color: white;
+    background-color: #2F3B59;
+}
+.form-section div{
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.form-section label{
+    width: 120px;
+    font-size: 18px;
+    color: white;
+    text-align: right;
+    margin-right: 10px
+}
+.form-input{
+    min-width: 200px;
+    max-width: 325px;
+    width: 100%;
+    padding: 6px 10px;
+    border-radius: 15px;
+    border: 2px solid white;
+    font-size: 16px;
+}
+.form-submit{
+    padding: 10px;
+    padding-inline: 50px;
+    border-radius: 20px;
+    font-size: 16px;
+    background-color: #C9A66B;
+}
+
 /* Footer */
 .footer{
     padding:30px 20px;
