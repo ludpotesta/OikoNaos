@@ -1,0 +1,109 @@
+package it.unisa.oikonaos.model;
+
+import util.database;
+import java.sql.*;
+import org.mindrot.jbcrypt.BCrypt;
+
+public class UserDAO {
+
+    public void registerUser(
+            String nome,
+            String cognome,
+            String email,
+            String telefono,
+            String username,
+            String password,
+            String codice
+    ) throws Exception {
+
+        Connection con = database.getConnection();
+        con.setAutoCommit(false);
+
+        try {
+            // Verifica codice
+            Long idComunita = checkCodice(con, codice);
+
+            // Inserimento Utente
+            long idUtente = insertUtente(con, nome, cognome, email, telefono);
+            // Inserimento Credenziali
+            insertCredenziali(con, username, password, idUtente);
+
+            // Aggiornamento codice
+            markCodiceUsato(con, codice, idUtente);
+
+            con.commit();
+
+        } catch (Exception e) {
+            con.rollback();
+            throw e;
+        } finally {
+            con.close();
+        }
+    }
+
+    // Metodi DAO
+
+    private Long checkCodice(Connection con, String codice) throws Exception {
+        String sql = " SELECT ID_Comunita FROM CodiceIdentificativo WHERE Codice = ? AND Stato = 'ATTIVO'";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, codice);
+            ResultSet rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                throw new IllegalArgumentException("Codice non valido");
+            }
+            return rs.getLong("ID_Comunita");
+        }
+    }
+
+    private long insertUtente(Connection con, String nome, String cognome, String email, String telefono)
+            throws Exception {
+
+        String sql = " INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita) + VALUES (?, ?, ?, ?, 'COINQUILINO')";
+
+        try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            ps.setString(1, nome);
+            ps.setString(2, cognome);
+            ps.setString(3, email);
+            ps.setString(4, telefono);
+
+            ps.executeUpdate();
+
+            ResultSet rs = ps.getGeneratedKeys();
+            rs.next();
+            return rs.getLong(1);
+        }
+    }
+
+    private void insertCredenziali(Connection con, String username,
+                                   String password, long idUtente)
+            throws Exception {
+
+        String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+
+        String sql = "INSERT INTO Credenziali (Username, PasswordHash, ID_Utente) + VALUES (?, ?, ?)";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ps.setString(2, hash);
+            ps.setLong(3, idUtente);
+            ps.executeUpdate();
+        }
+    }
+
+    private void markCodiceUsato(Connection con, String codice, long idUtente)
+            throws Exception {
+
+        String sql = "UPDATE CodiceIdentificativo SET Stato = 'USATO', ID_Utente_Utilizzatore = ? WHERE Codice = ?";
+
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, idUtente);
+            ps.setString(2, codice);
+            ps.executeUpdate();
+        }
+    }
+
+
+}

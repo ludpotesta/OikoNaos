@@ -22,6 +22,7 @@
         <div><label>Cognome:</label><input type="text" name="cognome" required class="form-input"></div>
         <div><label>Email:</label><input type="text" name="email" required class="form-input"></div>
         <div><label>Numero di telefono:</label><input type="tel" name="telefono" required class="form-input"></div>
+        <div><label>Username:</label><input type="text" name="username" required class="form-input"></div>
         Immetti una password e il codice ricevuto alla
         stipulazione del contratto
         <div><br><label>Password:</label><input type="password" name="password" required class="form-input"></div>
