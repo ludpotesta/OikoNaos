@@ -8,7 +8,6 @@
     <artifactId>OikoNaos</artifactId>
     <version>1.0-SNAPSHOT</version>
     <name>OikoNaos</name>
-    <packaging>war</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -17,7 +16,13 @@
         <junit.version>5.13.2</junit.version>
     </properties>
 
+    <packaging>war</packaging>
     <dependencies>
+        <dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <version>8.4.0</version>
+        </dependency>
         <dependency>
             <groupId>jakarta.servlet</groupId>
             <artifactId>jakarta.servlet-api</artifactId>
