@@ -10,9 +10,30 @@ import java.sql.Date;
 @WebServlet(name = "PrenotazioneControl", value = "/PrenotazioneControl")
 public class PrenotazioneControl extends HttpServlet {
 
+    /**
+     * Funzionalità: Visualizzare le prenotazioni dell'utente loggato (Persona 1)
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Criterio richiesto: recupero utente dalla sessione
+        HttpSession session = request.getSession();
+        Utente utente = (Utente) session.getAttribute("utente");
+
+        if (utente != null) {
+            // Reindirizza alla pagina della lista (prenotazioni.jsp)
+            request.getRequestDispatcher("prenotazioni.jsp").forward(request, response);
+        } else {
+            // Se non è loggato, rimanda al login
+            response.sendRedirect("login.jsp");
+        }
+    }
+
+    /**
+     * Funzionalità: Creare una nuova prenotazione (Persona 1)
+     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // 1. Recupero l'utente dalla sessione per associarlo alla prenotazione [cite: 293]
+        // Criterio richiesto: recupero utente dalla sessione
         HttpSession session = request.getSession();
         Utente utenteLoggato = (Utente) session.getAttribute("utente");
 
@@ -22,36 +43,35 @@ public class PrenotazioneControl extends HttpServlet {
         }
 
         try {
-            // 2. Recupero i parametri dal form della pagina JSP [cite: 275]
+            // Recupero parametri dal form (quelli delle JSP nuovaPrenotazione.jsp)
             Date dataScelta = Date.valueOf(request.getParameter("data"));
             long idPostazione = Long.parseLong(request.getParameter("idPostazione"));
             long idFascia = Long.parseLong(request.getParameter("idFascia"));
 
             PrenotazioneDAO dao = new PrenotazioneDAO();
 
-            // 3. LOGICA ODD: Verifica se la postazione è già occupata in quella fascia [cite: 223, 340]
+            // Logica ODD: Verifica se la postazione è già occupata
             if (dao.verificaConflitto(dataScelta, idPostazione, idFascia)) {
-                // Se c'è un conflitto, rimando alla pagina con un messaggio di errore
-                response.sendRedirect("prenotazione.jsp?error=conflitto");
+                response.sendRedirect("nuovaPrenotazione.jsp?error=conflitto");
                 return;
             }
 
-            // 4. Se è libera, creo l'oggetto Prenotazione [cite: 152, 314]
+            // Se libera, creo l'oggetto Prenotazione
             Prenotazione nuovaPrenotazione = new Prenotazione();
             nuovaPrenotazione.setData(dataScelta);
             nuovaPrenotazione.setIdUtente(utenteLoggato.getIdUtente());
             nuovaPrenotazione.setIdPostazione(idPostazione);
             nuovaPrenotazione.setIdFasciaOraria(idFascia);
 
-            // 5. Salvo nel Database tramite il DAO [cite: 340]
+            // Salvo nel Database tramite il DAO
             dao.creaPrenotazione(nuovaPrenotazione);
 
-            // Ritorno alla home con successo
+            // Ritorno alla home o alla lista con successo
             response.sendRedirect("home.jsp?success=1");
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("prenotazione.jsp?error=generico");
+            response.sendRedirect("nuovaPrenotazione.jsp?error=generico");
         }
     }
 }
