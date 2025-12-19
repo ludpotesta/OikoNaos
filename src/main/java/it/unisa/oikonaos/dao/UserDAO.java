@@ -1,5 +1,6 @@
-package it.unisa.oikonaos.model;
+package it.unisa.oikonaos.dao;
 
+import it.unisa.oikonaos.model.Utente;
 import util.database;
 import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;

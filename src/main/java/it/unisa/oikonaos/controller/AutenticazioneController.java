@@ -6,7 +6,7 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.net.URLEncoder;
 
-import it.unisa.oikonaos.model.UserDAO;
+import it.unisa.oikonaos.dao.UserDAO;
 import it.unisa.oikonaos.model.Utente;
 
 @WebServlet(name = "AutenticazioneController", value = "/AutenticazioneController")
