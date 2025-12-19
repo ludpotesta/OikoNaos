@@ -1,6 +1,6 @@
 package it.unisa.oikonaos.controller;
 
-import it.unisa.oikonaos.model.UserDAO;
+import it.unisa.oikonaos.dao.UserDAO;
 
 import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
