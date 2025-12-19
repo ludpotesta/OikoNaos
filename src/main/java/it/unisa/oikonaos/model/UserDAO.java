@@ -60,7 +60,7 @@ public class UserDAO {
     private long insertUtente(Connection con, String nome, String cognome, String email, String telefono)
             throws Exception {
 
-        String sql = " INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita) + VALUES (?, ?, ?, ?, 'COINQUILINO')";
+        String sql = " INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita) VALUES (?, ?, ?, ?, 'COINQUILINO')";
 
         try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -83,7 +83,7 @@ public class UserDAO {
 
         String hash = BCrypt.hashpw(password, BCrypt.gensalt());
 
-        String sql = "INSERT INTO Credenziali (Username, PasswordHash, ID_Utente) + VALUES (?, ?, ?)";
+        String sql = "INSERT INTO Credenziali (Username, PasswordHash, ID_Utente) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -102,6 +102,38 @@ public class UserDAO {
             ps.setLong(1, idUtente);
             ps.setString(2, codice);
             ps.executeUpdate();
+        }
+    }
+
+    public Utente login(String username, String password) throws Exception {
+
+        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, u.ID_Comunita, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (!rs.next()) {
+                throw new IllegalArgumentException("Username o password errati");
+            }
+
+            String hash = rs.getString("PasswordHash");
+
+            if (!BCrypt.checkpw(password, hash)) {
+                throw new IllegalArgumentException("Username o password errati");
+            }
+
+            Utente u = new Utente();
+            u.setIdUtente(rs.getLong("ID_Utente"));
+            u.setNome(rs.getString("Nome"));
+            u.setCognome(rs.getString("Cognome"));
+            u.setEmail(rs.getString("Email"));
+            u.setRuolo(rs.getString("Ruolo"));
+            u.setIdComunita(rs.getLong("ID_Comunita"));
+
+            return u;
         }
     }
 

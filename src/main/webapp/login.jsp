@@ -16,12 +16,21 @@
     <%@ include file="/include/header-navbar.jsp" %>
 
     <main class="hero">
-        <form action="${pageContext.request.contextPath}/LoginServlet" method="post" class="form-section">
+        <form action="${pageContext.request.contextPath}/AutenticazioneController"
+              method="post"
+              class="form-section">
             <h2>Accedi a OikoNaos</h2>
-            <div><label>Email:</label><input type="text" name="email" required class="form-input"></div>
-            <div><label>Password:</label><input type="password" name="password" id="inputPass" required class="form-input"></div>
+            <div>
+                <label>Username:</label>
+                <input type="text" name="username" required class="form-input">
+            </div>
+            <div>
+                <label>Password:</label>
+                <input type="password" name="password" required class="form-input">
+            </div>
             <input type="submit" value="Login" class="form-submit">
         </form>
+
     </main>
 
     <footer class="footer">
