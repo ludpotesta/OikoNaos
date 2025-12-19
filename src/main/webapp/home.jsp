@@ -12,7 +12,7 @@
         <%@ include file="/include/header-navbar.jsp" %>
 
         <%
-            Object obj = session.getAttribute("utente");
+            obj = session.getAttribute("utente");
             if (obj == null) {
         %>
         <h2>Errore: utente non in sessione</h2>

@@ -16,9 +16,7 @@
     <%@ include file="/include/header-navbar.jsp" %>
 
     <main class="hero">
-        <form action="${pageContext.request.contextPath}/AutenticazioneController"
-              method="post"
-              class="form-section">
+        <form action="${pageContext.request.contextPath}/AutenticazioneController" method="post" class="form-section">
             <h2>Accedi a OikoNaos</h2>
             <div>
                 <label>Username:</label>

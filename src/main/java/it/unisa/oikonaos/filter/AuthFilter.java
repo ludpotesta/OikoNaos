@@ -15,13 +15,14 @@ public class AuthFilter implements Filter{
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        String path = request.getRequestURI();
+        String path = request.getServletPath();
         HttpSession session = request.getSession(false);
 
         System.out.println("Request: " + path);
 
         //Risorse pubbliche / statiche
-        if (path.contains("/login.jsp")
+        if (path.contains("/index.jsp")
+                || path.contains("/login.jsp")
                 || path.contains("/register.jsp")
                 || path.contains("/AutenticazioneController")
                 || path.contains("/RegistrazioneController")

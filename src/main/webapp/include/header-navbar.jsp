@@ -24,13 +24,18 @@
 
         <!-- Menu a comparsa -->
         <nav class="on-menu">
-            <a href="${pageContext.request.contextPath}/user/test.jsp">User</a>
+            <%
+                //Controlla se l'utente è loggato
+                Object obj = session.getAttribute("utente");
+                if(obj != null) {
+            %>
+            <a href="${pageContext.request.contextPath}/home.jsp">Profilo</a>
+            <% } %>
             <a href="${pageContext.request.contextPath}/index.jsp">Home</a>
             <a href="${pageContext.request.contextPath}/login.jsp">Login</a>
             <a href="${pageContext.request.contextPath}/register.jsp">Registrati</a>
             <a href="${pageContext.request.contextPath}/ProjectsController">Progetti</a>
             <a href="${pageContext.request.contextPath}/AssociazioneController">L&#39;associazione</a>
-            <a href="${pageContext.request.contextPath}/TestController">Test</a>
         </nav>
     </div>
 </header>

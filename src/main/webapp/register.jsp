@@ -16,7 +16,7 @@
 <%@ include file="/include/header-navbar.jsp" %>
 
 <main class="hero">
-    <form action="${pageContext.request.contextPath}/RegisterServlet" method="post" class="form-section">
+    <form action="${pageContext.request.contextPath}/RegistrazioneController" method="post" class="form-section">
         <h2>Registrati a OikoNaos</h2>
         <div><label>Nome:</label><input type="text" name="nome" required class="form-input"></div>
         <div><label>Cognome:</label><input type="text" name="cognome" required class="form-input"></div>
@@ -27,7 +27,7 @@
         stipulazione del contratto
         <div><br><label>Password:</label><input type="password" name="password" required class="form-input"></div>
         <div><label>Codice:</label><input type="text" name="codiceID" required class="form-input"></div>
-        <input type="submit" value="Login" class="form-submit">
+        <input type="submit" value="Registrati" class="form-submit">
     </form>
 </main>
 

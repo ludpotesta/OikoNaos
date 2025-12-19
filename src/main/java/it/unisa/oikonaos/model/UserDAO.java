@@ -13,23 +13,19 @@ public class UserDAO {
             String telefono,
             String username,
             String password,
-            String codice
+            String codiceID
     ) throws Exception {
 
         Connection con = database.getConnection();
         con.setAutoCommit(false);
 
         try {
-            // Verifica codice
-            Long idComunita = checkCodice(con, codice);
-
             // Inserimento Utente
             long idUtente = insertUtente(con, nome, cognome, email, telefono);
             // Inserimento Credenziali
             insertCredenziali(con, username, password, idUtente);
-
             // Aggiornamento codice
-            markCodiceUsato(con, codice, idUtente);
+            //markCodiceUsato(con, codiceID, idUtente);
 
             con.commit();
 
@@ -43,11 +39,11 @@ public class UserDAO {
 
     // Metodi DAO
 
-    private Long checkCodice(Connection con, String codice) throws Exception {
+    private Long checkCodice(Connection con, String codiceComunita) throws Exception {
         String sql = " SELECT ID_Comunita FROM CodiceIdentificativo WHERE Codice = ? AND Stato = 'ATTIVO'";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, codice);
+            ps.setString(1, codiceComunita);
             ResultSet rs = ps.executeQuery();
 
             if (!rs.next()) {
@@ -60,7 +56,7 @@ public class UserDAO {
     private long insertUtente(Connection con, String nome, String cognome, String email, String telefono)
             throws Exception {
 
-        String sql = " INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita) VALUES (?, ?, ?, ?, 'COINQUILINO')";
+        String sql = " INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo) VALUES (?, ?, ?, ?, 'COINQUILINO')";
 
         try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -93,14 +89,14 @@ public class UserDAO {
         }
     }
 
-    private void markCodiceUsato(Connection con, String codice, long idUtente)
+    private void markCodiceUsato(Connection con, String codiceID, long idUtente)
             throws Exception {
 
         String sql = "UPDATE CodiceIdentificativo SET Stato = 'USATO', ID_Utente_Utilizzatore = ? WHERE Codice = ?";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, idUtente);
-            ps.setString(2, codice);
+            ps.setString(2, codiceID);
             ps.executeUpdate();
         }
     }

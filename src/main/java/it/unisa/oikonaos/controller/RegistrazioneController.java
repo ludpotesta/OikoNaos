@@ -2,6 +2,7 @@ package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.model.UserDAO;
 
+import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -30,8 +31,14 @@ public class RegistrazioneController extends HttpServlet {
 
             UserDAO userDAO = new UserDAO();
             userDAO.registerUser(nome, cognome, email, telefono, username, password, codice);
+            Utente utente = userDAO.login(username, password);
 
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            HttpSession session = request.getSession(true);
+            session.setAttribute("utente", utente);
+
+            System.out.println("Utente in sessione: " + utente.getNome());
+
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
 
         } catch (Exception e) {
             e.printStackTrace();
