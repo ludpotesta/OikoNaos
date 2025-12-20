@@ -5,35 +5,41 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
+import java.util.List;
 import java.sql.Date;
 
 @WebServlet(name = "PrenotazioneControl", value = "/PrenotazioneControl")
 public class PrenotazioneControl extends HttpServlet {
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Funzionalità: Visualizzare le prenotazioni dell'utente loggato (Persona 1)
+     * Gestisce la visualizzazione delle prenotazioni (Persona 1)
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Criterio richiesto: recupero utente dalla sessione
         HttpSession session = request.getSession();
         Utente utente = (Utente) session.getAttribute("utente");
 
         if (utente != null) {
-            // Reindirizza alla pagina della lista (prenotazioni.jsp)
-            request.getRequestDispatcher("prenotazioni.jsp").forward(request, response);
+            try {
+                PrenotazioneDAO dao = new PrenotazioneDAO();
+                List<Prenotazione> miePrenotazioni = dao.doRetrieveByUtente(utente.getIdUtente());
+                request.setAttribute("listaPrenotazioni", miePrenotazioni);
+                request.getRequestDispatcher("prenotazioni.jsp").forward(request, response);
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("home.jsp?error=db");
+            }
         } else {
-            // Se non è loggato, rimanda al login
             response.sendRedirect("login.jsp");
         }
     }
 
     /**
-     * Funzionalità: Creare una nuova prenotazione (Persona 1)
+     * Gestisce la creazione e l'annullamento delle prenotazioni (Persona 1)
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        // Criterio richiesto: recupero utente dalla sessione
         HttpSession session = request.getSession();
         Utente utenteLoggato = (Utente) session.getAttribute("utente");
 
@@ -42,36 +48,45 @@ public class PrenotazioneControl extends HttpServlet {
             return;
         }
 
+        String action = request.getParameter("action");
+        PrenotazioneDAO dao = new PrenotazioneDAO();
+
         try {
-            // Recupero parametri dal form (quelli delle JSP nuovaPrenotazione.jsp)
-            Date dataScelta = Date.valueOf(request.getParameter("data"));
-            long idPostazione = Long.parseLong(request.getParameter("idPostazione"));
-            long idFascia = Long.parseLong(request.getParameter("idFascia"));
+            if ("delete".equals(action)) {
+                // LOGICA ANNULLA
+                long idPrenotazione = Long.parseLong(request.getParameter("idPrenotazione"));
+                dao.doDelete(idPrenotazione);
+                response.sendRedirect("PrenotazioneControl");
+            } else {
+                // LOGICA CREA
+                String dataStr = request.getParameter("data");
+                String postazioneStr = request.getParameter("idPostazione");
+                String fasciaStr = request.getParameter("idFascia");
 
-            PrenotazioneDAO dao = new PrenotazioneDAO();
+                if (dataStr != null && postazioneStr != null && fasciaStr != null) {
+                    Date dataScelta = Date.valueOf(dataStr);
+                    long idPostazione = Long.parseLong(postazioneStr);
+                    long idFascia = Long.parseLong(fasciaStr);
 
-            // Logica ODD: Verifica se la postazione è già occupata
-            if (dao.verificaConflitto(dataScelta, idPostazione, idFascia)) {
-                response.sendRedirect("nuovaPrenotazione.jsp?error=conflitto");
-                return;
+                    // Controllo conflitti richiesto dall'ODD
+                    if (dao.verificaConflitto(dataScelta, idPostazione, idFascia)) {
+                        response.sendRedirect("nuovaPrenotazione.jsp?error=conflitto");
+                        return;
+                    }
+
+                    Prenotazione p = new Prenotazione();
+                    p.setData(dataScelta);
+                    p.setIdUtente(utenteLoggato.getIdUtente());
+                    p.setIdPostazione(idPostazione);
+                    p.setIdFasciaOraria(idFascia);
+
+                    dao.creaPrenotazione(p);
+                    response.sendRedirect("PrenotazioneControl");
+                }
             }
-
-            // Se libera, creo l'oggetto Prenotazione
-            Prenotazione nuovaPrenotazione = new Prenotazione();
-            nuovaPrenotazione.setData(dataScelta);
-            nuovaPrenotazione.setIdUtente(utenteLoggato.getIdUtente());
-            nuovaPrenotazione.setIdPostazione(idPostazione);
-            nuovaPrenotazione.setIdFasciaOraria(idFascia);
-
-            // Salvo nel Database tramite il DAO
-            dao.creaPrenotazione(nuovaPrenotazione);
-
-            // Ritorno alla home o alla lista con successo
-            response.sendRedirect("home.jsp?success=1");
-
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("nuovaPrenotazione.jsp?error=generico");
+            response.sendRedirect("home.jsp?error=generico");
         }
     }
 }
