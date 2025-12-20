@@ -1,16 +1,13 @@
-<%@ page import="it.unisa.oikonaos.model.Utente" %>
-<%
-    // Rispetto del criterio richiesto
-    Utente utente = (Utente) request.getSession().getAttribute("utente");
-    if (utente == null) { response.sendRedirect("login.jsp"); }
-%>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
+<head><title>Nuova Prenotazione</title></head>
 <body>
-<h2>Nuova Prenotazione per: <%= utente.getNome() %></h2>
-<form action="PrenotazioneControl" method="post">
-    Data: <input type="date" name="data" required><br>
-    ID Postazione: <input type="number" name="idPostazione" required><br>
-    ID Fascia Oraria: <input type="number" name="idFascia" required><br>
+<jsp:include page="header.jsp" />
+<h2>Prenota la tua postazione</h2>
+<form action="PrenotazioneController" method="post">
+    Data: <input type="date" name="data" required><br><br>
+    Postazione (ID): <input type="number" name="idPostazione" required><br><br>
+    Fascia Oraria (ID): <input type="number" name="idFascia" required><br><br>
     <button type="submit">Conferma Prenotazione</button>
 </form>
 </body>
