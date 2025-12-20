@@ -2,7 +2,7 @@
 <html>
 <head><title>Nuova Prenotazione</title></head>
 <body>
-<jsp:include page="header.jsp" />
+<%@ include file="/include/header-navbar.jsp" %>
 <h2>Prenota la tua postazione</h2>
 <form action="PrenotazioneController" method="post">
     Data: <input type="date" name="data" required><br><br>

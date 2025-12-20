@@ -10,12 +10,11 @@
 </head>
 <body>
 
-<%-- 1. Includiamo la Navbar che abbiamo creato --%>
-<jsp:include page="header.jsp" />
+<%-- Includiamo la Navbar che abbiamo creato --%>
+<%@ include file="/include/header-navbar.jsp" %>
 
 <%
-    // 2. Correzione: aggiunto 'Object' davanti a obj
-    Object obj = session.getAttribute("utente");
+    obj = session.getAttribute("utente");
     if (obj == null) {
 %>
 <div class="container">

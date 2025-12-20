@@ -3,7 +3,7 @@
 <html>
 <head><title>Admin - Prenotazioni</title></head>
 <body>
-<jsp:include page="../header.jsp" />
+<%@ include file="/include/header-navbar.jsp" %>
 <h1>Riepilogo Tutte le Prenotazioni</h1>
 <table border="1" cellpadding="10">
     <tr><th>ID</th><th>Data</th><th>ID Utente</th><th>Postazione</th></tr>

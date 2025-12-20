@@ -3,7 +3,7 @@
 <html>
 <head><title>Le mie Prenotazioni</title></head>
 <body>
-<jsp:include page="header.jsp" />
+<%@ include file="/include/header-navbar.jsp" %>
 <h1>Storico Prenotazioni</h1>
 <table border="1" cellpadding="10">
     <tr><th>Data</th><th>Postazione</th><th>Fascia</th><th>Azione</th></tr>

@@ -2,7 +2,7 @@
 <html>
 <head><title>Nuovo Ticket</title></head>
 <body>
-<jsp:include page="header.jsp" />
+<%@ include file="/include/header-navbar.jsp" %>
 <h2>Apri una Segnalazione</h2>
 <form action="TicketController" method="post">
     Titolo: <input type="text" name="titolo" required><br><br>

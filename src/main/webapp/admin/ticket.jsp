@@ -3,7 +3,7 @@
 <html>
 <head><title>Admin - Gestione Ticket</title></head>
 <body>
-<jsp:include page="../header.jsp" />
+<%@ include file="/include/header-navbar.jsp" %>
 <h1>Gestione Globale Ticket</h1>
 <table border="1" cellpadding="10">
     <tr><th>ID</th><th>Titolo</th><th>Stato</th><th>Azione</th></tr>

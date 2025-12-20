@@ -28,7 +28,7 @@ public class TicketController extends HttpServlet {
             request.setAttribute("listaTicket", lista);
             request.getRequestDispatcher("ticket.jsp").forward(request, response);
         } catch (Exception e) {
-            response.sendRedirect("home.jsp?error=db");
+            response.sendRedirect("profilo.jsp?error=db");
         }
     }
 

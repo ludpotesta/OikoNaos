@@ -31,7 +31,7 @@ public class AdminPrenotazioniController extends HttpServlet {
             request.getRequestDispatcher("admin/prenotazioni.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("home.jsp?error=db");
+            response.sendRedirect("profilo.jsp?error=db");
         }
     }
 }

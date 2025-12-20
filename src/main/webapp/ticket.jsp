@@ -3,7 +3,7 @@
 <html>
 <head><title>I miei Ticket</title></head>
 <body>
-<jsp:include page="header.jsp" />
+<%@ include file="/include/header-navbar.jsp" %>
 <h1>I tuoi Ticket di Assistenza</h1>
 <table border="1" cellpadding="10">
     <tr><th>Titolo</th><th>Categoria</th><th>Priorità</th><th>Stato</th></tr>

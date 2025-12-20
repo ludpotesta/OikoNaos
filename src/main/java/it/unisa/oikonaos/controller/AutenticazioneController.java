@@ -28,7 +28,7 @@ public class AutenticazioneController extends HttpServlet {
 
             System.out.println("Utente in sessione: " + utente.getNome());
 
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(request.getContextPath() + "/profilo.jsp");
 
         } catch (Exception e) {
             e.printStackTrace();
