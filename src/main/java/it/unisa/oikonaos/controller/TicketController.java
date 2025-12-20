@@ -46,10 +46,23 @@ public class TicketController extends HttpServlet {
         String descrizione = request.getParameter("descrizione");
         String categoria = request.getParameter("categoria");
         String priorita = request.getParameter("priorita");
+        String action = request.getParameter("action");
 
         try {
             TicketDAO dao = new TicketDAO();
-            // Usiamo il metodo "creaTicket" del tuo collega
+
+            if ("delete".equals(action)) {
+                long idTicket = Long.parseLong(request.getParameter("idTicket"));
+                boolean ok = dao.deleteTicketIfAperto(idTicket, utente.getIdUtente());
+
+                if (!ok) {
+                    response.sendRedirect("TicketController?error=not_deletable");
+                } else {
+                    response.sendRedirect("TicketController?msg=deleted");
+                }
+                return;
+            }
+
             dao.creaTicket(titolo, descrizione, categoria, priorita, utente.getIdUtente());
             response.sendRedirect("TicketController"); // Dopo aver creato, torna alla lista
         } catch (Exception e) {

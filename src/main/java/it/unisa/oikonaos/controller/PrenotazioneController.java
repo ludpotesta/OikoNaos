@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.List;
 import java.sql.Date;
 
-@WebServlet(name = "PrenotazioneControl", value = "/PrenotazioneControl")
-public class PrenotazioneControl extends HttpServlet {
+@WebServlet(name = "PrenotazioneController", value = "/PrenotazioneController")
+public class PrenotazioneController extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -57,7 +57,7 @@ public class PrenotazioneControl extends HttpServlet {
                 // LOGICA ANNULLA
                 long idPrenotazione = Long.parseLong(request.getParameter("idPrenotazione"));
                 dao.doDelete(idPrenotazione);
-                response.sendRedirect("PrenotazioneControl");
+                response.sendRedirect("PrenotazioneController?msg=ok");
             } else {
                 // LOGICA CREA
                 String dataStr = request.getParameter("data");
@@ -82,7 +82,7 @@ public class PrenotazioneControl extends HttpServlet {
                     p.setIdFasciaOraria(idFascia);
 
                     dao.creaPrenotazione(p);
-                    response.sendRedirect("PrenotazioneControl");
+                    response.sendRedirect("PrenotazioneController");
                 }
             }
         } catch (Exception e) {

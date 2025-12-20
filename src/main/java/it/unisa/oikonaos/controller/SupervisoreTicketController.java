@@ -8,16 +8,16 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "AdminTicketController", value = "/AdminTicketController")
-public class AdminTicketController extends HttpServlet {
+@WebServlet(name = "SupervisoreTicketController", value = "/SupervisoreTicketController")
+public class SupervisoreTicketController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         Utente utente = (Utente) request.getSession().getAttribute("utente");
 
-        // Protezione: Solo ADMIN
-        if (utente == null || !utente.getRuolo().equalsIgnoreCase("ADMIN")) {
-            response.sendRedirect("login.jsp");
+        // Protezione: Solo SUPERVISORE
+        if (utente == null || !utente.getRuolo().equalsIgnoreCase("SUPERVISORE")) {
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
             return;
         }
 

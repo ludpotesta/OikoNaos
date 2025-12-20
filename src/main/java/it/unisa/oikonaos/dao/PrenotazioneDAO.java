@@ -9,7 +9,7 @@ import java.util.List;
 public class PrenotazioneDAO {
 
     public void creaPrenotazione(Prenotazione p) throws Exception {
-        String sql = "INSERT INTO Prenotazione (Data, ID_Utente, ID_Postazione, ID_FasciaOraria) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Prenotazione (DataPrenotazione, Stato, ID_Utente, ID_Postazione, ID_Fascia) VALUES (?, 'ATTIVA', ?, ?, ?)";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setDate(1, p.getData());
@@ -21,7 +21,7 @@ public class PrenotazioneDAO {
     }
 
     public boolean verificaConflitto(Date data, long idPostazione, long idFascia) throws Exception {
-        String sql = "SELECT COUNT(*) FROM Prenotazione WHERE Data = ? AND ID_Postazione = ? AND ID_FasciaOraria = ?";
+        String sql = "SELECT COUNT(*) FROM Prenotazione WHERE DataPrenotazione = ? AND ID_Postazione = ? AND ID_Fascia = ? AND Stato = 'ATTIVA'";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setDate(1, data);
@@ -43,17 +43,16 @@ public class PrenotazioneDAO {
             while (rs.next()) {
                 Prenotazione p = new Prenotazione();
                 p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
-                p.setData(rs.getDate("Data"));
+                p.setData(rs.getDate("DataPrenotazione"));
                 p.setIdUtente(rs.getLong("ID_Utente"));
                 p.setIdPostazione(rs.getLong("ID_Postazione"));
-                p.setIdFasciaOraria(rs.getLong("ID_FasciaOraria"));
+                p.setIdFasciaOraria(rs.getLong("ID_Fascia"));
                 lista.add(p);
             }
         }
         return lista;
     }
 
-    // NUOVO METODO PER PERSONA 3 (ADMIN)
     public List<Prenotazione> doRetrieveAll() throws Exception {
         List<Prenotazione> lista = new ArrayList<>();
         String sql = "SELECT * FROM Prenotazione";

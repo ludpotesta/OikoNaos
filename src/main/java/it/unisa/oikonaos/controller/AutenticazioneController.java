@@ -26,13 +26,13 @@ public class AutenticazioneController extends HttpServlet {
             HttpSession session = request.getSession(true);
             session.setAttribute("utente", utente);
 
-            System.out.println("Utente in sessione: " + utente.getNome());
-
             response.sendRedirect(request.getContextPath() + "/home.jsp");
 
+        } catch (IllegalArgumentException ex) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=credenziali");
         } catch (Exception e) {
             e.printStackTrace();
-            String errorMessage = URLEncoder.encode(e.getMessage(), "UTF-8");
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=generico");
         }
     }
 }

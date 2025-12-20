@@ -8,17 +8,17 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(name = "AdminPrenotazioniController", value = "/AdminPrenotazioniController")
-public class AdminPrenotazioniController extends HttpServlet {
+    @WebServlet(name = "SupervisorePrenotazioniController", value = "/SupervisorePrenotazioniController")
+public class SupervisorePrenotazioniController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         HttpSession session = request.getSession();
         Utente utente = (Utente) session.getAttribute("utente");
 
-        // PROTEZIONE: Se non è admin, torna alla home o al login
-        if (utente == null || !utente.getRuolo().equalsIgnoreCase("ADMIN")) {
-            response.sendRedirect("login.jsp?error=unauthorized");
+        // PROTEZIONE: Se non è supervisore, torna alla home o al login
+        if (utente == null || !utente.getRuolo().equalsIgnoreCase("SUPERVISORE")) {
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
             return;
         }
 
@@ -28,7 +28,7 @@ public class AdminPrenotazioniController extends HttpServlet {
             List<Prenotazione> tutteLePrenotazioni = dao.doRetrieveAll();
 
             request.setAttribute("listaGlobalePrenotazioni", tutteLePrenotazioni);
-            request.getRequestDispatcher("admin/prenotazioni.jsp").forward(request, response);
+            request.getRequestDispatcher("supervisore/prenotazioni.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("home.jsp?error=db");

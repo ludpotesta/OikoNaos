@@ -1,5 +1,6 @@
 package it.unisa.oikonaos.filter;
 
+import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -45,6 +46,19 @@ public class AuthFilter implements Filter{
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
+
+        //CONTROLLO AUTORIZZAZIONE (RUOLI)
+        Utente utente = (Utente) session.getAttribute("utente");
+
+        // URL riservate ai supervisori
+                if (path.contains("/Supervisore") || path.contains("/supervisore")) {
+
+                    if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
+                        System.out.println("Accesso BLOCCATO → area supervisore");
+                        response.sendRedirect(request.getContextPath() + "/home.jsp");
+                        return;
+                    }
+                }
 
         System.out.println("Accesso CONSENTITO");
         chain.doFilter(req, res);

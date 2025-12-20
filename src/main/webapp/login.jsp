@@ -16,6 +16,10 @@
     <%@ include file="/include/header-navbar.jsp" %>
 
     <main class="hero">
+        <% if ("credenziali".equals(request.getParameter("error"))) { %>
+             <p style="color:red;">Username o password errati. Riprova.</p>
+        <% } %>
+
         <form action="${pageContext.request.contextPath}/AutenticazioneController" method="post" class="form-section">
             <h2>Accedi a OikoNaos</h2>
             <div>

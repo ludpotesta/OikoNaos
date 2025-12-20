@@ -79,4 +79,15 @@ public class TicketDAO {
             ps.executeUpdate();
         }
     }
+
+    public boolean deleteTicketIfAperto(long idTicket, long idAutore) throws Exception {
+        String sql = "DELETE FROM Ticket WHERE ID_Ticket = ? AND ID_Autore = ? AND Stato = 'APERTO'";
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, idTicket);
+            ps.setLong(2, idAutore);
+            return ps.executeUpdate() > 0;
+        }
+    }
+
 }
