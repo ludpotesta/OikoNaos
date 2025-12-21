@@ -3,9 +3,25 @@
 <header class="on-navbar" role="navigation" aria-label="Barra di navigazione principale">
     <!-- LOGO a sinistra -->
     <div class="on-left">
-        <a href="${pageContext.request.contextPath}/HomeController" class="on-logo-link" aria-label="Vai alla home">
+        <a href="${pageContext.request.contextPath}/index.jsp" class="on-logo-link" aria-label="Vai alla home">
             <img class="on-logo" src="${pageContext.request.contextPath}/assets/oikonaosLogo.png" alt="Logo OikoNaos" />
         </a>
+        <%
+            //Controlla se l'utente è loggato
+            Object obj = session.getAttribute("utente");
+            if(obj == null) {
+        %>
+        <a href="${pageContext.request.contextPath}/login.jsp">Login</a> |
+        <a href="${pageContext.request.contextPath}/register.jsp">Registrati</a>
+        <%
+            } else {
+        %>
+        <a href="${pageContext.request.contextPath}/profilo.jsp">Profilo</a> |
+        <a href="${pageContext.request.contextPath}/prenotazioni.jsp">Le mie Prenotazioni</a> |
+        <a href="${pageContext.request.contextPath}/ticket.jsp">I miei Ticket</a>
+        <%
+            }
+        %>
     </div>
 
     <!-- HAMBURGER + MENU (CSS-only) -->
@@ -24,16 +40,6 @@
 
         <!-- Menu a comparsa -->
         <nav class="on-menu">
-            <%
-                //Controlla se l'utente è loggato
-                Object obj = session.getAttribute("utente");
-                if(obj != null) {
-            %>
-            <a href="${pageContext.request.contextPath}/home.jsp">Profilo</a>
-            <% } %>
-            <a href="${pageContext.request.contextPath}/index.jsp">Home</a>
-            <a href="${pageContext.request.contextPath}/login.jsp">Login</a>
-            <a href="${pageContext.request.contextPath}/register.jsp">Registrati</a>
             <a href="${pageContext.request.contextPath}/ProjectsController">Progetti</a>
             <a href="${pageContext.request.contextPath}/AssociazioneController">L&#39;associazione</a>
         </nav>

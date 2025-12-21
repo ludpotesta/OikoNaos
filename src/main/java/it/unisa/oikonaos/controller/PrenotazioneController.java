@@ -29,7 +29,7 @@ public class PrenotazioneController extends HttpServlet {
                 request.getRequestDispatcher("prenotazioni.jsp").forward(request, response);
             } catch (Exception e) {
                 e.printStackTrace();
-                response.sendRedirect("home.jsp?error=db");
+                response.sendRedirect("profilo.jsp?error=db");
             }
         } else {
             response.sendRedirect("login.jsp");
@@ -57,12 +57,16 @@ public class PrenotazioneController extends HttpServlet {
                 // LOGICA ANNULLA
                 long idPrenotazione = Long.parseLong(request.getParameter("idPrenotazione"));
                 dao.doDelete(idPrenotazione);
-                response.sendRedirect("PrenotazioneController?msg=ok");
+                response.sendRedirect("PrenotazioneController");
             } else {
                 // LOGICA CREA
                 String dataStr = request.getParameter("data");
                 String postazioneStr = request.getParameter("idPostazione");
                 String fasciaStr = request.getParameter("idFascia");
+
+                System.out.println(dataStr);
+                System.out.println(postazioneStr);
+                System.out.println(fasciaStr);
 
                 if (dataStr != null && postazioneStr != null && fasciaStr != null) {
                     Date dataScelta = Date.valueOf(dataStr);
@@ -87,7 +91,7 @@ public class PrenotazioneController extends HttpServlet {
             }
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("home.jsp?error=generico");
+            response.sendRedirect("profilo.jsp?error=generico");
         }
     }
 }
