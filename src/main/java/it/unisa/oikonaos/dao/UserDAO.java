@@ -78,7 +78,7 @@ public class UserDAO {
                                    String password, long idUtente)
             throws Exception {
 
-        String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+        String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
         String sql = "INSERT INTO Credenziali (Username, PasswordHash, ID_Utente) VALUES (?, ?, ?)";
 
@@ -112,12 +112,13 @@ public class UserDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
+            // Username non trovato
             if (!rs.next()) {
                 throw new IllegalArgumentException("Username o password errati");
             }
 
+            // Password errata
             String hash = rs.getString("PasswordHash");
-
             if (!BCrypt.checkpw(password, hash)) {
                 throw new IllegalArgumentException("Username o password errati");
             }

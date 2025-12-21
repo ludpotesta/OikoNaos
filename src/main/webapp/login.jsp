@@ -28,7 +28,14 @@
             </div>
             <input type="submit" value="Login" class="form-submit">
         </form>
-
+            <%
+        String errore = request.getParameter("error");
+        if ("cred".equals(errore)) {
+    %>
+        <p class="alert">Credenziali errate. Riprova.</p>
+    <%
+        }
+    %>
     </main>
 
     <footer class="footer">

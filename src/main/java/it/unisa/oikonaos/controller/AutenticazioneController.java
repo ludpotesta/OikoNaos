@@ -30,10 +30,14 @@ public class AutenticazioneController extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/profilo.jsp");
 
+        } catch (IllegalArgumentException e) {
+            // credenziali errate
+            response.sendRedirect("login.jsp?error=cred");
         } catch (Exception e) {
-            e.printStackTrace();
-            String errorMessage = URLEncoder.encode(e.getMessage(), "UTF-8");
-        }
+        // errore grave
+        e.printStackTrace();
+        String errorMessage = URLEncoder.encode(e.getMessage(), "UTF-8");
+    }
     }
 }
 

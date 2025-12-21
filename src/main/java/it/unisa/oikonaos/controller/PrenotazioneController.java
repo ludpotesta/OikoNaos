@@ -64,6 +64,10 @@ public class PrenotazioneController extends HttpServlet {
                 String postazioneStr = request.getParameter("idPostazione");
                 String fasciaStr = request.getParameter("idFascia");
 
+                System.out.println(dataStr);
+                System.out.println(postazioneStr);
+                System.out.println(fasciaStr);
+
                 if (dataStr != null && postazioneStr != null && fasciaStr != null) {
                     Date dataScelta = Date.valueOf(dataStr);
                     long idPostazione = Long.parseLong(postazioneStr);
