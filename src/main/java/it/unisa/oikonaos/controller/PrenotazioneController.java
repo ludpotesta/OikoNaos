@@ -93,6 +93,7 @@ public class PrenotazioneController extends HttpServlet {
 
             Prenotazione p = new Prenotazione();
             p.setData(data);
+            p.setStato("ATTIVA");
             p.setIdUtente(utente.getIdUtente());
             p.setIdPostazione(idPostazione);
             p.setIdFasciaOraria(idFascia);

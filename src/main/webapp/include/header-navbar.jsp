@@ -5,7 +5,7 @@
 
     <!-- SINISTRA: LOGO + LINK PRINCIPALI -->
     <div class="on-left">
-        <a href="${pageContext.request.contextPath}/home.jsp"
+        <a href="${pageContext.request.contextPath}/index.jsp"
            class="on-logo-link"
            aria-label="Vai alla home">
             <img class="on-logo"
@@ -22,7 +22,7 @@
         <%
         } else {
         %>
-        <a href="${pageContext.request.contextPath}/profilo.jsp">Profilo</a>
+        <a href="${pageContext.request.contextPath}/home.jsp">Profilo</a>
         |
         <a href="${pageContext.request.contextPath}/PrenotazioneController">Prenotazioni</a>
         |
@@ -57,7 +57,7 @@
 
                     if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) {
             %>
-            <a href="${pageContext.request.contextPath}/admin/ticket.jsp">
+            <a href="${pageContext.request.contextPath}/admin/ticketAdmin.jsp">
                 Area Supervisore
             </a>
             <%

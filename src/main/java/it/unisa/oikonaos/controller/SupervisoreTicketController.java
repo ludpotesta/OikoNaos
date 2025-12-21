@@ -25,7 +25,7 @@ public class SupervisoreTicketController extends HttpServlet {
             TicketDAO dao = new TicketDAO();
             List<Ticket> lista = dao.doRetrieveAll();
             request.setAttribute("listaGlobaleTicket", lista);
-            request.getRequestDispatcher("admin/ticket.jsp").forward(request, response);
+            request.getRequestDispatcher("admin/ticketAdmin.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
         }

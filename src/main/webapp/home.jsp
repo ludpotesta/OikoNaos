@@ -24,6 +24,15 @@
             <h1>Ciao, <%= u.getNome() %> 👋</h1>
             <p>Benvenuto in OikoNaos. Scegli cosa vuoi fare.</p>
 
+            <%
+                String errore = request.getParameter("error");
+                if ("ruolo".equals(errore)) {
+            %>
+            <p class="alert">Non disponi delle autorizzazioni necessarie per accedere.</p>
+            <%
+                }
+            %>
+
             <div class="grid-cards">
                 <a class="card" href="${pageContext.request.contextPath}/profilo.jsp">
                     <h3>Profilo</h3>
@@ -46,11 +55,11 @@
                 </a>
 
                 <% if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
-                <a class="card" href="${pageContext.request.contextPath}/admin/ticket.jsp">
+                <a class="card" href="${pageContext.request.contextPath}/admin/ticketAdmin.jsp">
                     <h3>Area Supervisore - Ticket</h3>
                     <p>Gestisci i ticket della comunità.</p>
                 </a>
-                <a class="card" href="${pageContext.request.contextPath}/admin/prenotazioni.jsp">
+                <a class="card" href="${pageContext.request.contextPath}/AdminPrenotazioneController">
                     <h3>Area Supervisore - Prenotazioni</h3>
                     <p>Gestisci le prenotazioni della comunità.</p>
                 </a>

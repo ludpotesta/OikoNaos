@@ -55,7 +55,7 @@ public class AuthFilter implements Filter{
 
                     if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
                         System.out.println("Accesso BLOCCATO → area supervisore");
-                        response.sendRedirect(request.getContextPath() + "/home.jsp");
+                        response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
                         return;
                     }
                 }
