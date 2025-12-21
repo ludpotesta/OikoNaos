@@ -1,6 +1,6 @@
 package it.unisa.oikonaos.controller;
 
-import it.unisa.oikonaos.dao.PrenotazioneDAO;
+import it.unisa.oikonaos.dao.*;
 import it.unisa.oikonaos.model.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -11,87 +11,100 @@ import java.sql.Date;
 
 @WebServlet(name = "PrenotazioneController", value = "/PrenotazioneController")
 public class PrenotazioneController extends HttpServlet {
-    private static final long serialVersionUID = 1L;
 
-    /**
-     * Gestisce la visualizzazione delle prenotazioni (Persona 1)
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Utente utente = (Utente) session.getAttribute("utente");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        if (utente != null) {
-            try {
-                PrenotazioneDAO dao = new PrenotazioneDAO();
-                List<Prenotazione> miePrenotazioni = dao.doRetrieveByUtente(utente.getIdUtente());
-                request.setAttribute("listaPrenotazioni", miePrenotazioni);
-                request.getRequestDispatcher("prenotazioni.jsp").forward(request, response);
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendRedirect("profilo.jsp?error=db");
-            }
-        } else {
-            response.sendRedirect("login.jsp");
-        }
-    }
+        HttpSession session = request.getSession(false);
+        Utente u = (session != null) ? (Utente) session.getAttribute("utente") : null;
 
-    /**
-     * Gestisce la creazione e l'annullamento delle prenotazioni (Persona 1)
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Utente utenteLoggato = (Utente) session.getAttribute("utente");
-
-        if (utenteLoggato == null) {
+        if (u == null) {
             response.sendRedirect("login.jsp");
             return;
         }
 
-        String action = request.getParameter("action");
-        PrenotazioneDAO dao = new PrenotazioneDAO();
+        try {
+            PrenotazioneDAO dao = new PrenotazioneDAO();
+            request.setAttribute(
+                    "listaPrenotazioni",
+                    dao.doRetrieveByUtente(u.getIdUtente())
+            );
+            request.getRequestDispatcher("prenotazioni.jsp")
+                    .forward(request, response);
+
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        Utente utente = (session != null)
+                ? (Utente) session.getAttribute("utente")
+                : null;
+
+        if (utente == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
         try {
+            PrenotazioneDAO dao = new PrenotazioneDAO();
+
+            String action = request.getParameter("action");
+
+            // ===== ANNULLA =====
             if ("delete".equals(action)) {
-                // LOGICA ANNULLA
-                long idPrenotazione = Long.parseLong(request.getParameter("idPrenotazione"));
+                long idPrenotazione =
+                        Long.parseLong(request.getParameter("idPrenotazione"));
+
                 dao.doDelete(idPrenotazione);
                 response.sendRedirect("PrenotazioneController");
-            } else {
-                // LOGICA CREA
-                String dataStr = request.getParameter("data");
-                String postazioneStr = request.getParameter("idPostazione");
-                String fasciaStr = request.getParameter("idFascia");
-
-                System.out.println(dataStr);
-                System.out.println(postazioneStr);
-                System.out.println(fasciaStr);
-
-                if (dataStr != null && postazioneStr != null && fasciaStr != null) {
-                    Date dataScelta = Date.valueOf(dataStr);
-                    long idPostazione = Long.parseLong(postazioneStr);
-                    long idFascia = Long.parseLong(fasciaStr);
-
-                    // Controllo conflitti richiesto dall'ODD
-                    if (dao.verificaConflitto(dataScelta, idPostazione, idFascia)) {
-                        response.sendRedirect("nuovaPrenotazione.jsp?error=conflitto");
-                        return;
-                    }
-
-                    Prenotazione p = new Prenotazione();
-                    p.setData(dataScelta);
-                    p.setIdUtente(utenteLoggato.getIdUtente());
-                    p.setIdPostazione(idPostazione);
-                    p.setIdFasciaOraria(idFascia);
-
-                    dao.creaPrenotazione(p);
-                    response.sendRedirect("PrenotazioneController");
-                }
+                return;
             }
+
+            // ===== CREA PRENOTAZIONE =====
+            String dataStr = request.getParameter("data");
+            String postazioneStr = request.getParameter("idPostazione");
+            String fasciaStr = request.getParameter("idFascia");
+
+            if (dataStr == null || postazioneStr == null || fasciaStr == null) {
+                response.sendRedirect("nuovaPrenotazione.jsp?error=campi");
+                return;
+            }
+
+            Date data = Date.valueOf(dataStr);
+            if (data.before(Date.valueOf(java.time.LocalDate.now()))) {
+                response.sendRedirect("nuovaPrenotazione.jsp?error=data_passata");
+                return;
+            }
+
+            long idPostazione = Long.parseLong(postazioneStr);
+            long idFascia = Long.parseLong(fasciaStr);
+
+            if (dao.verificaConflitto(data, idPostazione, idFascia)) {
+                response.sendRedirect("nuovaPrenotazione.jsp?error=conflitto");
+                return;
+            }
+
+            Prenotazione p = new Prenotazione();
+            p.setData(data);
+            p.setIdUtente(utente.getIdUtente());
+            p.setIdPostazione(idPostazione);
+            p.setIdFasciaOraria(idFascia);
+
+            dao.creaPrenotazione(p);
+
+            response.sendRedirect("PrenotazioneController");
+
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("profilo.jsp?error=generico");
         }
     }
+
 }

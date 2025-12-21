@@ -13,26 +13,76 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
 </head>
 <body>
-<%@ include file="/include/header-navbar.jsp" %>
+
+<!-- Navbar -->
+<jsp:include page="/include/header-navbar.jsp" />
 
 <main class="hero">
-    <form action="${pageContext.request.contextPath}/RegistrazioneController" method="post" class="form-section">
+
+    <%-- Eventuale messaggio di errore --%>
+    <%
+        String error = request.getParameter("error");
+        if (error != null) {
+    %>
+    <p class="alert">Errore durante la registrazione. Verifica i dati inseriti.</p>
+    <%
+        }
+    %>
+
+    <form action="${pageContext.request.contextPath}/RegistrazioneController"
+          method="post"
+          class="form-section">
+
         <h2>Registrati a OikoNaos</h2>
-        <div><label>Nome:</label><input type="text" name="nome" required class="form-input"></div>
-        <div><label>Cognome:</label><input type="text" name="cognome" required class="form-input"></div>
-        <div><label>Email:</label><input type="text" name="email" required class="form-input"></div>
-        <div><label>Numero di telefono:</label><input type="tel" name="telefono" required class="form-input"></div>
-        <div><label>Username:</label><input type="text" name="username" required class="form-input"></div>
-        Immetti una password e il codice ricevuto alla
-        stipulazione del contratto
-        <div><br><label>Password:</label><input type="password" name="password" required class="form-input"></div>
-        <div><label>Codice:</label><input type="text" name="codiceID" required class="form-input"></div>
+
+        <div>
+            <label for="nome">Nome:</label>
+            <input id="nome" type="text" name="nome" required class="form-input">
+        </div>
+
+        <div>
+            <label for="cognome">Cognome:</label>
+            <input id="cognome" type="text" name="cognome" required class="form-input">
+        </div>
+
+        <div>
+            <label for="email">Email:</label>
+            <input id="email" type="email" name="email" required class="form-input">
+        </div>
+
+        <div>
+            <label for="telefono">Numero di telefono:</label>
+            <input id="telefono" type="tel" name="telefono" required class="form-input">
+        </div>
+
+        <div>
+            <label for="username">Username:</label>
+            <input id="username" type="text" name="username" required class="form-input">
+        </div>
+
+        <p style="font-size: 0.9em; color: #555;">
+            Immetti una password e il codice ricevuto alla stipulazione del contratto.
+        </p>
+
+        <div>
+            <label for="password">Password:</label>
+            <input id="password" type="password" name="password" required class="form-input">
+        </div>
+
+        <div>
+            <label for="codiceID">Codice identificativo:</label>
+            <input id="codiceID" type="text" name="codiceID" required class="form-input">
+        </div>
+
         <input type="submit" value="Registrati" class="form-submit">
     </form>
+
 </main>
 
 <footer class="footer">
     <small>© 2025 OikoNaos — Co-housing, insieme.</small>
 </footer>
+
 </body>
 </html>
+

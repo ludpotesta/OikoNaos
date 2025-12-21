@@ -1,79 +1,128 @@
-<%@ page import="it.unisa.oikonaos.model.Prenotazione, java.util.List" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.List" %>
+<%@ page import="it.unisa.oikonaos.model.Prenotazione" %>
+
 <!DOCTYPE html>
 <html lang="it">
-    <head>
-        <meta charset="UTF-8">
-        <title>Le mie Prenotazioni</title>
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <title>Le mie prenotazioni</title>
 
-    <body>
-        <jsp:include page="header.jsp" />
-        <% if ("ok".equals(request.getParameter("msg"))) { %>
-        <p style="color: green; font-weight: bold;">
-            ✔ Prenotazione effettuata con successo
-        </p>
-        <% } %>
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 70%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
 
-        <% if ("conflitto".equals(request.getParameter("error"))) { %>
-        <p style="color: red; font-weight: bold;">
-            ✖ Postazione già prenotata per quella fascia oraria
-        </p>
-        <% } %>
+        /* MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            width: 300px;
+            text-align: center;
+        }
+        .modal button {
+            margin: 5px;
+        }
+    </style>
+</head>
 
-        <% if ("deleted".equals(request.getParameter("msg"))) { %>
-        <p style="color: green; font-weight: bold;">
-            ✔ Prenotazione annullata con successo
-        </p>
-        <% } %>
+<body>
 
-        <h1>Storico Prenotazioni</h1>
+<jsp:include page="/include/header-navbar.jsp" />
 
-        <table border="1" cellpadding="10" cellspacing="0">
-            <tr style="background-color:#f0f0f0;">
-                <th>Data</th>
-                <th>Postazione</th>
-                <th>Fascia Oraria</th>
-                <th>Azione</th>
-            </tr>
+<h2>Le mie prenotazioni</h2>
 
-            <%
-                List<Prenotazione> lista =
-                        (List<Prenotazione>) request.getAttribute("listaPrenotazioni");
+<%
+    List<Prenotazione> prenotazioni =
+            (List<Prenotazione>) request.getAttribute("listaPrenotazioni");
 
-                if (lista == null || lista.isEmpty()) {
-            %>
-            <tr>
-                <td colspan="4" style="text-align:center; color:#555;">
-                    Nessuna prenotazione presente.
-                </td>
-            </tr>
-            <%
-            } else {
-                for (Prenotazione p : lista) {
-            %>
-            <tr>
-                <td><%= p.getData() %></td>
-                <td>Postazione <%= p.getIdPostazione() %></td>
-                <td>Fascia <%= p.getIdFasciaOraria() %></td>
-                <td>
-                    <form action="PrenotazioneController" method="post" style="display:inline;">
-                        <input type="hidden" name="action" value="delete">
-                        <input type="hidden" name="idPrenotazione"
-                               value="<%= p.getIdPrenotazione() %>">
-                        <button type="submit">Annulla</button>
-                    </form>
-                </td>
-            </tr>
-            <%
-                    }
-                }
-            %>
-        </table>
+    if (prenotazioni == null || prenotazioni.isEmpty()) {
+%>
+<p>Non hai prenotazioni attive.</p>
+<%
+} else {
+%>
 
-        <br>
-        <a href="nuovaPrenotazione.jsp"> Effettua una nuova prenotazione</a>
+<table>
+    <tr>
+        <th>Data</th>
+        <th>Ambiente</th>
+        <th>Postazione</th>
+        <th>Fascia oraria</th>
+        <th>Azioni</th>
+    </tr>
 
-    </body>
+    <% for (Prenotazione p : prenotazioni) { %>
+    <tr>
+        <td><%= p.getData() %></td>
+        <td><%= p.getNomeAmbiente() %></td>
+        <td>Postazione <%= p.getNumeroPostazione() %></td>
+        <td>
+            <%= p.getOrarioInizio().toLocalTime().toString().substring(0,5) %>
+            -
+            <%= p.getOrarioFine().toLocalTime().toString().substring(0,5) %>
+        </td>
+
+        <td>
+            <button onclick="openModal(<%= p.getIdPrenotazione() %>)">
+                Annulla
+            </button>
+        </td>
+    </tr>
+    <% } %>
+</table>
+
+<% } %>
+
+<p>
+    <a href="nuovaPrenotazione.jsp">Effettua una nuova prenotazione</a>
+</p>
+
+<!-- MODAL CONFERMA -->
+<div class="modal-overlay" id="modal">
+    <div class="modal">
+        <h3>Conferma annullamento</h3>
+        <p>Sei sicuro di voler annullare questa prenotazione?</p>
+
+        <form action="PrenotazioneController" method="post">
+            <input type="hidden" name="action" value="delete">
+            <input type="hidden" name="idPrenotazione" id="idPrenotazione">
+
+            <button type="button" onclick="closeModal()">No</button>
+            <button type="submit">Sì, annulla</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal(id) {
+        document.getElementById("idPrenotazione").value = id;
+        document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeModal() {
+        document.getElementById("modal").style.display = "none";
+    }
+</script>
+
+</body>
 </html>
-

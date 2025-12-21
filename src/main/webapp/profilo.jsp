@@ -11,7 +11,7 @@
 
     <body>
         <%-- 1. Includiamo la Navbar che abbiamo creato --%>
-        <jsp:include page="header.jsp" />
+        <jsp:include page="/include/header-navbar.jsp" />
 
         <%
             // 2. Correzione: aggiunto 'Object' davanti a obj

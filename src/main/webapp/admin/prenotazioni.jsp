@@ -8,9 +8,9 @@
     </head>
 
     <body>
-    <jsp:include page="../header.jsp" />
+    <jsp:include page="/include/header-navbar.jsp" />
 
-        <main style="padding: 20px; font-family: sans-serif;">
+    <main style="padding: 20px; font-family: sans-serif;">
 
             <h1>Riepilogo Globale Prenotazioni (ADMIN)</h1>
 

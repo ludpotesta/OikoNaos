@@ -21,12 +21,17 @@ public class UserDAO {
         con.setAutoCommit(false);
 
         try {
-            // Inserimento Utente
-            long idUtente = insertUtente(con, nome, cognome, email, telefono);
-            // Inserimento Credenziali
+            // 1. Verifica codice e recupera comunità
+            Long idComunita = checkCodice(con, codiceID);
+
+            // 2. Inserimento utente con comunità
+            long idUtente = insertUtente(con, nome, cognome, email, telefono, idComunita);
+
+            // 3. Inserimento credenziali (con hash)
             insertCredenziali(con, username, password, idUtente);
-            // Aggiornamento codice
-            //markCodiceUsato(con, codiceID, idUtente);
+
+            // 4. Marca codice come usato
+            markCodiceUsato(con, codiceID, idUtente);
 
             con.commit();
 
@@ -34,37 +39,48 @@ public class UserDAO {
             con.rollback();
             throw e;
         } finally {
+            con.setAutoCommit(true);
             con.close();
         }
     }
 
-    // Metodi DAO
+    /* ==========================
+       METODI DI SUPPORTO
+       ========================== */
 
     private Long checkCodice(Connection con, String codiceComunita) throws Exception {
-        String sql = " SELECT ID_Comunita FROM CodiceIdentificativo WHERE Codice = ? AND Stato = 'ATTIVO'";
+        String sql = "SELECT ID_Comunita FROM CodiceIdentificativo WHERE Codice = ? AND Stato = 'ATTIVO'";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, codiceComunita);
             ResultSet rs = ps.executeQuery();
 
             if (!rs.next()) {
-                throw new IllegalArgumentException("Codice non valido");
+                throw new IllegalArgumentException("Codice non valido o già utilizzato");
             }
             return rs.getLong("ID_Comunita");
         }
     }
 
-    private long insertUtente(Connection con, String nome, String cognome, String email, String telefono)
-            throws Exception {
+    private long insertUtente(
+            Connection con,
+            String nome,
+            String cognome,
+            String email,
+            String telefono,
+            long idComunita
+    ) throws Exception {
 
-        String sql = " INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo) VALUES (?, ?, ?, ?, 'COINQUILINO')";
+        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita) VALUES (?, ?, ?, ?, 'COINQUILINO', ?)";
 
-        try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (PreparedStatement ps =
+                     con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, nome);
             ps.setString(2, cognome);
             ps.setString(3, email);
             ps.setString(4, telefono);
+            ps.setLong(5, idComunita);
 
             ps.executeUpdate();
 
@@ -74,9 +90,12 @@ public class UserDAO {
         }
     }
 
-    private void insertCredenziali(Connection con, String username,
-                                   String password, long idUtente)
-            throws Exception {
+    private void insertCredenziali(
+            Connection con,
+            String username,
+            String password,
+            long idUtente
+    ) throws Exception {
 
         String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
@@ -90,10 +109,13 @@ public class UserDAO {
         }
     }
 
-    private void markCodiceUsato(Connection con, String codiceID, long idUtente)
-            throws Exception {
+    private void markCodiceUsato(
+            Connection con,
+            String codiceID,
+            long idUtente
+    ) throws Exception {
 
-        String sql = "UPDATE CodiceIdentificativo SET Stato = 'USATO', ID_Utente_Utilizzatore = ? WHERE Codice = ?";
+        String sql = "UPDATE CodiceIdentificativo SET Stato = 'USATO',  ID_Utente_Utilizzatore = ? WHERE Codice = ?";
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, idUtente);
@@ -101,7 +123,7 @@ public class UserDAO {
             ps.executeUpdate();
         }
     }
-
+       //LOGIN
     public Utente login(String username, String password) throws Exception {
 
         String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, u.ID_Comunita, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
@@ -112,12 +134,10 @@ public class UserDAO {
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
 
-            // Username non trovato
             if (!rs.next()) {
                 throw new IllegalArgumentException("Username o password errati");
             }
 
-            // Password errata
             String hash = rs.getString("PasswordHash");
             if (!BCrypt.checkpw(password, hash)) {
                 throw new IllegalArgumentException("Username o password errati");
@@ -134,6 +154,4 @@ public class UserDAO {
             return u;
         }
     }
-
-
 }

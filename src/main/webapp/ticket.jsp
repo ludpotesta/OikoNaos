@@ -3,8 +3,8 @@
 <html>
     <head><title>I miei Ticket</title></head>
     <body>
-    <jsp:include page="header.jsp" />
-        <h1>I tuoi Ticket di Assistenza</h1>
+    <jsp:include page="/include/header-navbar.jsp" />
+    <h1>I tuoi Ticket di Assistenza</h1>
             <% if ("not_deletable".equals(request.getParameter("error"))) { %>
             <p style="color:red;">
                 Impossibile annullare il ticket: è già in lavorazione.

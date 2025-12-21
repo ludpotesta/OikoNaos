@@ -13,37 +13,54 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
 </head>
 <body>
-    <%@ include file="/include/header-navbar.jsp" %>
 
-    <main class="hero">
-        <% if ("credenziali".equals(request.getParameter("error"))) { %>
-             <p style="color:red;">Username o password errati. Riprova.</p>
-        <% } %>
+<!-- Navbar -->
+<jsp:include page="/include/header-navbar.jsp" />
 
-        <form action="${pageContext.request.contextPath}/AutenticazioneController" method="post" class="form-section">
-            <h2>Accedi a OikoNaos</h2>
-            <div>
-                <label>Username:</label>
-                <input type="text" name="username" required class="form-input">
-            </div>
-            <div>
-                <label>Password:</label>
-                <input type="password" name="password" required class="form-input">
-            </div>
-            <input type="submit" value="Login" class="form-submit">
-        </form>
-            <%
+<main class="hero">
+
+    <%-- Gestione errore login --%>
+    <%
         String errore = request.getParameter("error");
         if ("cred".equals(errore)) {
     %>
-        <p class="alert">Credenziali errate. Riprova.</p>
+    <p class="alert">Credenziali errate. Riprova.</p>
     <%
         }
     %>
-    </main>
 
-    <footer class="footer">
-        <small>© 2025 OikoNaos — Co-housing, insieme.</small>
-    </footer>
+    <form action="${pageContext.request.contextPath}/AutenticazioneController"
+          method="post"
+          class="form-section">
+
+        <h2>Accedi a OikoNaos</h2>
+
+        <div>
+            <label for="username">Username:</label>
+            <input id="username"
+                   type="text"
+                   name="username"
+                   required
+                   class="form-input">
+        </div>
+
+        <div>
+            <label for="password">Password:</label>
+            <input id="password"
+                   type="password"
+                   name="password"
+                   required
+                   class="form-input">
+        </div>
+
+        <input type="submit" value="Login" class="form-submit">
+    </form>
+
+</main>
+
+<footer class="footer">
+    <small>© 2025 OikoNaos — Co-housing, insieme.</small>
+</footer>
+
 </body>
 </html>

@@ -2,6 +2,7 @@ package it.unisa.oikonaos.model;
 
 import java.io.Serializable;
 import java.sql.Date;
+import java.sql.Time;
 
 public class Prenotazione implements Serializable {
     private long idPrenotazione;
@@ -9,6 +10,10 @@ public class Prenotazione implements Serializable {
     private long idUtente; //
     private long idPostazione; //
     private long idFasciaOraria; // [cite: 321]
+    private Time orarioInizio;
+    private Time orarioFine;
+    private String nomeAmbiente;
+    private String numeroPostazione;
 
     public Prenotazione() {}
 
@@ -23,4 +28,13 @@ public class Prenotazione implements Serializable {
     public void setIdPostazione(long idPostazione) { this.idPostazione = idPostazione; }
     public long getIdFasciaOraria() { return idFasciaOraria; }
     public void setIdFasciaOraria(long idFasciaOraria) { this.idFasciaOraria = idFasciaOraria; }
+    public Time getOrarioInizio() { return orarioInizio; }
+    public void setOrarioInizio(Time orarioInizio) { this.orarioInizio = orarioInizio; }
+    public Time getOrarioFine() { return orarioFine; }
+    public void setOrarioFine(Time orarioFine) { this.orarioFine = orarioFine; }
+    public String getNomeAmbiente() { return nomeAmbiente; }
+    public void setNomeAmbiente(String nomeAmbiente) { this.nomeAmbiente = nomeAmbiente; }
+    public String getNumeroPostazione() { return numeroPostazione; }
+    public void setNumeroPostazione(String numeroPostazione) { this.numeroPostazione = numeroPostazione; }
+
 }
