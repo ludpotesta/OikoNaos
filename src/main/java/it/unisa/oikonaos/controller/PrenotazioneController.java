@@ -104,7 +104,7 @@ public class PrenotazioneController extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("profilo.jsp?error=generico");
+            response.sendRedirect("home.jsp?error=generico");
         }
     }
 

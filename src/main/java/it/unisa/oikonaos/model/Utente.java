@@ -8,7 +8,6 @@ public class Utente implements Serializable {
     private String cognome;
     private String email;
     private String ruolo;
-    private long idComunita;
 
     // Costruttore vuoto (OBBLIGATORIO)
     public Utente() {
@@ -54,11 +53,4 @@ public class Utente implements Serializable {
         this.ruolo = ruolo;
     }
 
-    public long getIdComunita() {
-        return idComunita;
-    }
-
-    public void setIdComunita(long idComunita) {
-        this.idComunita = idComunita;
-    }
 }

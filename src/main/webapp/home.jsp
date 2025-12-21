@@ -34,7 +34,7 @@
             %>
 
             <div class="grid-cards">
-                <a class="card" href="${pageContext.request.contextPath}/profilo.jsp">
+                <a class="card" href="${pageContext.request.contextPath}/home.jsp">
                     <h3>Profilo</h3>
                     <p>Visualizza e modifica i tuoi dati.</p>
                 </a>
