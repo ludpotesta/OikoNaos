@@ -40,7 +40,7 @@ public class SupervisoreTicketController extends HttpServlet {
             String nuovoStato = request.getParameter("nuovoStato");
             try {
                 new TicketDAO().updateStato(id, nuovoStato);
-                response.sendRedirect("AdminTicketController");
+                response.sendRedirect("SupervisoreTicketController");
             } catch (Exception e) {
                 e.printStackTrace();
             }

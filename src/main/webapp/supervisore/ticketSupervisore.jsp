@@ -17,7 +17,7 @@
                 <td><%= t.getTitolo() %></td>
                 <td><strong><%= t.getStato() %></strong></td>
                 <td>
-                    <form action="<%= request.getContextPath() %>/AdminTicketController" method="post">
+                    <form action="<%= request.getContextPath() %>/SupervisoreTicketController" method="post">
                     <input type="hidden" name="action" value="updateStato">
                         <input type="hidden" name="idTicket" value="<%= t.getIdTicket() %>">
                         <select name="nuovoStato">
