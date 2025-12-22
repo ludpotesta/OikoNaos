@@ -28,7 +28,7 @@ public class SupervisorePrenotazioniController extends HttpServlet {
             List<Prenotazione> tutteLePrenotazioni = dao.doRetrieveAll();
 
             request.setAttribute("listaGlobalePrenotazioni", tutteLePrenotazioni);
-            request.getRequestDispatcher("supervisore/prenotazioniAdmin.jsp").forward(request, response);
+            request.getRequestDispatcher("supervisore/gestionePgestionePrenotazioni.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect("profilo.jsp?error=db");

@@ -7,10 +7,9 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
-import java.sql.Date;
 
 @WebServlet(name = "AdminPrenotazioneController", value = "/AdminPrenotazioneController")
-public class AdminPrenotazioneController extends HttpServlet {
+public class SupervisorePrenotazioneController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp)
@@ -28,7 +27,7 @@ public class AdminPrenotazioneController extends HttpServlet {
             List<Prenotazione> prenotazioni = prenotazioneDAO.findAllByComunita(u.getIdComunita());
 
             req.setAttribute("prenotazioni", prenotazioni);
-            req.getRequestDispatcher("/admin/prenotazioniAdmin.jsp")
+            req.getRequestDispatcher("/admin/gestionePrenotazioni.jsp")
                     .forward(req, resp);
 
         } catch (Exception e) {

@@ -3,7 +3,6 @@
 
 <header class="on-navbar">
 
-    <!-- SINISTRA: LOGO + LINK PRINCIPALI -->
     <div class="on-left">
         <a href="${pageContext.request.contextPath}/index.jsp"
            class="on-logo-link"
@@ -32,7 +31,6 @@
         %>
     </div>
 
-    <!-- DESTRA: MENU HAMBURGER -->
     <div class="on-right">
         <input type="checkbox" id="onToggle" class="on-toggle" aria-hidden="true" />
 
@@ -48,7 +46,6 @@
             </svg>
         </label>
 
-        <!-- MENU DI NAVIGAZIONE -->
         <nav class="on-menu" aria-label="Menu principale">
             <%
                 if (obj != null) {
@@ -57,9 +54,16 @@
 
                     if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) {
             %>
-            <a href="${pageContext.request.contextPath}/admin/ticketAdmin.jsp">
-                Area Supervisore
+            <a href="${pageContext.request.contextPath}/supervisore/dashboard.jsp" style="font-weight: bold; color: #ffc107;">
+                Dashboard Supervisore
             </a>
+            <a href="${pageContext.request.contextPath}/AdminTicketController">
+                Gestione Ticket
+            </a>
+            <a href="${pageContext.request.contextPath}/AdminPrenotazioniController">
+                Gestione Prenotazioni
+            </a>
+            <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 0;">
             <%
                 }
             %>
