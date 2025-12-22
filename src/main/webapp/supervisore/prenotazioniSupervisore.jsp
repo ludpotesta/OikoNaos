@@ -29,6 +29,7 @@
                 <tr style="background-color: #f0f0f0;">
                     <th>ID Prenotazione</th>
                     <th>Data</th>
+                    <th>Stato</th>
                     <th>ID Utente</th>
                     <th>ID Postazione</th>
                 </tr>
@@ -37,6 +38,7 @@
                 <tr>
                     <td><%= p.getIdPrenotazione() %></td>
                     <td><%= p.getData() %></td>
+                    <td><%= p.getStato() %></td>
                     <td><%= p.getIdUtente() %></td>
                     <td><%= p.getIdPostazione() %></td>
                 </tr>

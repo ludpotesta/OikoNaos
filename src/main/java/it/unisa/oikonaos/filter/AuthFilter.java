@@ -51,7 +51,7 @@ public class AuthFilter implements Filter{
         Utente utente = (Utente) session.getAttribute("utente");
 
         // URL riservate ai supervisori
-                if (path.contains("/Supervisore") || path.contains("/supervisore")) {
+                if (path.contains("/supervisore") || path.contains("/supervisore")) {
 
                     if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
                         System.out.println("Accesso BLOCCATO → area supervisore");

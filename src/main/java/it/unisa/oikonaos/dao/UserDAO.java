@@ -108,7 +108,7 @@ public class UserDAO {
        //LOGIN
     public Utente login(String username, String password) throws Exception {
 
-        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, u.ID_Comunita, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
+        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

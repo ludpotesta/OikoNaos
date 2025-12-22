@@ -78,6 +78,7 @@ public class PrenotazioneDAO {
                 Prenotazione p = new Prenotazione();
                 p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
                 p.setData(rs.getDate("DataPrenotazione"));
+                p.setStato(rs.getString("Stato"));
                 p.setIdUtente(rs.getLong("ID_Utente"));
                 p.setIdPostazione(rs.getLong("ID_Postazione"));
                 p.setIdFasciaOraria(rs.getLong("ID_Fascia"));
