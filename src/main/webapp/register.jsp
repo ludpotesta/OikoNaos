@@ -20,18 +20,26 @@
 <main class="hero">
 
     <%-- Eventuale messaggio di errore --%>
-    <%
-        String error = request.getParameter("error");
-        if (error != null) {
-    %>
-    <p class="alert">Errore durante la registrazione. Verifica i dati inseriti.</p>
-    <%
-        }
-    %>
+        <%
+            String error = request.getParameter("error");
+            if ("email".equals(error)) {
+        %>
+        <p class="alert">
+            Questa email è già registrata. Usa un’altra email o accedi.
+        </p>
+        <%
+        } else if ("generico".equals(error)) {
+        %>
+        <p class="alert">
+            Errore durante la registrazione. Verifica i dati inseriti.
+        </p>
+        <%
+            }
+        %>
 
-    <form action="${pageContext.request.contextPath}/RegistrazioneController"
-          method="post"
-          class="form-section">
+        <form action="${pageContext.request.contextPath}/RegistrazioneController"
+              method="post"
+              class="form-section">
 
         <h2>Registrati a OikoNaos</h2>
 

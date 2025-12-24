@@ -82,7 +82,7 @@
         <h3>Conferma annullamento</h3>
         <p>Sei sicuro di voler annullare questo ticket?</p>
 
-        <form action="TicketController" method="post">
+        <form action="${pageContext.request.contextPath}/TicketController" method="post">
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="idTicket" id="idTicket">
 

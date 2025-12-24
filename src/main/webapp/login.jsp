@@ -20,18 +20,22 @@
 <main class="hero">
 
     <%-- Gestione errore login --%>
-    <%
-        String errore = request.getParameter("error");
-        if ("cred".equals(errore)) {
-    %>
-    <p class="alert">Credenziali errate. Riprova.</p>
-    <%
-        }
-    %>
+    <% if ("credenziali".equals(request.getParameter("error"))) { %>
+        <p style="color:red; text-align:center; margin-bottom: 15px;">
+            Username o password errati. Riprova.
+        </p>
+    <% } %>
 
-    <form action="${pageContext.request.contextPath}/AutenticazioneController"
-          method="post"
-          class="form-section">
+    <% if ("generico".equals(request.getParameter("error"))) { %>
+        <p style="color:red; text-align:center;">
+            Errore di sistema. Riprova più tardi.
+        </p>
+    <% } %>
+
+
+        <form action="${pageContext.request.contextPath}/AutenticazioneController"
+              method="post"
+              class="form-section">
 
         <h2>Accedi a OikoNaos</h2>
 

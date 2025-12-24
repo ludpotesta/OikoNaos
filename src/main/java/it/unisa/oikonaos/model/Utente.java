@@ -53,4 +53,8 @@ public class Utente implements Serializable {
         this.ruolo = ruolo;
     }
 
+    @Override
+    public String toString() {
+        return nome + " " + cognome + " (" + ruolo + ")";
+    }
 }

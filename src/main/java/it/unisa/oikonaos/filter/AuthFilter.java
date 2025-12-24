@@ -4,10 +4,11 @@ import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
 import java.io.IOException;
 
 @WebFilter("/*")
-public class AuthFilter implements Filter{
+public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -21,16 +22,15 @@ public class AuthFilter implements Filter{
 
         System.out.println("Request: " + path);
 
-        //Risorse pubbliche / statiche
-        if (path.contains("/index.jsp")
-                || path.contains("/login.jsp")
-                || path.contains("/register.jsp")
-                || path.contains("/AutenticazioneController")
-                || path.contains("/RegistrazioneController")
-                || path.contains("/LogoutController")
-                || path.contains("/assets/")
-                || path.contains("/css/")
-                || path.contains("/js/")
+        if (path.equals("/login.jsp")
+                || path.equals("/register.jsp")
+                || path.equals("/index.jsp")
+                || path.startsWith("/assets/")
+                || path.startsWith("/css/")
+                || path.startsWith("/js/")
+                || path.equals("/AutenticazioneController")
+                || path.equals("/RegistrazioneController")
+                || path.equals("/LogoutController")
                 || path.endsWith(".png")
                 || path.endsWith(".jpg")
                 || path.endsWith(".svg")
@@ -42,24 +42,24 @@ public class AuthFilter implements Filter{
 
         //Controllo autenticazione
         if (session == null || session.getAttribute("utente") == null) {
-            System.out.println("Accesso BLOCCATO → redirect login");
+            System.out.println("Accesso BLOCCATO → non autenticato");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        //CONTROLLO AUTORIZZAZIONE (RUOLI)
+        //Controllo autorizzazione
         Utente utente = (Utente) session.getAttribute("utente");
 
-        // URL riservate ai supervisori
-                if (path.contains("/supervisore") || path.contains("/supervisore")) {
+        // area supervisore
+        if (path.startsWith("/supervisore")) {
+            if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
+                System.out.println("Accesso BLOCCATO → ruolo non autorizzato");
+                response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
+                return;
+            }
+        }
 
-                    if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
-                        System.out.println("Accesso BLOCCATO → area supervisore");
-                        response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
-                        return;
-                    }
-                }
-
+        //accesso consentito
         System.out.println("Accesso CONSENTITO");
         chain.doFilter(req, res);
     }

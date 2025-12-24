@@ -19,10 +19,18 @@ public class PrenotazioneController extends HttpServlet {
         HttpSession session = request.getSession(false);
         Utente u = (session != null) ? (Utente) session.getAttribute("utente") : null;
 
+        //Non loggato → login
         if (u == null) {
-            response.sendRedirect("login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
+
+        //NON SUPERVISORE
+        if (!"COINQUILINO".equalsIgnoreCase(u.getRuolo())) {
+            response.sendRedirect(request.getContextPath() + "/home.jsp?error=permessi");
+            return;
+        }
+
 
         try {
             PrenotazioneDAO dao = new PrenotazioneDAO();
@@ -43,12 +51,10 @@ public class PrenotazioneController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Utente utente = (session != null)
-                ? (Utente) session.getAttribute("utente")
-                : null;
+        Utente utente = (session != null) ? (Utente) session.getAttribute("utente") : null;
 
-        if (utente == null) {
-            response.sendRedirect("login.jsp");
+        if (utente == null || !"COINQUILINO".equalsIgnoreCase(utente.getRuolo())) {
+            response.sendRedirect(request.getContextPath() + "/home.jsp?error=permessi");
             return;
         }
 
@@ -104,7 +110,7 @@ public class PrenotazioneController extends HttpServlet {
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("home.jsp?error=generico");
+            response.sendRedirect("homeSupervisore.jsp?error=generico");
         }
     }
 

@@ -25,7 +25,7 @@
     }
 %>
 
-<form action="PrenotazioneController" method="post">
+<form action="${pageContext.request.contextPath}/PrenotazioneController" method="post">
 
     <!-- DATA -->
     <label>Data:</label><br>

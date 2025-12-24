@@ -55,7 +55,7 @@ public class RegistrazioneController extends HttpServlet {
             System.out.println("Utente registrato e loggato: " + utente.getNome());
 
             // Redirect post-registrazione
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp?msg=registrato");
 
         } catch (Exception e) {
             e.printStackTrace();

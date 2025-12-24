@@ -103,7 +103,7 @@
                 <h3>Conferma annullamento</h3>
                 <p>Sei sicuro di voler annullare questa prenotazione?</p>
 
-                <form action="PrenotazioneController" method="post">
+                <form action="${pageContext.request.contextPath}/PrenotazioneController" method="post">
                     <input type="hidden" name="action" value="delete">
                     <input type="hidden" name="idPrenotazione" id="idPrenotazione">
 

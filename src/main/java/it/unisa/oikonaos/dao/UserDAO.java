@@ -54,7 +54,7 @@ public class UserDAO {
             String telefono
     ) throws Exception {
 
-        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo VALUES (?, ?, ?, ?, 'COINQUILINO')";
+        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo) VALUES (?, ?, ?, ?, 'COINQUILINO')";
 
         try (PreparedStatement ps =
                      con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {

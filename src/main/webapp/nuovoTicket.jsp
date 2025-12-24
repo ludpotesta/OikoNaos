@@ -12,7 +12,7 @@
 
         <h2>Apri una Segnalazione</h2>
 
-        <form action="TicketController"
+        <form action="${pageContext.request.contextPath}/TicketController"
               method="post"
               enctype="multipart/form-data">
 

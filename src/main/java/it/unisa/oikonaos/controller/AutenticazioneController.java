@@ -19,21 +19,43 @@ public class AutenticazioneController extends HttpServlet {
 
         String username = request.getParameter("username");
         String password = request.getParameter("password");
+
+        // controllo parametri minimi
+        if (username == null || password == null ||
+                username.isBlank() || password.isBlank()) {
+
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=vuoti");
+            return;
+        }
+
         try {
             UserDAO dao = new UserDAO();
             Utente utente = dao.login(username, password);
 
+            //login corretto
             HttpSession session = request.getSession(true);
             session.setAttribute("utente", utente);
 
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            System.out.println("LOGIN OK | idUtente=" + utente.getIdUtente()
+                    + " | ruolo=" + utente.getRuolo());
 
-        } catch (IllegalArgumentException ex) {
+            //redirect in base al ruolo
+            if ("SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
+                response.sendRedirect(request.getContextPath() + "/supervisore/home.jsp");
+            } else {
+                response.sendRedirect(request.getContextPath() + "/home.jsp");
+            }
+
+        } catch (IllegalArgumentException e) {
+            //credenziali errate
+            System.out.println("LOGIN FALLITO per username=" + username);
             response.sendRedirect(request.getContextPath() + "/login.jsp?error=credenziali");
+
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(request.getContextPath() + "/login.jsp?error=generico");
         }
+
     }
 }
 
