@@ -25,7 +25,10 @@
     }
 %>
 
-<form action="${pageContext.request.contextPath}/PrenotazioneController" method="post">
+<form action="${pageContext.request.contextPath}/PrenotazioneController"
+      method="post">
+
+    <input type="hidden" name="action" value="create">
 
     <!-- DATA -->
     <label>Data:</label><br>
@@ -44,7 +47,7 @@
     </select>
     <br><br>
 
-    <!-- POSTAZIONE-->
+    <!-- POSTAZIONE -->
     <label>Postazione:</label><br>
     <select name="idPostazione" required>
         <option value="">-- Seleziona postazione --</option>
@@ -67,10 +70,9 @@
     <button type="submit">Conferma prenotazione</button>
 </form>
 
+
 <p>
-    <a href="PrenotazioneController">Torna alle mie prenotazioni</a>
+    <a href="${pageContext.request.contextPath}/PrenotazioneController?action=list">
+        Torna alle mie prenotazioni
+    </a>
 </p>
-
-</body>
-</html>
-

@@ -1,70 +1,135 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
+<%@ page import="it.unisa.oikonaos.model.Utente" %>
+
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
 
 <%
     Object obj = session.getAttribute("utente");
-    it.unisa.oikonaos.model.Utente u = null;
-    if (obj != null) {
-        u = (it.unisa.oikonaos.model.Utente) obj;
-    }
+    Utente u = (obj instanceof Utente) ? (Utente) obj : null;
 %>
 
-<header class="on-navbar">
+<header class="topbar">
 
-    <div class="on-left">
+    <!-- BRAND -->
+    <div class="brand">
         <a href="${pageContext.request.contextPath}/index.jsp"
-           class="on-logo-link"
-           aria-label="Vai alla home">
-            <img class="on-logo"
+           class="brand-link">
+            <img class="logo"
                  src="${pageContext.request.contextPath}/assets/oikonaosLogo.png"
                  alt="Logo OikoNaos" />
+            <span class="brand-name">
+                Oiko<span class="brand-accent">Naos</span>
+            </span>
+        </a>
+    </div>
+
+    <!-- NAV LINKS -->
+    <nav class="nav-links">
+
+        <%-- ======================
+             UTENTE NON LOGGATO
+             ====================== --%>
+        <% if (u == null) { %>
+
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/login.jsp">
+            Login
         </a>
 
-        <% if (u == null) { %>
-        <a href="${pageContext.request.contextPath}/login.jsp">Login</a>
-        |
-        <a href="${pageContext.request.contextPath}/register.jsp">Registrati</a>
+        <a class="btn primary"
+           href="${pageContext.request.contextPath}/register.jsp">
+            Registrati
+        </a>
 
+        <%-- ======================
+             SUPERVISORE
+             ====================== --%>
         <% } else if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
-        <a href="${pageContext.request.contextPath}/supervisore/home.jsp">Home</a>
-        |
-        <a href="${pageContext.request.contextPath}/SupervisorePrenotazioniController">Prenotazioni</a>
-        |
-        <a href="${pageContext.request.contextPath}/SupervisoreTicketController">Ticket</a>
 
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/supervisore/home.jsp">
+            Home
+        </a>
+
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/SupervisorePrenotazioniController?action=list">
+            Prenotazioni
+        </a>
+
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/SupervisoreTicketController?action=list">
+            Ticket
+        </a>
+
+        <%-- ======================
+             COINQUILINO
+             ====================== --%>
         <% } else { %>
-        <a href="${pageContext.request.contextPath}/home.jsp">Profilo</a>
-        |
-        <a href="${pageContext.request.contextPath}/PrenotazioneController">Prenotazioni</a>
-        |
-        <a href="${pageContext.request.contextPath}/TicketController">Ticket</a>
+
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/home.jsp">
+            Profilo
+        </a>
+
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/PrenotazioneController?action=list">
+            Prenotazioni
+        </a>
+
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/TicketController?action=list">
+            Ticket
+        </a>
+
         <% } %>
-    </div>
 
-    <div class="on-right">
-        <input type="checkbox" id="onToggle" class="on-toggle" aria-hidden="true" />
+    </nav>
 
-        <label for="onToggle" class="on-hamb" aria-label="Apri menu di navigazione" role="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="6"  x2="21" y2="6"/>
-                <line x1="3" y1="12" x2="21" y2="12"/>
-                <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-        </label>
+    <!-- USER MENU (solo se loggato) -->
+    <% if (u != null) { %>
+    <div class="user-menu-container">
 
-        <nav class="on-menu" aria-label="Menu principale">
-            <% if (u != null) { %>
-            <% if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
-            <a href="${pageContext.request.contextPath}/supervisore/home.jsp">
-                Area Supervisore
+        <button type="button"
+                class="burger"
+                id="menuBtn"
+                aria-label="Menu utente"
+                onclick="toggleMenu()">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <div class="menu" id="userMenu">
+            <div class="menu-header">
+                <small>Loggato come</small>
+                <strong><%= u.getNome() %></strong>
+            </div>
+
+            <a href="${pageContext.request.contextPath}/LogoutController"
+               class="logout-link">
+                Esci
             </a>
-            <% } %>
+        </div>
 
-            <a href="${pageContext.request.contextPath}/LogoutController">
-                Logout
-            </a>
-            <% } %>
-        </nav>
     </div>
+    <% } %>
+
 </header>
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById("userMenu");
+        if (!menu) return;
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    // chiude il menu cliccando fuori
+    document.addEventListener("click", function (e) {
+        const menu = document.getElementById("userMenu");
+        const btn = document.getElementById("menuBtn");
+        if (!menu || !btn) return;
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>

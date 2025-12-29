@@ -1,23 +1,46 @@
-<%@ page import="it.unisa.oikonaos.model.Ticket, java.util.List" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
+<%@ page import="it.unisa.oikonaos.model.Ticket, java.util.List" %>
+
+<!DOCTYPE html>
+<html lang="it">
 <head>
+    <meta charset="UTF-8">
     <title>I miei Ticket</title>
 
     <style>
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #333;
+            padding: 8px;
+            text-align: center;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.5);
-            display: none;
+            display: none;          /* CHIUSO DI DEFAULT */
             justify-content: center;
             align-items: center;
+            z-index: 1000;
         }
         .modal {
             background: #fff;
             padding: 20px;
             border-radius: 8px;
             text-align: center;
+            width: 320px;
+        }
+        .modal button {
+            margin: 5px;
         }
     </style>
 </head>
@@ -40,7 +63,7 @@
 </p>
 <% } %>
 
-<table border="1" cellpadding="10">
+<table>
     <tr>
         <th>Titolo</th>
         <th>Categoria</th>
@@ -60,7 +83,8 @@
         <td><%= t.getPriorita() %></td>
         <td><strong><%= t.getStato() %></strong></td>
         <td>
-            <% if ("APERTO".equals(t.getStato())) { %>
+            <% if ("APERTO".equalsIgnoreCase(t.getStato())) { %>
+            <!-- type="button" OBBLIGATORIO -->
             <button type="button"
                     onclick="openModal(<%= t.getIdTicket() %>)">
                 Cancella
@@ -82,7 +106,9 @@
         <h3>Conferma annullamento</h3>
         <p>Sei sicuro di voler annullare questo ticket?</p>
 
-        <form action="${pageContext.request.contextPath}/TicketController" method="post">
+        <form action="${pageContext.request.contextPath}/TicketController"
+              method="post">
+
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="idTicket" id="idTicket">
 
@@ -101,6 +127,14 @@
     function closeModal() {
         document.getElementById("modal").style.display = "none";
     }
+
+    // RETE DI SICUREZZA: chiude sempre il modal al caricamento pagina
+    document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("modal");
+        if (modal) {
+            modal.style.display = "none";
+        }
+    });
 </script>
 
 </body>

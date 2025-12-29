@@ -2,14 +2,28 @@ package it.unisa.oikonaos.dao;
 
 import util.database;
 import it.unisa.oikonaos.model.Prenotazione;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO per la gestione delle prenotazioni degli spazi comuni.
+ * Implementa esclusivamente operazioni di persistenza (CRUD),
+ * senza includere logica di business, in accordo con il pattern MVC.
+ */
 public class PrenotazioneDAO {
 
+    /* ==========================================================
+       CREAZIONE PRENOTAZIONE
+       ========================================================== */
+
     public void creaPrenotazione(Prenotazione p) throws Exception {
-        String sql = "INSERT INTO prenotazione (DataPrenotazione, Stato, ID_Utente, ID_Postazione, ID_Fascia) VALUES (?, ?, ?, ?, ?)";
+        String sql = """
+            INSERT INTO prenotazione
+            (DataPrenotazione, Stato, ID_Utente, ID_Postazione, ID_Fascia)
+            VALUES (?, ?, ?, ?, ?)
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -19,12 +33,28 @@ public class PrenotazioneDAO {
             ps.setLong(3, p.getIdUtente());
             ps.setLong(4, p.getIdPostazione());
             ps.setLong(5, p.getIdFasciaOraria());
+
             ps.executeUpdate();
         }
     }
 
-    public boolean verificaConflitto(Date data, long idPostazione, long idFascia) throws Exception {
-        String sql = "SELECT COUNT(*) FROM prenotazione WHERE DataPrenotazione = ? AND ID_Postazione = ? AND ID_Fascia = ? AND Stato = 'ATTIVA'";
+    /* ==========================================================
+       VERIFICA CONFLITTO PRENOTAZIONI
+       NOTA: metodo valido per fasce orarie DISCRETE
+       ========================================================== */
+
+    public boolean verificaConflitto(Date data, long idPostazione, long idFascia)
+            throws Exception {
+
+        String sql = """
+            SELECT 1
+            FROM prenotazione
+            WHERE DataPrenotazione = ?
+              AND ID_Postazione = ?
+              AND ID_Fascia = ?
+              AND Stato = 'ATTIVA'
+            LIMIT 1
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -33,42 +63,84 @@ public class PrenotazioneDAO {
             ps.setLong(2, idPostazione);
             ps.setLong(3, idFascia);
 
-            ResultSet rs = ps.executeQuery();
-            return rs.next() && rs.getInt(1) > 0;
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
         }
     }
 
-    public List<Prenotazione> doRetrieveByUtente(long idUtente) throws Exception {
+    /* ==========================================================
+       RETRIEVE PRENOTAZIONI PER UTENTE (VIEW MODEL)
+       ========================================================== */
+
+    public List<Prenotazione> doRetrieveByUtente(long idUtente)
+            throws Exception {
+
         List<Prenotazione> lista = new ArrayList<>();
 
-        String sql = "SELECT pr.ID_Prenotazione, pr.DataPrenotazione, pr.Stato, po.Numero AS NumeroPostazione, a.Nome AS NomeAmbiente, f.OraInizio, f.OraFine FROM prenotazione pr JOIN postazione po ON pr.ID_Postazione = po.ID_Postazione JOIN ambiente a ON po.ID_Ambiente = a.ID_Ambiente JOIN fasciaoraria f ON pr.ID_Fascia = f.ID_Fascia WHERE pr.ID_Utente = ? ORDER BY pr.DataPrenotazione DESC";
+        String sql = """
+            SELECT
+                pr.ID_Prenotazione,
+                pr.DataPrenotazione,
+                pr.Stato,
+                po.Numero        AS NumeroPostazione,
+                a.Nome           AS NomeAmbiente,
+                f.OraInizio,
+                f.OraFine
+            FROM prenotazione pr
+            JOIN postazione po ON pr.ID_Postazione = po.ID_Postazione
+            JOIN ambiente a    ON po.ID_Ambiente = a.ID_Ambiente
+            JOIN fasciaoraria f ON pr.ID_Fascia = f.ID_Fascia
+            WHERE pr.ID_Utente = ?
+            ORDER BY pr.DataPrenotazione DESC
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
-            ResultSet rs = ps.executeQuery();
 
-            while (rs.next()) {
-                Prenotazione p = new Prenotazione();
-                p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
-                p.setData(rs.getDate("DataPrenotazione"));
-                p.setStato(rs.getString("Stato"));
-                //p.setIdUtente(rs.getLong("ID_Utente"));
-                p.setNumeroPostazione(rs.getString("NumeroPostazione"));
-                p.setNomeAmbiente(rs.getString("NomeAmbiente"));
-                p.setOrarioInizio(rs.getTime("OraInizio"));
-                p.setOrarioFine(rs.getTime("OraFine"));
-                lista.add(p);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Prenotazione p = new Prenotazione();
+                    p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
+                    p.setData(rs.getDate("DataPrenotazione"));
+                    p.setStato(rs.getString("Stato"));
+                    p.setNumeroPostazione(rs.getString("NumeroPostazione"));
+                    p.setNomeAmbiente(rs.getString("NomeAmbiente"));
+                    p.setOrarioInizio(rs.getTime("OraInizio"));
+                    p.setOrarioFine(rs.getTime("OraFine"));
+
+                    lista.add(p);
+                }
             }
         }
         return lista;
     }
 
-    public List<Prenotazione> doRetrieveAll() throws Exception {
+    /* ==========================================================
+       RETRIEVE TUTTE LE PRENOTAZIONI (SUPERVISORE)
+       ========================================================== */
+
+    public List<Prenotazione> doRetrieveAll()
+            throws Exception {
+
         List<Prenotazione> lista = new ArrayList<>();
 
-        String sql = "SELECT * FROM prenotazione";
+        String sql = """
+            SELECT
+                pr.ID_Prenotazione,
+                pr.DataPrenotazione,
+                pr.Stato,
+                pr.ID_Utente,
+                pr.ID_Postazione,
+                pr.ID_Fascia,
+                a.Nome AS NomeAmbiente
+            FROM prenotazione pr
+            JOIN postazione po ON pr.ID_Postazione = po.ID_Postazione
+            JOIN ambiente a    ON po.ID_Ambiente = a.ID_Ambiente
+            ORDER BY pr.DataPrenotazione DESC
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -82,21 +154,35 @@ public class PrenotazioneDAO {
                 p.setIdUtente(rs.getLong("ID_Utente"));
                 p.setIdPostazione(rs.getLong("ID_Postazione"));
                 p.setIdFasciaOraria(rs.getLong("ID_Fascia"));
+                p.setNomeAmbiente(rs.getString("NomeAmbiente"));
+
                 lista.add(p);
             }
         }
         return lista;
     }
 
-    public void doDelete(long idPrenotazione) throws Exception {
-        String sql = "DELETE FROM prenotazione WHERE ID_Prenotazione = ?";
+    /* ==========================================================
+       CANCELLAZIONE SICURA PRENOTAZIONE
+       ========================================================== */
+
+    public boolean doDelete(long idPrenotazione, long idUtente)
+            throws Exception {
+
+        String sql = """
+            DELETE FROM prenotazione
+            WHERE ID_Prenotazione = ?
+              AND ID_Utente = ?
+              AND Stato = 'ATTIVA'
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPrenotazione);
-            ps.executeUpdate();
+            ps.setLong(2, idUtente);
+
+            return ps.executeUpdate() > 0;
         }
     }
-
 }

@@ -47,14 +47,20 @@ public class TicketController extends HttpServlet {
                 return;
             }
 
-            // Lista ticket utente
-            request.setAttribute(
-                    "listaTicket",
-                    dao.doRetrieveByAutore(utente.getIdUtente())
-            );
+            // Lista ticket (action=list o default)
+            if (action == null || "list".equals(action)) {
+                request.setAttribute(
+                        "listaTicket",
+                        dao.doRetrieveByAutore(utente.getIdUtente())
+                );
 
-            request.getRequestDispatcher("ticket.jsp")
-                    .forward(request, response);
+                request.getRequestDispatcher("ticket.jsp")
+                        .forward(request, response);
+                return;
+            }
+
+            // action non riconosciuta
+            response.sendRedirect("home.jsp");
 
         } catch (Exception e) {
             throw new ServletException(e);

@@ -4,7 +4,6 @@ import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-
 import java.io.IOException;
 
 @WebFilter("/*")
@@ -20,11 +19,11 @@ public class AuthFilter implements Filter {
         String path = request.getServletPath();
         HttpSession session = request.getSession(false);
 
-        System.out.println("Request: " + path);
-
+        // 1. ESCLUSIONI: Risorse e pagine sempre accessibili (anche non loggati)
         if (path.equals("/login.jsp")
                 || path.equals("/register.jsp")
                 || path.equals("/index.jsp")
+                || path.equals("/home.jsp") // Permettiamo sempre l'accesso alla home se loggati
                 || path.startsWith("/assets/")
                 || path.startsWith("/css/")
                 || path.startsWith("/js/")
@@ -40,27 +39,26 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        //Controllo autenticazione
+        // 2. CONTROLLO AUTENTICAZIONE: Se non sei loggato, vai al login
         if (session == null || session.getAttribute("utente") == null) {
-            System.out.println("Accesso BLOCCATO → non autenticato");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        //Controllo autorizzazione
+        // 3. CONTROLLO AUTORIZZAZIONE: Gestione dei ruoli
         Utente utente = (Utente) session.getAttribute("utente");
 
-        // area supervisore
-        if (path.startsWith("/supervisore")) {
+        // Protezione specifica per le cartelle o i controller "Supervisore"
+        if (path.startsWith("/supervisore") || path.contains("Supervisore")) {
             if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
-                System.out.println("Accesso BLOCCATO → ruolo non autorizzato");
+                // Se non sei supervisore, ti mando alla home con l'errore
+                // La home.jsp non ha più il redirect interno, quindi il loop si ferma qui.
                 response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
                 return;
             }
         }
 
-        //accesso consentito
-        System.out.println("Accesso CONSENTITO");
+        // 4. ACCESSO CONSENTITO: Prosegui verso la risorsa richiesta
         chain.doFilter(req, res);
     }
 }
