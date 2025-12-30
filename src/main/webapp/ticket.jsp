@@ -18,10 +18,7 @@
 
     <!-- HEADER PAGINA -->
     <header class="page-header">
-        <h1 class="page-title">I miei Ticket</h1>
-        <p class="page-subtitle">
-            Gestisci le richieste di assistenza inviate.
-        </p>
+        <h1 class="title">I miei Ticket</h1>
     </header>
 
     <!-- CARD -->

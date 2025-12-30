@@ -19,10 +19,7 @@
 
     <!-- HEADER PAGINA -->
     <header class="page-header">
-        <h1 class="page-title">Le mie Prenotazioni</h1>
-        <p class="page-subtitle">
-            Consulta e gestisci le prenotazioni degli spazi comuni.
-        </p>
+        <h1 class="title">Le mie Prenotazioni</h1>
     </header>
 
     <%

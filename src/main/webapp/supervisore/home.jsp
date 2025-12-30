@@ -36,7 +36,6 @@
 <main class="hero">
     <div class="hero-content">
         <h1 class="title">
-            Area <span class="word">Supervisore</span>
             <span class="greek">Pannello di Amministrazione</span>
         </h1>
 

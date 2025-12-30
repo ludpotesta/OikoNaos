@@ -1,6 +1,3 @@
-/* =========================================================
-   VARIABILI
-   ========================================================= */
 :root{
     --bg:#f3f8fc;
     --card:#ffffff;
@@ -35,7 +32,7 @@ body{
     margin:0;
     font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
     color:var(--ink);
-    background:linear-gradient(180deg,var(--bg),#eaf6f6 60%);
+    background: var(--bg);
 }
 
 /* TOPBAR / NAVBAR */
@@ -52,6 +49,8 @@ body{
     border-bottom:1px solid rgba(0,0,0,.06);
 }
 
+
+
 /* BRAND */
 .brand{
     display:flex;
@@ -65,15 +64,15 @@ body{
 }
 
 .brand-name,
-.brand-accent{
-    font-family:'Bryndan Write',cursive;
-    font-weight:400;
-    letter-spacing:.5px;
-    color:var(--ink);
+.brand-accent {
+    font-family: "Playfair Display", serif;
+    font-weight: 600;
+    letter-spacing: .3px;
+    color: var(--ink);
 }
 
 .brand-name{
-    font-size:28px;
+    font-size:20px;
     line-height:1;
 }
 
@@ -212,7 +211,7 @@ body{
 .page-header{ margin-bottom:30px }
 
 .page-title{
-    font-family:'Bryndan Write',cursive;
+    font-family:"Playfair Display",serif;
     font-size:42px;
     margin:0 0 6px;
 }
@@ -931,3 +930,5 @@ body{
         width:200px;
     }
 }
+
+

@@ -6,8 +6,9 @@
     <meta charset="UTF-8">
     <title>Gestione Prenotazioni - OikoNaos</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+
     <style>
-        /* Integrazione stili specifici per la tabella in linea con il tuo main.css */
+        /* Tabella coerente con il design system */
         .table-container {
             background: var(--card);
             border-radius: 18px;
@@ -39,92 +40,106 @@
             border-bottom: 1px solid var(--bg);
             color: var(--ink);
             font-size: 15px;
-        </tr>
-
-        .aesthetic-table tr:hover {
-            background-color: #f2fbfb; /* Richiamo del colore brand molto tenue */
         }
 
-            .id-badge {
-                color: var(--brand);
-                font-weight: 800;
-            }
+        .aesthetic-table tr:hover {
+            background-color: #f2fbfb;
+        }
 
-            .status-pill {
-                background: var(--bg);
-                color: var(--brand-ink);
-                padding: 6px 12px;
-                border-radius: 20px;
-                font-size: 12px;
-                font-weight: 700;
-                display: inline-block;
-            }
+        .id-badge {
+            color: var(--brand);
+            font-weight: 800;
+        }
 
-            .ambiente-text {
-                font-family: 'Bryndan Write', cursive;
-                font-size: 1.2rem;
-                color: var(--ink);
-            }
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 800;
+            display: inline-block;
+        }
+
+        .status-open {
+            background: #fff4e5;
+            color: #b76e00;
+        }
+
+        .status-closed {
+            background: #f1f5f9;
+            color: #475569;
+        }
+
+        .ambiente-text {
+            font-family: 'Bryndan Write', cursive;
+            font-size: 1.1rem;
+            color: var(--ink);
+        }
     </style>
 </head>
 
 <body>
+
 <jsp:include page="/include/header-navbar.jsp" />
 
-<main class="hero" style="display: block; padding-top: 40px;">
-    <div class="hero-content">
-        <h1 class="title">
-            Gestione <span class="word">Prenotazioni</span>
-            <span class="greek">Riepilogo Globale</span>
-        </h1>
-        <p class="tagline">Monitora l'occupazione delle postazioni e lo stato degli ambienti.</p>
+<main class="page">
 
-        <%
-            List<Prenotazione> lista = (List<Prenotazione>) request.getAttribute("listaGlobalePrenotazioni");
-        %>
-
-        <% if (lista == null || lista.isEmpty()) { %>
-        <div class="alert" style="justify-content: center; margin-top: 40px;">
-            Nessuna prenotazione presente nel sistema.
-        </div>
-        <% } else { %>
-
-        <div class="table-container">
-            <table class="aesthetic-table">
-                <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Data</th>
-                    <th>Stato</th>
-                    <th>Utente</th>
-                    <th>Postazione</th>
-                    <th>Ambiente</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% for (Prenotazione p : lista) { %>
-                <tr>
-                    <td class="id-badge">#<%= p.getIdPrenotazione() %></td>
-                    <td><b><%= p.getData() %></b></td>
-                    <td>
-                        <span class="status-pill"><%= p.getStato() %></span>
-                    </td>
-                    <td>ID: <%= p.getIdUtente() %></td>
-                    <td>Postazione <%= p.getIdPostazione() %></td>
-                    <td class="ambiente-text">
-                        <%= (p.getNomeAmbiente() != null) ? p.getNomeAmbiente() : "N/D" %>
-                    </td>
-                </tr>
-                <% } %>
-                </tbody>
-            </table>
-        </div>
-        <% } %>
+    <!-- HEADER PAGINA (stesso stile coinquilino) -->
+    <div class="page-header">
+        <h1 class="title">Gestione Prenotazioni</h1>
+        <p class="page-subtitle">Riepilogo globale</p>
     </div>
+
+    <%
+        List<Prenotazione> lista =
+                (List<Prenotazione>) request.getAttribute("listaGlobalePrenotazioni");
+    %>
+
+    <% if (lista == null || lista.isEmpty()) { %>
+    <div class="alert alert--success">
+        Nessuna prenotazione presente nel sistema.
+    </div>
+    <% } else { %>
+
+    <div class="table-container">
+        <table class="aesthetic-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Data</th>
+                <th>Stato</th>
+                <th>Utente</th>
+                <th>Postazione</th>
+                <th>Ambiente</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for (Prenotazione p : lista) { %>
+            <tr>
+                <td class="id-badge">#<%= p.getIdPrenotazione() %></td>
+                <td><strong><%= p.getData() %></strong></td>
+                <td>
+                    <span class="status-badge status-open"><%= p.getStato() %></span>
+                </td>
+                <td>ID: <%= p.getIdUtente() %></td>
+                <td>Postazione <%= p.getIdPostazione() %></td>
+                <td class="ambiente-text">
+                    <%= (p.getNomeAmbiente() != null)
+                            ? p.getNomeAmbiente()
+                            : "N/D" %>
+                </td>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+
+    <% } %>
+
 </main>
 
 <footer class="footer">
-    &copy; 2025 OikoNaos - Gestione Amministrativa
+    &copy; 2025 OikoNaos – Gestione Amministrativa
 </footer>
+
 </body>
 </html>

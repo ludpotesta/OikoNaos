@@ -35,7 +35,6 @@
             </h1>
             <p class="dashboard-subtitle">
                 Benvenuto nella tua area personale.
-                Da qui puoi gestire le funzionalità della community.
             </p>
         </div>
 
