@@ -8,98 +8,87 @@
     <meta charset="UTF-8">
     <title>Le mie prenotazioni</title>
 
-    <style>
-        table {
-            border-collapse: collapse;
-            width: 70%;
-            margin-top: 20px;
-        }
-        th, td {
-            border: 1px solid #333;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: #f0f0f0;
-        }
-
-        /* MODAL */
-        .modal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0,0,0,0.5);
-            display: none;              /* CHIUSO DI DEFAULT */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal {
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            width: 300px;
-            text-align: center;
-        }
-        .modal button {
-            margin: 5px;
-        }
-    </style>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 
 <body>
 
 <jsp:include page="/include/header-navbar.jsp" />
 
-<h2>Le mie prenotazioni</h2>
+<main class="page">
 
-<%
-    List<Prenotazione> prenotazioni =
-            (List<Prenotazione>) request.getAttribute("listaPrenotazioni");
+    <!-- HEADER PAGINA -->
+    <header class="page-header">
+        <h1 class="page-title">Le mie Prenotazioni</h1>
+        <p class="page-subtitle">
+            Consulta e gestisci le prenotazioni degli spazi comuni.
+        </p>
+    </header>
 
-    if (prenotazioni == null || prenotazioni.isEmpty()) {
-%>
-<p>Non hai prenotazioni attive.</p>
-<%
-} else {
-%>
+    <%
+        List<Prenotazione> prenotazioni =
+                (List<Prenotazione>) request.getAttribute("listaPrenotazioni");
+    %>
 
-<table>
-    <tr>
-        <th>Data</th>
-        <th>Ambiente</th>
-        <th>Postazione</th>
-        <th>Fascia oraria</th>
-        <th>Azioni</th>
-    </tr>
+    <!-- CARD -->
+    <section class="card">
 
-    <% for (Prenotazione p : prenotazioni) { %>
-    <tr>
-        <td><%= p.getData() %></td>
-        <td><%= p.getNomeAmbiente() %></td>
-        <td>Postazione <%= p.getNumeroPostazione() %></td>
-        <td>
-            <%= p.getOrarioInizio().toLocalTime().toString().substring(0,5) %>
-            -
-            <%= p.getOrarioFine().toLocalTime().toString().substring(0,5) %>
-        </td>
-        <td>
-            <!-- IMPORTANTISSIMO: type="button" -->
-            <button type="button"
-                    onclick="openModal(<%= p.getIdPrenotazione() %>)">
-                Annulla
-            </button>
-        </td>
-    </tr>
-    <% } %>
-</table>
+        <% if (prenotazioni == null || prenotazioni.isEmpty()) { %>
 
-<% } %>
+        <p class="empty-state">
+            Non hai prenotazioni attive.
+        </p>
 
-<p>
-    <a href="nuovaPrenotazione.jsp">Effettua una nuova prenotazione</a>
-</p>
+        <% } else { %>
 
-<!-- MODAL CONFERMA -->
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Ambiente</th>
+                    <th>Postazione</th>
+                    <th>Fascia oraria</th>
+                    <th>Azioni</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <% for (Prenotazione p : prenotazioni) { %>
+                <tr>
+                    <td><%= p.getData() %></td>
+                    <td><%= p.getNomeAmbiente() %></td>
+                    <td>Postazione <%= p.getNumeroPostazione() %></td>
+                    <td>
+                        <%= p.getOrarioInizio().toLocalTime().toString().substring(0,5) %>
+                        –
+                        <%= p.getOrarioFine().toLocalTime().toString().substring(0,5) %>
+                    </td>
+                    <td>
+                        <button class="btn ghost"
+                                type="button"
+                                onclick="openModal(<%= p.getIdPrenotazione() %>)">
+                            Annulla
+                        </button>
+                    </td>
+                </tr>
+                <% } %>
+                </tbody>
+            </table>
+        </div>
+
+        <% } %>
+
+        <div class="card-actions">
+            <a href="nuovaPrenotazione.jsp" class="btn primary">
+                Nuova prenotazione
+            </a>
+        </div>
+
+    </section>
+</main>
+
+<!-- MODAL (LOGICA IDENTICA) -->
 <div class="modal-overlay" id="modal">
     <div class="modal">
         <h3>Conferma annullamento</h3>
@@ -111,8 +100,8 @@
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="idPrenotazione" id="idPrenotazione">
 
-            <button type="button" onclick="closeModal()">No</button>
-            <button type="submit">Sì, annulla</button>
+            <button type="button" class="btn ghost" onclick="closeModal()">No</button>
+            <button type="submit" class="btn primary">Sì, annulla</button>
         </form>
     </div>
 </div>
@@ -127,12 +116,9 @@
         document.getElementById("modal").style.display = "none";
     }
 
-    // RETE DI SICUREZZA: chiude sempre il modal al load
     document.addEventListener("DOMContentLoaded", function () {
         const modal = document.getElementById("modal");
-        if (modal) {
-            modal.style.display = "none";
-        }
+        if (modal) modal.style.display = "none";
     });
 </script>
 

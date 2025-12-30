@@ -4,75 +4,112 @@
 <head>
     <meta charset="UTF-8">
     <title>Nuova Prenotazione</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
-
 <body>
 
 <jsp:include page="/include/header-navbar.jsp" />
 
-<h2>Prenota la tua postazione</h2>
+<main class="page">
 
-<%
-    String error = request.getParameter("error");
-    if ("conflitto".equals(error)) {
-%>
-<p style="color:red;">Postazione già occupata in questa fascia oraria.</p>
-<%
-} else if ("data_passata".equals(error)) {
-%>
-<p style="color:red;">Non puoi prenotare una data passata.</p>
-<%
-    }
-%>
+    <!-- HEADER -->
+    <header class="page-header">
+        <h1 class="page-title">Nuova Prenotazione</h1>
+        <p class="page-subtitle">
+            Seleziona data, ambiente e fascia oraria per prenotare una postazione.
+        </p>
+    </header>
 
-<form action="${pageContext.request.contextPath}/PrenotazioneController"
-      method="post">
+    <!-- CARD FORM -->
+    <section class="card form-card">
 
-    <input type="hidden" name="action" value="create">
+        <%-- ERRORI --%>
+        <%
+            String error = request.getParameter("error");
+            if ("conflitto".equals(error)) {
+        %>
+        <div class="alert alert--danger">
+            Postazione già occupata in questa fascia oraria.
+        </div>
+        <%
+        } else if ("data_passata".equals(error)) {
+        %>
+        <div class="alert alert--danger">
+            Non puoi prenotare una data passata.
+        </div>
+        <%
+            }
+        %>
 
-    <!-- DATA -->
-    <label>Data:</label><br>
-    <input type="date"
-           name="data"
-           min="<%= java.time.LocalDate.now() %>"
-           required>
-    <br><br>
+        <form action="${pageContext.request.contextPath}/PrenotazioneController"
+              method="post"
+              class="form">
 
-    <!-- AMBIENTE -->
-    <label>Ambiente:</label><br>
-    <select name="ambiente" required>
-        <option value="">-- Seleziona ambiente --</option>
-        <option value="1">Sala Studio</option>
-        <option value="2">Palestra</option>
-    </select>
-    <br><br>
+            <input type="hidden" name="action" value="create">
 
-    <!-- POSTAZIONE -->
-    <label>Postazione:</label><br>
-    <select name="idPostazione" required>
-        <option value="">-- Seleziona postazione --</option>
-        <option value="1">Postazione 1</option>
-        <option value="2">Postazione 2</option>
-        <option value="3">Postazione 3</option>
-    </select>
-    <br><br>
+            <!-- DATA -->
+            <div class="form-group">
+                <label for="data">Data</label>
+                <input type="date"
+                       id="data"
+                       name="data"
+                       min="<%= java.time.LocalDate.now() %>"
+                       required>
+            </div>
 
-    <!-- FASCIA ORARIA -->
-    <label>Fascia oraria:</label><br>
-    <select name="idFascia" required>
-        <option value="">-- Seleziona fascia oraria --</option>
-        <option value="1">08:00 - 12:00</option>
-        <option value="2">12:00 - 15:00</option>
-        <option value="3">15:00 - 18:00</option>
-    </select>
-    <br><br>
+            <!-- AMBIENTE -->
+            <div class="form-group">
+                <label for="ambiente">Ambiente</label>
+                <select id="ambiente" name="ambiente" required>
+                    <option value="">-- Seleziona ambiente --</option>
+                    <option value="1">Sala Studio</option>
+                    <option value="2">Palestra</option>
+                </select>
+            </div>
 
-    <button type="submit">Conferma prenotazione</button>
-</form>
+            <!-- POSTAZIONE -->
+            <div class="form-group">
+                <label for="idPostazione">Postazione</label>
+                <select id="idPostazione" name="idPostazione" required>
+                    <option value="">-- Seleziona postazione --</option>
+                    <option value="1">Postazione 1</option>
+                    <option value="2">Postazione 2</option>
+                    <option value="3">Postazione 3</option>
+                </select>
+            </div>
 
+            <!-- FASCIA ORARIA -->
+            <div class="form-group">
+                <label for="idFascia">Fascia oraria</label>
+                <select id="idFascia" name="idFascia" required>
+                    <option value="">-- Seleziona fascia oraria --</option>
+                    <option value="1">08:00 - 12:00</option>
+                    <option value="2">12:00 - 15:00</option>
+                    <option value="3">15:00 - 18:00</option>
+                </select>
+            </div>
 
-<p>
-    <a href="${pageContext.request.contextPath}/PrenotazioneController?action=list">
-        Torna alle mie prenotazioni
-    </a>
-</p>
+            <!-- ACTIONS -->
+            <div class="form-actions">
+                <button type="submit" class="btn primary">
+                    Conferma prenotazione
+                </button>
+
+                <a href="${pageContext.request.contextPath}/PrenotazioneController?action=list"
+                   class="btn ghost">
+                    Annulla
+                </a>
+            </div>
+
+        </form>
+
+    </section>
+
+</main>
+
+<footer class="footer">
+    &copy; 2025 OikoNaos - Prenotazioni
+</footer>
+
+</body>
+</html>

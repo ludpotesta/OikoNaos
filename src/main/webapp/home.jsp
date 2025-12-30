@@ -4,8 +4,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>OikoNaos - Home</title>
-    <%-- Includiamo il CSS per lo stile professionale --%>
+    <title>OikoNaos - Area Coinquilino</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 </head>
 <body>
@@ -13,50 +12,93 @@
 <jsp:include page="/include/header-navbar.jsp" />
 
 <%
-    // Recupero dell'utente per personalizzare il saluto
     Utente u = (Utente) session.getAttribute("utente");
 %>
 
-<main class="hero">
-    <div class="hero-content">
-        <%-- Titolo "Aesthetic" con font Bryndan Write sulla classe .word --%>
-        <h1 class="title">
-            Ciao, <span class="word"><%= (u != null) ? u.getNome() : "Ospite" %></span>
-            <span class="greek">Area Coinquilino</span>
-        </h1>
-        <p class="tagline">Benvenuto nella tua area personale. Gestisci i tuoi spazi e le tue segnalazioni.</p>
+<main class="dashboard">
 
-        <%-- CTA: Pulsanti di navigazione pura --%>
-        <div class="cta" style="margin-top: 30px; display: flex; gap: 15px; justify-content: center;">
-            <a href="${pageContext.request.contextPath}/PrenotazioneController" class="btn primary">
-                Le Mie Prenotazioni 📅
-            </a>
+    <!-- HEADER CON MASCOTTE + SALUTO -->
+    <section class="dashboard-header header-with-mascot">
 
-            <%-- Collegamento corretto al Servlet TicketController --%>
-            <a href="${pageContext.request.contextPath}/TicketController" class="btn ghost">
-                I Miei Ticket 🎫
-            </a>
+        <!-- MASCOTTE -->
+        <div class="header-mascot">
+            <img
+                    src="${pageContext.request.contextPath}/assets/ecateMascotte.png"
+                    alt="Mascotte Ecate"
+            />
         </div>
-    </div>
+
+        <!-- TESTO -->
+        <div class="header-text">
+            <h1 class="dashboard-title">
+                Ciao, <%= u.getNome() %>
+            </h1>
+            <p class="dashboard-subtitle">
+                Benvenuto nella tua area personale.
+                Da qui puoi gestire le funzionalità della community.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- GRID DELLE FUNZIONALITÀ -->
+    <section class="dashboard-grid">
+
+        <!-- PRENOTAZIONI -->
+        <a href="${pageContext.request.contextPath}/PrenotazioneController"
+           class="dashboard-card active">
+            <span class="icon">📅</span>
+            <h3>Prenotazioni</h3>
+            <p>Gestisci le tue prenotazioni degli spazi comuni.</p>
+        </a>
+
+        <!-- TICKET -->
+        <a href="${pageContext.request.contextPath}/TicketController"
+           class="dashboard-card active">
+            <span class="icon">🎫</span>
+            <h3>Ticket</h3>
+            <p>Invia e monitora le richieste di assistenza.</p>
+        </a>
+
+        <!-- PROFILO (NON IMPLEMENTATO) -->
+        <div class="dashboard-card disabled">
+            <span class="icon">👤</span>
+            <h3>Profilo</h3>
+            <p>Gestisci i tuoi dati personali.</p>
+            <span class="badge">Coming soon</span>
+        </div>
+
+        <!-- BACHECA -->
+        <div class="dashboard-card disabled">
+            <span class="icon">📌</span>
+            <h3>Bacheca</h3>
+            <p>Avvisi e comunicazioni della community.</p>
+            <span class="badge">Coming soon</span>
+        </div>
+
+        <!-- SPESE -->
+        <div class="dashboard-card disabled">
+            <span class="icon">💰</span>
+            <h3>Spese</h3>
+            <p>Gestione delle spese condivise.</p>
+            <span class="badge">Coming soon</span>
+        </div>
+
+        <!-- RISORSE -->
+        <div class="dashboard-card disabled">
+            <span class="icon">🧰</span>
+            <h3>Risorse</h3>
+            <p>Strumenti e risorse comuni.</p>
+            <span class="badge">Coming soon</span>
+        </div>
+
+    </section>
+
 </main>
 
 <footer class="footer">
-    &copy; 2025 OikoNaos - Community Space
+    &copy; 2025 OikoNaos - Area Coinquilino
 </footer>
-
-<%-- Inseriamo qui lo script corretto per evitare i pop-up involontari --%>
-<script>
-    // Selettore specifico: la modale apparirà SOLO per pulsanti con classe 'btn-annulla'
-    // ignorando i normali pulsanti '.btn' della Home.
-    document.querySelectorAll('.btn-annulla').forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault(); // Impedisce l'azione immediata
-
-            // Codice per mostrare la tua modale (es: modal.style.display = 'block')
-            mostraModaleConferma();
-        });
-    });
-</script>
 
 </body>
 </html>

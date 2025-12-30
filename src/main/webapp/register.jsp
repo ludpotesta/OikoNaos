@@ -8,82 +8,70 @@
 
     <link rel="icon" href="${pageContext.request.contextPath}/assets/favicon.svg">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
 </head>
 <body>
 
-<!-- Navbar -->
 <jsp:include page="/include/header-navbar.jsp" />
 
-<main class="hero">
+<main class="login-page">
 
-    <%-- Eventuale messaggio di errore --%>
-        <%
-            String error = request.getParameter("error");
-            if ("email".equals(error)) {
-        %>
-        <p class="alert">
-            Questa email è già registrata. Usa un’altra email o accedi.
-        </p>
-        <%
-        } else if ("generico".equals(error)) {
-        %>
-        <p class="alert">
-            Errore durante la registrazione. Verifica i dati inseriti.
-        </p>
-        <%
-            }
-        %>
+    <div class="login-wrapper">
 
-        <form action="${pageContext.request.contextPath}/RegistrazioneController"
-              method="post"
-              class="form-section">
+        <img src="${pageContext.request.contextPath}/assets/oikonaosLogo.png"
+             alt="OikoNaos"
+             class="login-logo">
 
-        <h2>Registrati a OikoNaos</h2>
+        <section class="login-card">
 
-        <div>
-            <label for="nome">Nome:</label>
-            <input id="nome" type="text" name="nome" required class="form-input">
-        </div>
+            <h2>Registrati a OikoNaos</h2>
 
-        <div>
-            <label for="cognome">Cognome:</label>
-            <input id="cognome" type="text" name="cognome" required class="form-input">
-        </div>
+            <%-- Errori --%>
+            <%
+                String error = request.getParameter("error");
+                if ("email".equals(error)) {
+            %>
+            <div class="login-error">
+                Questa email è già registrata
+            </div>
+            <%
+            } else if ("codice".equals(error)) {
+            %>
+            <div class="login-error">
+                Codice identificativo non valido
+            </div>
+            <%
+            } else if ("generico".equals(error)) {
+            %>
+            <div class="login-error">
+                Errore durante la registrazione
+            </div>
+            <%
+                }
+            %>
 
-        <div>
-            <label for="email">Email:</label>
-            <input id="email" type="email" name="email" required class="form-input">
-        </div>
+            <form action="${pageContext.request.contextPath}/RegistrazioneController"
+                  method="post">
 
-        <div>
-            <label for="telefono">Numero di telefono:</label>
-            <input id="telefono" type="tel" name="telefono" required class="form-input">
-        </div>
+                <input type="text" name="nome" placeholder="Nome" required>
+                <input type="text" name="cognome" placeholder="Cognome" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="tel" name="telefono" placeholder="Numero di telefono" required>
+                <input type="text" name="username" placeholder="Username" required>
+                <input type="password" name="password" placeholder="Password" required>
+                <input type="text" name="codiceID" placeholder="Codice identificativo" required>
 
-        <div>
-            <label for="username">Username:</label>
-            <input id="username" type="text" name="username" required class="form-input">
-        </div>
+                <button type="submit">
+                    Registrati
+                </button>
 
-        <p style="font-size: 0.9em; color: #555;">
-            Immetti una password e il codice ricevuto alla stipulazione del contratto.
-        </p>
+            </form>
 
-        <div>
-            <label for="password">Password:</label>
-            <input id="password" type="password" name="password" required class="form-input">
-        </div>
+        </section>
 
-        <div>
-            <label for="codiceID">Codice identificativo:</label>
-            <input id="codiceID" type="text" name="codiceID" required class="form-input">
-        </div>
-
-        <input type="submit" value="Registrati" class="form-submit">
-    </form>
+    </div>
 
 </main>
 
@@ -93,4 +81,3 @@
 
 </body>
 </html>
-
