@@ -34,23 +34,24 @@
                 if ("email".equals(error)) {
             %>
             <div class="login-error">
-                Questa email è già registrata
+                Questa email è già registrata.
             </div>
             <%
             } else if ("codice".equals(error)) {
             %>
             <div class="login-error">
-                Codice identificativo non valido
+                Codice identificativo non valido.
             </div>
             <%
-            } else if ("generico".equals(error)) {
+                } else if ("generico".equals(error)) {
             %>
             <div class="login-error">
-                Errore durante la registrazione
+                Errore durante la registrazione.
             </div>
             <%
                 }
             %>
+
 
             <form action="${pageContext.request.contextPath}/RegistrazioneController"
                   method="post">

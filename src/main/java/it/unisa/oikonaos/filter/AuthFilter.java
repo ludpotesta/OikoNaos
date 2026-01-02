@@ -23,7 +23,6 @@ public class AuthFilter implements Filter {
         if (path.equals("/login.jsp")
                 || path.equals("/register.jsp")
                 || path.equals("/index.jsp")
-                || path.equals("/home.jsp") // Permettiamo sempre l'accesso alla home se loggati
                 || path.startsWith("/assets/")
                 || path.startsWith("/css/")
                 || path.startsWith("/js/")
@@ -41,7 +40,7 @@ public class AuthFilter implements Filter {
 
         // 2. CONTROLLO AUTENTICAZIONE: Se non sei loggato, vai al login
         if (session == null || session.getAttribute("utente") == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            response.sendRedirect(request.getContextPath() + "/login.jsp?error=session");
             return;
         }
 

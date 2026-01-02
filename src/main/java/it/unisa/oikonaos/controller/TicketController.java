@@ -26,12 +26,15 @@ public class TicketController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Utente utente = (session != null)
-                ? (Utente) session.getAttribute("utente")
-                : null;
+        Utente utente = (session != null) ? (Utente) session.getAttribute("utente") : null;
 
         if (utente == null) {
             response.sendRedirect("login.jsp");
+            return;
+        }
+
+        if (!"COINQUILINO".equalsIgnoreCase(utente.getRuolo())) {
+            response.sendRedirect(request.getContextPath() + "/home.jsp?error=permessi");
             return;
         }
 

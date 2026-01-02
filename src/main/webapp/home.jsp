@@ -13,6 +13,14 @@
 
 <%
     Utente u = (Utente) session.getAttribute("utente");
+    String errore = request.getParameter("error");
+    if ("ruolo".equals(errore)) {
+%>
+<script>
+    alert("Accesso negato: non hai i permessi per visualizzare questa pagina.");
+</script>
+<%
+    }
 %>
 
 <main class="dashboard">
@@ -67,10 +75,10 @@
             <span class="badge">Coming soon</span>
         </div>
 
-        <!-- BACHECA -->
+        <!-- BACHECA EVENTI -->
         <div class="dashboard-card disabled">
             <span class="icon">📌</span>
-            <h3>Bacheca</h3>
+            <h3>Bacheca Eventi</h3>
             <p>Avvisi e comunicazioni della community.</p>
             <span class="badge">Coming soon</span>
         </div>
@@ -94,7 +102,7 @@
     </section>
 
 </main>
-
+eweqep
 <footer class="footer">
     &copy; 2025 OikoNaos - Area Coinquilino
 </footer>

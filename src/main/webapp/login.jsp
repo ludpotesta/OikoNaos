@@ -16,6 +16,22 @@
 <body>
 
 <jsp:include page="/include/header-navbar.jsp" />
+<%
+    String errore = request.getParameter("error");
+    if ("login".equals(errore)) {
+%>
+<script>
+    alert("Accesso negato: non hai i permessi per visualizzare questa pagina.");
+</script>
+<%
+    } else if ("session".equals(errore)) {
+%>
+<script>
+    alert("Accesso negato: non sei loggato, accedi o registrati per accedere.");
+</script>
+<%
+    }
+%>
 
 <main class="login-page">
 
@@ -31,15 +47,22 @@
 
             <% if ("credenziali".equals(request.getParameter("error"))) { %>
             <div class="login-error">
-                Username o password errati
+                Username o password errati.
             </div>
-            <% } %>
-
-            <% if ("generico".equals(request.getParameter("error"))) { %>
+            <%
+            } else if ("seesion".equals(request.getParameter("error"))) {
+            %>
+            <div class="login-error">
+                Non sei loggato, accedi per continuare.
+            </div>
+            <%
+            } if ("generico".equals(request.getParameter("error"))) {
+            %>
             <div class="login-error">
                 Errore di sistema. Riprova più tardi.
             </div>
-            <% } %>
+            <% } %>%>
+
 
             <form action="${pageContext.request.contextPath}/AutenticazioneController"
                   method="post">
