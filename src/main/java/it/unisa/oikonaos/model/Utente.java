@@ -7,6 +7,7 @@ public class Utente implements Serializable {
     private String nome;
     private String cognome;
     private String email;
+    private String telefono;
     private String ruolo;
 
     // Costruttore vuoto (OBBLIGATORIO)
@@ -44,6 +45,10 @@ public class Utente implements Serializable {
     public void setEmail(String email) {
         this.email = email;
     }
+
+    public String getTelefono() {  return telefono; }
+
+    public void setTelefono(String telefono) { this.telefono = telefono; }
 
     public String getRuolo() {
         return ruolo;

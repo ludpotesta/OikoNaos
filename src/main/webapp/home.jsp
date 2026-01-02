@@ -102,7 +102,6 @@
     </section>
 
 </main>
-eweqep
 <footer class="footer">
     &copy; 2025 OikoNaos - Area Coinquilino
 </footer>
