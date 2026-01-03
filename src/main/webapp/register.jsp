@@ -42,6 +42,13 @@
             <div class="login-error">
                 Codice identificativo non valido.
             </div>
+
+            <%
+            } else if ("username".equals(error)) {
+            %>
+            <div class="login-error">
+                L'username inserito è già stato usato, inserisci un nuovo username.
+            </div>
             <%
                 } else if ("generico".equals(error)) {
             %>

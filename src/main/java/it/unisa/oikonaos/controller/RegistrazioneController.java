@@ -1,6 +1,8 @@
 package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.UserDAO;
+import it.unisa.oikonaos.dao.CredenzialiDAO;
+import it.unisa.oikonaos.model.Credenziali;
 import it.unisa.oikonaos.model.Utente;
 
 import jakarta.servlet.ServletException;
@@ -42,6 +44,12 @@ public class RegistrazioneController extends HttpServlet {
 
         try {
             UserDAO userDAO = new UserDAO();
+            CredenzialiDAO credenzialiDAO = new CredenzialiDAO();
+
+            if (credenzialiDAO.usernameEsistente(username)){
+                System.out.println("Username gia in uso");
+                response.sendRedirect(request.getContextPath() + "/register.jsp?error=username");
+            }
 
             // Registrazione
             userDAO.registerUser(nome, cognome, email, telefono, username, password, codice);
@@ -55,15 +63,12 @@ public class RegistrazioneController extends HttpServlet {
             System.out.println("Utente registrato e loggato: " + utente.getNome());
 
             // Redirect post-registrazione
-            response.sendRedirect(request.getContextPath() + "/login.jsp?msg=registrato");
+            response.sendRedirect(request.getContextPath() + "/home.jsp?msg=registrato");
 
         } catch (Exception e) {
             e.printStackTrace();
 
             String errorMessage = URLEncoder.encode(e.getMessage(), "UTF-8");
-            response.sendRedirect(
-                    request.getContextPath() + "/register.jsp?error=" + errorMessage
-            );
         }
     }
 }
