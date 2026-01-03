@@ -19,4 +19,5 @@ public class Credenziali {
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
 
     public long getIdUtente() { return idUtente; }
+    public void setIdUtente(long idUtente) { this.idUtente = idUtente; }
 }

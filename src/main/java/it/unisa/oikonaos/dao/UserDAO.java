@@ -136,4 +136,21 @@ public class UserDAO {
             return u;
         }
     }
+        //MODIFICA DEL PROFILO
+    public void updateProfilo(Utente u) throws Exception {
+        String sql = "UPDATE Utente SET Nome = ?, Cognome = ?, Email = ?, Telefono = ? WHERE ID_Utente = ? ";
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, u.getNome());
+            ps.setString(2, u.getCognome());
+            ps.setString(3, u.getEmail());
+            ps.setString(4, u.getTelefono());
+            ps.setLong(5, u.getIdUtente());
+
+            ps.executeUpdate();
+        }
+    }
+
 }

@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="it.unisa.oikonaos.model.Utente" %>
+<%@ page import="it.unisa.oikonaos.dao.CredenzialiDAO" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -14,7 +15,8 @@
 <%
 
     Utente u = (Utente) session.getAttribute("utente");
-
+    CredenzialiDAO credDAO = new CredenzialiDAO();
+    String username = credDAO.getUsernameByUtente(u.getIdUtente());
 
 %>
 
@@ -46,7 +48,7 @@
     <!-- GRID DELLE FUNZIONALITÀ -->
     <section class="dashboard-grid">
 
-        <form action="ProfiloController" method="post" class="dashboard-card">
+        <form action="ModificaDatiController" method="post" class="dashboard-card">
 
             <input type="hidden" name="action" value="update">
 
@@ -62,17 +64,29 @@
             <label>Numero di Telefono</label>
             <input type="tel" name="telefono" value="<%= u.getTelefono()%>"><br>
 
-            <label>Nuovo username</label>
-            <input type="text" name="newUsername"><br>
-
-            <label>Nuova password</label>
-            <input type="password" name="newPassword"><br>
-
-            <label>Password attuale</label>
-            <input type="password" name="currentPassword" required><br>
-
             <button type="submit">Salva modifiche</button>
         </form>
+
+        <form action="ModificaCredenzialiController" method="post" class="dashboard-card">
+
+            <label>Username attuale: <%= username %></label><br>
+            <label>Nuovo username:</label>
+            <input type="text" name="nuovoUsername"><br>
+
+            <hr>
+
+            <label>Password attuale</label>
+            <input type="password" name="passwordAttuale"><br>
+
+            <label>Nuova password</label>
+            <input type="password" name="nuovaPassword"><br>
+
+            <label>Conferma nuova password</label>
+            <input type="password" name="confermaPassword"><br>
+
+            <button type="submit">Aggiorna credenziali</button>
+        </form>
+
 
     </section>
 

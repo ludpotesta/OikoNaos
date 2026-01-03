@@ -68,12 +68,12 @@
         </a>
 
         <!-- PROFILO (NON IMPLEMENTATO) -->
-        <div class="dashboard-card disabled">
+        <a href="${pageContext.request.contextPath}/ModificaDatiController"
+           class="dashboard-card active">
             <span class="icon">👤</span>
             <h3>Profilo</h3>
             <p>Gestisci i tuoi dati personali.</p>
-            <span class="badge">Coming soon</span>
-        </div>
+        </a>
 
         <!-- BACHECA EVENTI -->
         <div class="dashboard-card disabled">
