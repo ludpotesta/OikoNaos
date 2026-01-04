@@ -22,71 +22,79 @@
 
 <main class="dashboard">
 
-    <!-- HEADER CON MASCOTTE + SALUTO -->
-    <section class="dashboard-header header-with-mascot">
+    <h1 class="page-title">Il mio Profilo</h1>
 
-        <!-- MASCOTTE -->
-        <div class="header-mascot">
-            <img
-                    src="${pageContext.request.contextPath}/assets/ecateMascotte.png"
-                    alt="Mascotte Ecate"
-            />
-        </div>
+    <section class="dashboard-card">
 
-        <!-- TESTO -->
-        <div class="header-text">
-            <h1 class="dashboard-title">
-                Ciao, <%= u.getNome() %>
-            </h1>
-            <p class="dashboard-subtitle">
-                Da qui puoi cambiare i tuoi dati personali.
-            </p>
-        </div>
+        <!-- SEZIONE DATI PERSONALI -->
+        <h2 class="section-title">Dati personali</h2>
 
-    </section>
-
-    <!-- GRID DELLE FUNZIONALITÀ -->
-    <section class="dashboard-grid">
-
-        <form action="ModificaDatiController" method="post" class="dashboard-card">
+        <form action="ModificaDatiController" method="post">
 
             <input type="hidden" name="action" value="update">
 
-            <label>Nome</label>
-            <input type="text" name="nome" value="<%= u.getNome() %>"><br>
+            <div class="form-group">
+                <label>Nome</label>
+                <input type="text" class="form-input" name="nome" value="<%= u.getNome() %>">
+            </div>
 
-            <label>Cognome</label>
-            <input type="text" name="cognome" value="<%= u.getCognome() %>"><br>
+            <div class="form-group">
+                <label>Cognome</label>
+                <input type="text" class="form-input" name="cognome" value="<%= u.getCognome() %>">
+            </div>
 
-            <label>Email</label>
-            <input type="email" name="email" value="<%= u.getEmail() %>"><br>
+            <div class="form-group">
+                <label>Email</label>
+                <input type="email" name="email" class="form-input"
+                       value="<%= u.getEmail() %>">
+            </div>
 
-            <label>Numero di Telefono</label>
-            <input type="tel" name="telefono" value="<%= u.getTelefono()%>"><br>
+            <div class="form-group">
+                <label>Numero di telefono</label>
+                <input type="tel" name="telefono" class="form-input"
+                       value="<%= u.getTelefono() %>">
+            </div>
 
-            <button type="submit">Salva modifiche</button>
+            <button type="submit" class="btn primary">
+                Salva modifiche
+            </button>
         </form>
 
-        <form action="ModificaCredenzialiController" method="post" class="dashboard-card">
+        <hr>
 
-            <label>Username attuale: <%= username %></label><br>
-            <label>Nuovo username:</label>
-            <input type="text" name="nuovoUsername"><br>
+        <!-- SEZIONE CREDENZIALI -->
+        <h2 class="section-title">Credenziali di accesso</h2>
 
-            <hr>
+        <p class="info-text">
+            Username attuale: <strong><%= username %></strong>
+        </p>
 
-            <label>Password attuale</label>
-            <input type="password" name="passwordAttuale"><br>
+        <form action="ModificaCredenzialiController" method="post">
 
-            <label>Nuova password</label>
-            <input type="password" name="nuovaPassword"><br>
+            <div class="form-group">
+                <label>Nuovo username</label>
+                <input type="text" name="nuovoUsername" class="form-input">
+            </div>
 
-            <label>Conferma nuova password</label>
-            <input type="password" name="confermaPassword"><br>
+            <div class="form-group">
+                <label>Password attuale</label>
+                <input type="password" name="passwordAttuale" class="form-input">
+            </div>
 
-            <button type="submit">Aggiorna credenziali</button>
+            <div class="form-group">
+                <label>Nuova password</label>
+                <input type="password" name="nuovaPassword" class="form-input">
+            </div>
+
+            <div class="form-group">
+                <label>Conferma nuova password</label>
+                <input type="password" name="confermaPassword" class="form-input">
+            </div>
+
+            <button type="submit" class="btn primary">
+                Aggiorna credenziali
+            </button>
         </form>
-
 
     </section>
 

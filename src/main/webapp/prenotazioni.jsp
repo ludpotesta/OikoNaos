@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
+<%@ page import="java.time.LocalDate" %>
 <%@ page import="it.unisa.oikonaos.model.Prenotazione" %>
 
 <!DOCTYPE html>
@@ -17,7 +18,6 @@
 
 <main class="page">
 
-    <!-- HEADER PAGINA -->
     <header class="page-header">
         <h1 class="title">Le mie Prenotazioni</h1>
     </header>
@@ -25,9 +25,9 @@
     <%
         List<Prenotazione> prenotazioni =
                 (List<Prenotazione>) request.getAttribute("listaPrenotazioni");
+        LocalDate oggi = LocalDate.now();
     %>
 
-    <!-- CARD -->
     <section class="card">
 
         <% if (prenotazioni == null || prenotazioni.isEmpty()) { %>
@@ -51,9 +51,11 @@
                 </thead>
 
                 <tbody>
-                <% for (Prenotazione p : prenotazioni) { %>
+                <% for (Prenotazione p : prenotazioni) {
+                    LocalDate dataPrenotazione = p.getData().toLocalDate();
+                %>
                 <tr>
-                    <td><%= p.getData() %></td>
+                    <td><%= dataPrenotazione %></td>
                     <td><%= p.getNomeAmbiente() %></td>
                     <td>Postazione <%= p.getNumeroPostazione() %></td>
                     <td>
@@ -62,11 +64,15 @@
                         <%= p.getOrarioFine().toLocalTime().toString().substring(0,5) %>
                     </td>
                     <td>
+                        <% if (!dataPrenotazione.isBefore(oggi)) { %>
                         <button class="btn ghost"
                                 type="button"
                                 onclick="openModal(<%= p.getIdPrenotazione() %>)">
                             Annulla
                         </button>
+                        <% } else { %>
+                        <span class="text-muted">Non annullabile</span>
+                        <% } %>
                     </td>
                 </tr>
                 <% } %>
@@ -85,7 +91,7 @@
     </section>
 </main>
 
-<!-- MODAL (LOGICA IDENTICA) -->
+<!-- MODAL CONFERMA ANNULLAMENTO -->
 <div class="modal-overlay" id="modal">
     <div class="modal">
         <h3>Conferma annullamento</h3>
@@ -97,8 +103,12 @@
             <input type="hidden" name="action" value="delete">
             <input type="hidden" name="idPrenotazione" id="idPrenotazione">
 
-            <button type="button" class="btn ghost" onclick="closeModal()">No</button>
-            <button type="submit" class="btn primary">Sì, annulla</button>
+            <button type="button" class="btn ghost" onclick="closeModal()">
+                No
+            </button>
+            <button type="submit" class="btn primary">
+                Sì, annulla
+            </button>
         </form>
     </div>
 </div>

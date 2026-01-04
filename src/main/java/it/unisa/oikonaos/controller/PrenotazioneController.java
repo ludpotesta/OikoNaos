@@ -74,9 +74,27 @@ public class PrenotazioneController extends HttpServlet {
                 long idPrenotazione =
                         Long.parseLong(request.getParameter("idPrenotazione"));
 
+                Prenotazione prenotazione = dao.doRetrieveById(idPrenotazione);
+
+                if (prenotazione == null ||
+                        prenotazione.getIdUtente() != u.getIdUtente()) {
+
+                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
+                    return;
+                }
+
+                Date oggi = Date.valueOf(java.time.LocalDate.now());
+
+                if (prenotazione.getData().before(oggi)) {
+                    response.sendError(
+                            HttpServletResponse.SC_FORBIDDEN,
+                            "Impossibile annullare una prenotazione passata"
+                    );
+                    return;
+                }
+
                 dao.doDelete(idPrenotazione, u.getIdUtente());
 
-                // redirect con azione esplicita
                 response.sendRedirect(
                         request.getContextPath() +
                                 "/PrenotazioneController?action=list"

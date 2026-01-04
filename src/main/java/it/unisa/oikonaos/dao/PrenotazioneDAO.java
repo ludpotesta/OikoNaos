@@ -163,6 +163,42 @@ public class PrenotazioneDAO {
     }
 
     /* ==========================================================
+   RETRIEVE PRENOTAZIONE PER ID (CONTROLLO SICUREZZA)
+   ========================================================== */
+
+    public Prenotazione doRetrieveById(long idPrenotazione)
+            throws Exception {
+
+        String sql = """
+        SELECT
+            ID_Prenotazione,
+            DataPrenotazione,
+            Stato,
+            ID_Utente
+        FROM prenotazione
+        WHERE ID_Prenotazione = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idPrenotazione);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Prenotazione p = new Prenotazione();
+                    p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
+                    p.setData(rs.getDate("DataPrenotazione"));
+                    p.setStato(rs.getString("Stato"));
+                    p.setIdUtente(rs.getLong("ID_Utente"));
+                    return p;
+                }
+            }
+        }
+        return null;
+    }
+
+    /* ==========================================================
        CANCELLAZIONE SICURA PRENOTAZIONE
        ========================================================== */
 

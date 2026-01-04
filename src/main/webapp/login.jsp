@@ -61,7 +61,7 @@
             <div class="login-error">
                 Errore di sistema. Riprova più tardi.
             </div>
-            <% } %>%>
+            <% } %>
 
 
             <form action="${pageContext.request.contextPath}/AutenticazioneController"
