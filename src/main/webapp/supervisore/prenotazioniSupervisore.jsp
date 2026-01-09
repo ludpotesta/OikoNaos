@@ -70,8 +70,8 @@
         }
 
         .ambiente-text {
-            font-family: 'Bryndan Write', cursive;
-            font-size: 1.1rem;
+            font-family: inherit;
+            font-size: 15px;
             color: var(--ink);
         }
     </style>

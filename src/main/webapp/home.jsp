@@ -84,12 +84,12 @@
         </div>
 
         <!-- SPESE -->
-        <div class="dashboard-card disabled">
+        <a href="${pageContext.request.contextPath}/SpeseController"
+           class="dashboard-card active">
             <span class="icon">💰</span>
             <h3>Spese</h3>
             <p>Gestione delle spese condivise.</p>
-            <span class="badge">Coming soon</span>
-        </div>
+        </a>
 
         <!-- RISORSE -->
         <div class="dashboard-card disabled">
