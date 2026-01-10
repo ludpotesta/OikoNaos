@@ -40,7 +40,7 @@ Il progetto nasce come lavoro universitario per il corso di **Ingegneria del Sof
 - `src/` → codice Java (Servlet, DAO, Bean)
 - `webapp/` → pagine JSP, immagini, CSS
 - `target/` → WAR generato da Maven
-- `OikoNaos.sql` → dump del database
+- `OikoNaos_DB.sql` → dump del database
 
 ---
 
