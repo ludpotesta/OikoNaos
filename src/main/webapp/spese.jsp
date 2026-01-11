@@ -25,72 +25,73 @@
 
     <h1 class="page-title">Le mie spese</h1>
 
-    <section class="table-container">
+    <section class="card">
 
-        <table class="aesthetic-table">
-            <thead>
-            <tr>
-                <th>Periodo</th>
-                <th>Importo</th>
-                <th>Stato</th>
-                <th>Azione</th>
-            </tr>
-            </thead>
+        <div class="table-wrapper">
+            <table class="data-table">
+                <thead>
+                <tr>
+                    <th>Periodo</th>
+                    <th>Importo</th>
+                    <th>Stato</th>
+                    <th>Azione</th>
+                </tr>
+                </thead>
 
-            <tbody>
-            <%
-                if (pagamenti != null && !pagamenti.isEmpty()) {
-                    for (Pagamento p : pagamenti) {
-            %>
-            <tr>
-                <td><%= p.getPeriodo() %></td>
+                <tbody>
+                <%
+                    if (pagamenti != null && !pagamenti.isEmpty()) {
+                        for (Pagamento p : pagamenti) {
+                %>
+                <tr>
+                    <td><%= p.getPeriodo() %></td>
 
-                <td class="amount">
-                    € <%= p.getImportoPagato() %>
-                </td>
+                    <td><strong>€ <%= p.getImportoPagato() %></strong></td>
 
-                <td>
-                    <% if (p.isPagato()) { %>
-                    <span class="status-badge paid">Pagato</span>
-                    <% } else { %>
-                    <span class="status-badge pending">Da pagare</span>
-                    <% } %>
-                </td>
+                    <td>
+                        <% if (p.isPagato()) { %>
+                        <span class="status status-paid">PAGATA</span>
+                        <% } else if (p.isScaduta()) { %>
+                        <span class="status status-expired">SCADUTA</span>
+                        <% } else { %>
+                        <span class="status status-pending">DA PAGARE</span>
+                        <% } %>
+                    </td>
 
-                <td>
-                    <% if (!p.isPagato()) { %>
-                    <form method="post"
-                          action="${pageContext.request.contextPath}/SpeseController"
-                          style="display:inline;">
-                        <input type="hidden" name="action" value="pay">
-                        <input type="hidden" name="idPagamento"
-                               value="<%= p.getIdPagamento() %>">
-                        <button type="submit" class="btn-primary">
-                            Paga ora
-                        </button>
-                    </form>
-                    <% } else { %>
-                    <a href="${pageContext.request.contextPath}/RicevutaController?idPagamento=<%= p.getIdPagamento() %>"
-                       class="btn-secondary">
-                        Ricevuta
-                    </a>
-                    <% } %>
-                </td>
-            </tr>
-            <%
-                }
-            } else {
-            %>
-            <tr>
-                <td colspan="4" class="empty-row">
-                    Nessuna spesa disponibile
-                </td>
-            </tr>
-            <%
-                }
-            %>
-            </tbody>
-        </table>
+                    <td>
+                        <% if (!p.isPagato()) { %>
+                        <form method="get"
+                              action="${pageContext.request.contextPath}/SpeseController"
+                              style="display:inline;">
+
+                            <input type="hidden" name="action" value="confirm">
+                            <input type="hidden" name="idPagamento"
+                                   value="<%= p.getIdPagamento() %>">
+
+                            <button type="submit" class="btn ghost">
+                                Paga
+                            </button>
+                        </form>
+                        <% } else { %>
+                        –
+                        <% } %>
+                    </td>
+                </tr>
+                <%
+                    }
+                } else {
+                %>
+                <tr>
+                    <td colspan="4" class="empty-state">
+                        Nessuna spesa disponibile
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+                </tbody>
+            </table>
+        </div>
 
     </section>
 </main>

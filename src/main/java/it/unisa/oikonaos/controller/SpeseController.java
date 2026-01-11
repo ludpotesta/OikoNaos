@@ -22,6 +22,20 @@ public class SpeseController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String action = request.getParameter("action");
+
+        if ("confirm".equals(action)) {
+            long idPagamento = Long.parseLong(request.getParameter("idPagamento"));
+
+            Pagamento pagamento =
+                    new PagamentoDAO().getPagamentoById(idPagamento);
+
+            request.setAttribute("pagamento", pagamento);
+            request.getRequestDispatcher("/paga-spesa.jsp")
+                    .forward(request, response);
+            return;
+        }
+
         HttpSession session = request.getSession(false);
         Utente utente = (Utente) session.getAttribute("utente");
 
@@ -53,9 +67,12 @@ public class SpeseController extends HttpServlet {
 
         if ("pay".equals(action)) {
             long idPagamento = Long.parseLong(request.getParameter("idPagamento"));
-            new PagamentoDAO().registraPagamentoOnline(idPagamento);
+
+            String metodo =
+                    request.getParameter("metodo");
+            new PagamentoDAO().registraPagamentoOnline(idPagamento, metodo);
         }
 
-        response.sendRedirect(request.getContextPath() + "/spese");
+        response.sendRedirect(request.getContextPath() + "/SpeseController");
     }
 }

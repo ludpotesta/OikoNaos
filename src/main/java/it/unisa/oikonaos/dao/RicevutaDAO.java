@@ -11,19 +11,19 @@ import java.util.Optional;
 
 public class RicevutaDAO {
 
-    public void creaRicevuta(long idPagamento, double importo) {
+    public void creaRicevuta(long idPagamento) {
 
         String sql = """
-            INSERT INTO ricevuta (ID_Pagamento, Importo, DataEmissione)
-            VALUES (?, ?, CURRENT_TIMESTAMP)
-        """;
+        INSERT INTO ricevuta (ID_Pagamento, Importo, DataEmissione)
+        SELECT ID_Pagamento, ImportoPagato, CURRENT_TIMESTAMP
+        FROM pagamento
+        WHERE ID_Pagamento = ?
+    """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPagamento);
-            ps.setDouble(2, importo);
-
             ps.executeUpdate();
 
         } catch (Exception e) {

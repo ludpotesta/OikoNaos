@@ -4,6 +4,7 @@ import it.unisa.oikonaos.model.Utente;
 import it.unisa.oikonaos.dao.RisorsaDAO;
 import it.unisa.oikonaos.dao.RichiestaRisorsaDAO;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -16,6 +17,7 @@ import java.io.IOException;
 @WebServlet(name = "RisorsaController", value = "/RisorsaController")
 public class RisorsaController extends HttpServlet {
 
+    @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -33,14 +35,15 @@ public class RisorsaController extends HttpServlet {
             RisorsaDAO risorsaDAO = new RisorsaDAO();
             RichiestaRisorsaDAO richiestaDAO = new RichiestaRisorsaDAO();
 
+            // Test n.2 – consultazione
             request.setAttribute(
                     "risorseDisponibili",
-                    risorsaDAO.doRetrieveDisponibili()
+                    risorsaDAO.findAllDisponibili()
             );
 
             request.setAttribute(
                     "richiesteAttive",
-                    richiestaDAO.doRetrieveByUtente(utente.getIdUtente())
+                    richiestaDAO.findByUtente(utente.getIdUtente())
             );
 
             RequestDispatcher rd =

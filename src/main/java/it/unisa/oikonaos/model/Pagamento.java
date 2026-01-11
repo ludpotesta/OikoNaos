@@ -1,6 +1,7 @@
 package it.unisa.oikonaos.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Pagamento {
@@ -10,6 +11,7 @@ public class Pagamento {
     private long idPagamento;
     private long idUtente;
     private long idTassa;
+    private LocalDate dataScadenza;
 
     private BigDecimal importoPagato;
     private LocalDateTime dataPagamento;
@@ -69,6 +71,14 @@ public class Pagamento {
         this.metodoPagamento = metodoPagamento;
     }
 
+    public LocalDate getDataScadenza() {
+        return dataScadenza;
+    }
+
+    public void setDataScadenza(LocalDate dataScadenza) {
+        this.dataScadenza = dataScadenza;
+    }
+
     /* CAMPI DERIVATI*/
     public boolean isPagato() {
         return dataPagamento != null;
@@ -80,5 +90,12 @@ public class Pagamento {
 
     public void setPeriodo(String periodo) {
         this.periodo = periodo;
+    }
+
+
+    public boolean isScaduta() {
+        return !isPagato()
+                && dataScadenza != null
+                && dataScadenza.isBefore(LocalDate.now());
     }
 }

@@ -436,3 +436,50 @@ body{
     color: #777;
     padding: 24px;
 }
+
+/*STATI SPESE*/
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* 🟢 Pagata */
+.status.status-paid {
+    background-color: #e6f7ee;
+    color: #0f9d58;
+}
+
+/* 🟡 Da pagare (non scaduta) */
+.status.status-pending {
+    background-color: #fff6db;
+    color: #b58b00;
+}
+
+/* 🔴 Scaduta */
+.status.status-expired {
+    background-color: #fdecea;
+    color: #d93025;
+}
+
+/* ==================================================
+   FORCE OVERRIDE STATI SPESE
+   ================================================== */
+
+.data-table .status.status-paid {
+    background-color: #e6f7ee;
+    color: #0f9d58;
+}
+
+.data-table .status.status-pending {
+    background-color: #fff6db;
+    color: #b58b00;
+}
+
+.data-table .status.status-expired {
+    background-color: #fdecea;
+    color: #d93025;
+}
