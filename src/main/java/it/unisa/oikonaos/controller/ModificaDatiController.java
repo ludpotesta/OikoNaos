@@ -35,16 +35,20 @@ public class ModificaDatiController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Utente utenteSessione = (session != null) ? (Utente) session.getAttribute("utente") : null;
+        Utente utenteSessione =
+                (session != null) ? (Utente) session.getAttribute("utente") : null;
+
+        if (utenteSessione == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
 
         try {
-            // 1️⃣ Leggo parametri
             String nome = request.getParameter("nome");
             String cognome = request.getParameter("cognome");
             String email = request.getParameter("email");
             String telefono = request.getParameter("telefono");
 
-            // 2️⃣ Validazioni base
             if (nome == null || cognome == null || email == null ||
                     nome.isBlank() || cognome.isBlank() || email.isBlank()) {
 

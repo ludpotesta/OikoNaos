@@ -42,7 +42,7 @@ public class SpeseController extends HttpServlet {
                     new PagamentoDAO().getPagamentoById(idPagamento);
 
             request.setAttribute("pagamento", pagamento);
-            request.getRequestDispatcher("/paga-spesa.jsp")
+            request.getRequestDispatcher("/pagaSpesa.jsp")
                     .forward(request, response);
             return;
         }

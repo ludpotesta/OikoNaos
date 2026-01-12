@@ -2,7 +2,9 @@ package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.CredenzialiDAO;
 import it.unisa.oikonaos.model.Utente;
+import util.PasswordValidator;
 
+import java.net.URLEncoder;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -11,7 +13,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet(name = "ModificaCredenzialiController", value = "/ModificaCredenzialiController")
@@ -22,6 +23,12 @@ public class ModificaCredenzialiController extends HttpServlet {
 
         HttpSession session = request.getSession(false);
         Utente utente = (session != null) ? (Utente) session.getAttribute("utente") : null;
+
+        if (utente == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+
         long idUtente = utente.getIdUtente();
 
         try {
@@ -60,9 +67,28 @@ public class ModificaCredenzialiController extends HttpServlet {
                     return;
                 }
 
+                CredenzialiDAO credDAO = new CredenzialiDAO();
+                String username = credDAO.getUsernameByUtente(utente.getIdUtente());
+
+                String esito = PasswordValidator.validate(
+                        nuovaPassword,
+                        utente.getNome(),
+                        utente.getCognome(),
+                        username
+                );
+
+                if (esito != null) {
+                    response.sendRedirect(
+                            "home.jsp?error=pwd&msg=" +
+                                    URLEncoder.encode(esito, "UTF-8")
+                    );
+                    return;
+                }
+
                 String nuovoHash = BCrypt.hashpw(nuovaPassword, BCrypt.gensalt());
                 dao.updatePassword(utente.getIdUtente(), nuovoHash);
             }
+
 
             session.setAttribute("utente", utente);
             response.sendRedirect("home.jsp?success=credenziali");

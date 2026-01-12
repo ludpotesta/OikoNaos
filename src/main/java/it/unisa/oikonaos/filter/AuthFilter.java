@@ -17,18 +17,26 @@ public class AuthFilter implements Filter {
         HttpServletResponse response = (HttpServletResponse) res;
 
         String path = request.getServletPath();
+        System.out.println("[AuthFilter] servletPath=" + path
+                + " | uri=" + request.getRequestURI());
+
         HttpSession session = request.getSession(false);
 
         // 1. ESCLUSIONI: Risorse e pagine sempre accessibili (anche non loggati)
         if (path.equals("/login.jsp")
                 || path.equals("/register.jsp")
                 || path.equals("/index.jsp")
-                || path.startsWith("/assets/")
-                || path.startsWith("/css/")
-                || path.startsWith("/js/")
+                || path.equals("/passwordDimenticata.jsp")
+                || path.equals("/resetPassword.jsp")
+                || path.equals("/ResetPasswordController")
+                || path.equals("/RichiestaResetPasswordController")
+                || path.equals("/ConfermaResetPasswordController")
                 || path.equals("/AutenticazioneController")
                 || path.equals("/RegistrazioneController")
                 || path.equals("/LogoutController")
+                || path.startsWith("/assets/")
+                || path.startsWith("/css/")
+                || path.startsWith("/js/")
                 || path.endsWith(".png")
                 || path.endsWith(".jpg")
                 || path.endsWith(".svg")
@@ -52,6 +60,8 @@ public class AuthFilter implements Filter {
             if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
                 // Se non sei supervisore, ti mando alla home con l'errore
                 // La home.jsp non ha più il redirect interno, quindi il loop si ferma qui.
+                System.out.println("[AuthFilter] BLOCCO -> redirect login (non loggato) path=" + path);
+
                 response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
                 return;
             }

@@ -97,4 +97,45 @@ public class RegistrazioneController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/register.jsp?error=" + msg);
         }
     }
+
+    @WebServlet(name = "ResetPasswordController", value = "/ResetPasswordController")
+    public static class RichiestaResetPasswordController extends HttpServlet {
+
+        @Override
+        protected void doPost(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+
+            String username = request.getParameter("username");
+
+            if (username == null || username.isBlank()) {
+                response.sendRedirect("forgot-password.jsp?error=campi");
+                return;
+            }
+
+            try {
+                CredenzialiDAO credDAO = new CredenzialiDAO();
+                Long idUtente = credDAO.getIdUtenteByUsername(username);
+
+                // 🔒 Non riveliamo se l’utente esiste o meno
+                if (idUtente == null) {
+                    response.sendRedirect("forgot-password.jsp?success=ok");
+                    return;
+                }
+
+                TokenResetPasswordDAO tokenDAO = new TokenResetPasswordDAO();
+                String token = tokenDAO.createToken(idUtente);
+
+                // Per ora mostriamo il link (NO email)
+                String link = request.getContextPath()
+                        + "/reset-password.jsp?token=" + URLEncoder.encode(token, "UTF-8");
+
+                response.sendRedirect("forgot-password.jsp?success=ok&link=" +
+                        URLEncoder.encode(link, "UTF-8"));
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect("forgot-password.jsp?error=generico");
+            }
+        }
+    }
 }

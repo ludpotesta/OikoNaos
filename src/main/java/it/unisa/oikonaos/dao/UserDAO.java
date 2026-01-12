@@ -140,4 +140,32 @@ public class UserDAO {
             ps.executeUpdate();
         }
     }
+
+    public Utente getUtenteById(long idUtente) throws Exception {
+
+        String sql = """
+        SELECT ID_Utente, Nome, Cognome, Email, Telefono, Ruolo
+        FROM utente
+        WHERE ID_Utente = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idUtente);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Utente u = new Utente();
+                u.setIdUtente(rs.getLong("ID_Utente"));
+                u.setNome(rs.getString("Nome"));
+                u.setCognome(rs.getString("Cognome"));
+                u.setEmail(rs.getString("Email"));
+                u.setTelefono(rs.getString("Telefono"));
+                u.setRuolo(rs.getString("Ruolo"));
+                return u;
+            }
+        }
+        return null;
+    }
 }

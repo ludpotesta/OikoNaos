@@ -10,7 +10,6 @@ public class Utente implements Serializable {
     private String telefono;
     private String ruolo;
 
-    // Costruttore vuoto (OBBLIGATORIO)
     public Utente() {
     }
 

@@ -20,27 +20,23 @@ public class CredenzialiDAO {
         }
     }
 
-    public Credenziali getByIdUtente(long idUtente) throws Exception {
-
+    public Long getIdUtenteByEmail(String email) throws Exception {
         String sql = """
-        SELECT Username, PasswordHash
-        FROM Credenziali
-        WHERE ID_Utente = ?
+        SELECT ID_Utente
+        FROM utente
+        WHERE Email = ?
     """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setLong(1, idUtente);
+            ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
 
-            if (!rs.next()) return null;
-
-            Credenziali c = new Credenziali();
-            c.setUsername(rs.getString("Username"));
-            c.setPasswordHash(rs.getString("PasswordHash"));
-            c.setIdUtente(idUtente);
-            return c;
+            if (rs.next()) {
+                return rs.getLong("ID_Utente");
+            }
+            return null;
         }
     }
 
@@ -98,6 +94,7 @@ public class CredenzialiDAO {
             return ps.executeUpdate() == 1;
         }
     }
+
     public boolean updatePassword(long idUtente, String nuovaPasswordHash) throws Exception {
 
         String sql = """
@@ -113,6 +110,28 @@ public class CredenzialiDAO {
             ps.setLong(2, idUtente);
 
             return ps.executeUpdate() == 1;
+        }
+    }
+
+    public Long getIdUtenteByUsername(String username) throws Exception {
+
+        String sql = """
+        SELECT ID_Utente
+        FROM credenziali
+        WHERE Username = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getLong("ID_Utente");
+            }
+
+            return null;
         }
     }
 }
