@@ -14,16 +14,16 @@ public class RicevutaDAO {
     public void creaRicevuta(long idPagamento) {
 
         String sql = """
-        INSERT INTO ricevuta (ID_Pagamento, Importo, DataEmissione)
-        SELECT ID_Pagamento, ImportoPagato, CURRENT_TIMESTAMP
-        FROM pagamento
-        WHERE ID_Pagamento = ?
+        INSERT INTO ricevuta (ID_Pagamento, CodiceTransazione)
+        VALUES (?, ?)
     """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPagamento);
+            ps.setString(2, "TX-" + System.currentTimeMillis()); // codice fittizio ma valido
+
             ps.executeUpdate();
 
         } catch (Exception e) {
@@ -34,10 +34,12 @@ public class RicevutaDAO {
     public Optional<Ricevuta> getRicevutaByPagamento(long idPagamento) {
 
         String sql = """
-            SELECT *
-            FROM ricevuta
-            WHERE ID_Pagamento = ?
-        """;
+        SELECT r.ID_Ricevuta, r.CodiceTransazione, r.DataEmissione,
+               p.ImportoPagato
+        FROM ricevuta r
+        JOIN pagamento p ON r.ID_Pagamento = p.ID_Pagamento
+        WHERE r.ID_Pagamento = ?
+    """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -48,11 +50,9 @@ public class RicevutaDAO {
             if (rs.next()) {
                 Ricevuta r = new Ricevuta();
                 r.setIdRicevuta(rs.getLong("ID_Ricevuta"));
-                r.setIdPagamento(idPagamento);
-                r.setImporto(rs.getBigDecimal("Importo"));
-                r.setDataEmissione(
-                        rs.getTimestamp("DataEmissione").toLocalDateTime()
-                );
+                r.setCodiceTransazione(rs.getString("CodiceTransazione"));
+                r.setImporto(rs.getBigDecimal("ImportoPagato"));
+                r.setDataEmissione(rs.getTimestamp("DataEmissione").toLocalDateTime());
                 return Optional.of(r);
             }
 

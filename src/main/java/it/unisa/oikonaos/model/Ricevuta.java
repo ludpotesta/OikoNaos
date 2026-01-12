@@ -9,6 +9,7 @@ public class Ricevuta {
     private long idPagamento;
     private BigDecimal importo;
     private LocalDateTime dataEmissione;
+    private String codiceTransazione;
 
     public Ricevuta() {
     }
@@ -39,6 +40,14 @@ public class Ricevuta {
 
     public LocalDateTime getDataEmissione() {
         return dataEmissione;
+    }
+
+    public String getCodiceTransazione() {
+        return codiceTransazione;
+    }
+
+    public void setCodiceTransazione(String codiceTransazione) {
+        this.codiceTransazione = codiceTransazione;
     }
 
     public void setDataEmissione(LocalDateTime dataEmissione) {
