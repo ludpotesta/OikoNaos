@@ -492,3 +492,52 @@ body{
     }
 }
 
+.login-card .password-box {
+    margin: 14px 0 22px;
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    background-color: rgba(255, 255, 255, 0.18); /* più chiaro */
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    font-size: 0.85rem;
+    color: #ffffff !important; /* FORZATO */
+}
+
+.login-card .password-box strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff !important;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.login-card .password-box ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.login-card .password-box li {
+    margin-bottom: 6px;
+    line-height: 1.45;
+    color: #f1f5f9 !important;
+}
+
+.login-card {
+    background: #2f3e5c;
+    color: #ffffff;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 28px;
+    border: none;
+}
+
+.login-card h2,
+.login-card label {
+    color: #ffffff;
+}
+
+.login-card input {
+    background: #ffffff;
+    color: var(--ink);
+}

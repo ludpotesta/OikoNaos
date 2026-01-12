@@ -3,6 +3,8 @@ package it.unisa.oikonaos.controller;
 import it.unisa.oikonaos.dao.*;
 import it.unisa.oikonaos.model.CodiceIdentificativo;
 import it.unisa.oikonaos.model.Utente;
+import util.PasswordValidator;
+import java.nio.charset.StandardCharsets;
 import util.database;
 
 import jakarta.servlet.ServletException;
@@ -39,6 +41,16 @@ public class RegistrazioneController extends HttpServlet {
             return;
         }
 
+        // Controllo requisiti password (RAD UC06)
+        String pwdError = PasswordValidator.validate(password, nome, cognome, username);
+        if (pwdError != null) {
+            String enc = URLEncoder.encode(pwdError, StandardCharsets.UTF_8);
+            response.sendRedirect(
+                    request.getContextPath() + "/register.jsp?error=pwd&msg=" + enc
+            );
+            return;
+        }
+
         try (Connection con = database.getConnection()) {
 
             con.setAutoCommit(false);
@@ -62,19 +74,16 @@ public class RegistrazioneController extends HttpServlet {
                 return;
             }
 
-            // Registrazione utente (stessa connessione!)
             long idUtente = userDAO.registerUser(
                     con, nome, cognome, email, telefono,
                     username, password,
                     codiceValido.getIdComunita()
             );
 
-            // Consumo codice
             codiceDAO.marcaComeUsato(con, codice, idUtente);
 
             con.commit();
 
-            // Login automatico
             Utente utente = userDAO.login(username, password);
 
             HttpSession session = request.getSession(true);

@@ -31,6 +31,7 @@
             <%-- Errori --%>
             <%
                 String error = request.getParameter("error");
+                String msg = request.getParameter("msg"); // opzionale
                 if ("email".equals(error)) {
             %>
             <div class="login-error">
@@ -42,7 +43,6 @@
             <div class="login-error">
                 Codice identificativo non valido.
             </div>
-
             <%
             } else if ("username".equals(error)) {
             %>
@@ -50,7 +50,13 @@
                 L'username inserito è già stato usato, inserisci un nuovo username.
             </div>
             <%
-                } else if ("generico".equals(error)) {
+            } else if ("pwd".equals(error)) {
+            %>
+            <div class="login-error">
+                Password non valida<%= (msg != null && !msg.isBlank()) ? (": " + msg) : "." %>
+            </div>
+            <%
+            } else if ("generico".equals(error)) {
             %>
             <div class="login-error">
                 Errore durante la registrazione.
@@ -58,7 +64,6 @@
             <%
                 }
             %>
-
 
             <form action="${pageContext.request.contextPath}/RegistrazioneController"
                   method="post">
@@ -68,7 +73,18 @@
                 <input type="email" name="email" placeholder="Email" required>
                 <input type="tel" name="telefono" placeholder="Numero di telefono" required>
                 <input type="text" name="username" placeholder="Username" required>
-                <input type="password" name="password" placeholder="Password" required>
+                <input type="password" name="password" placeholder="Password" minlength="8" required>
+
+                <div class="password-box" style="color: #ffffff;">
+                    <strong style="color: #ffffff;">Requisiti password</strong>
+                    <ul style="color: #ffffff;">
+                        <li>Minimo 8 caratteri</li>
+                        <li>Maiuscola, minuscola, numero e simbolo</li>
+                        <li>Non usare nome o cognome</li>
+                        <li>Evita sequenze semplici (1234, abcd)</li>
+                    </ul>
+                </div>
+
                 <input type="text" name="codiceID" placeholder="Codice identificativo" required>
 
                 <button type="submit">

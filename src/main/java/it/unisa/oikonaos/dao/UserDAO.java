@@ -7,10 +7,6 @@ import org.mindrot.jbcrypt.BCrypt;
 import java.sql.*;
 
 public class UserDAO {
-
-    /* ==========================================================
-       REGISTRAZIONE UTENTE (NO codice, NO transazione)
-       ========================================================== */
     public long registerUser(
             Connection con,
             String nome,
@@ -30,10 +26,6 @@ public class UserDAO {
 
         return idUtente;
     }
-
-    /* ==========================
-       METODI DI SUPPORTO
-       ========================== */
 
     private long insertUtente(
             Connection con,
@@ -91,9 +83,6 @@ public class UserDAO {
         }
     }
 
-    /* ==========================================================
-       LOGIN (INVARIATO)
-       ========================================================== */
     public Utente login(String username, String password) throws Exception {
 
         String sql = """
@@ -131,9 +120,6 @@ public class UserDAO {
         }
     }
 
-    /* ==========================================================
-       MODIFICA PROFILO (INVARIATO)
-       ========================================================== */
     public void updateProfilo(Utente u) throws Exception {
 
         String sql = """
