@@ -80,24 +80,33 @@
 
             <!-- CARTA -->
             <div id="cartaBox" class="form-group" style="display:none">
+
                 <h3>Pagamento con carta</h3>
 
-                <label>Numero carta</label>
-                <input type="text" placeholder="1234 5678 9012 3456">
-
-                <label>Nome titolare</label>
-                <input type="text" placeholder="Mario Rossi">
-
-                <div class="row">
-                    <div>
-                        <label>Data scadenza</label>
-                        <input type="text" placeholder="MM/AA">
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Numero carta</label>
+                        <input type="text" name="numeroCarta" placeholder="1234 5678 9012 3456">
                     </div>
-                    <div>
-                        <label>CVV</label>
-                        <input type="text" placeholder="123">
+
+                    <div class="form-field">
+                        <label>Nome titolare</label>
+                        <input type="text" name="nomeCarta" placeholder="Mario Rossi">
                     </div>
                 </div>
+
+                <div class="form-row">
+                    <div class="form-field">
+                        <label>Data scadenza</label>
+                        <input type="text" name="scadenza" placeholder="MM/AA">
+                    </div>
+
+                    <div class="form-field">
+                        <label>CVV</label>
+                        <input type="text" name="cvv" placeholder="123">
+                    </div>
+                </div>
+
             </div>
 
             <!-- PAYPAL -->
