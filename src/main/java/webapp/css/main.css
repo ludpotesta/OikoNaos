@@ -465,10 +465,6 @@ body{
     color: #d93025;
 }
 
-/* ==================================================
-   FORCE OVERRIDE STATI SPESE
-   ================================================== */
-
 .data-table .status.status-paid {
     background-color: #e6f7ee;
     color: #0f9d58;
@@ -483,3 +479,16 @@ body{
     background-color: #fdecea;
     color: #d93025;
 }
+
+.payment-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .payment-row {
+        grid-template-columns: 1fr;
+    }
+}
+

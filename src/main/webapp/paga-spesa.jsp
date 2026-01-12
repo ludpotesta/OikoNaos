@@ -24,6 +24,22 @@
 
     <section class="dashboard-card">
 
+        <%
+            if (p == null) {
+        %>
+        <p class="empty-state">
+            Errore: pagamento non trovato o non valido.
+        </p>
+
+        <a href="${pageContext.request.contextPath}/SpeseController"
+           class="btn primary">
+            Torna alle spese
+        </a>
+        <%
+                return;
+            }
+        %>
+
         <p><strong>Periodo:</strong> <%= p.getPeriodo() %></p>
         <p><strong>Importo:</strong> € <%= p.getImportoPagato() %></p>
 
@@ -31,26 +47,107 @@
               action="${pageContext.request.contextPath}/SpeseController">
 
             <input type="hidden" name="action" value="pay">
-            <input type="hidden" name="idPagamento"
-                   value="<%= p.getIdPagamento() %>">
+            <input type="hidden" name="idPagamento" value="<%= p.getIdPagamento() %>">
 
             <label class="section-title">Metodo di pagamento</label>
 
+            <!-- SCELTA METODO -->
             <div class="form-group">
                 <label>
-                    <input type="radio" name="metodo" value="ONLINE" checked>
-                    Carta / Online
+                    <input type="radio" name="metodo" value="CARTA"
+                           onclick="mostra('carta')">
+                    Carta di credito / debito
                 </label><br>
 
                 <label>
-                    <input type="radio" name="metodo" value="BONIFICO">
-                    Bonifico
+                    <input type="radio" name="metodo" value="PAYPAL"
+                           onclick="mostra('paypal')">
+                    PayPal
                 </label><br>
 
                 <label>
-                    <input type="radio" name="metodo" value="CONTANTI">
-                    Contanti
+                    <input type="radio" name="metodo" value="APPLEPAY"
+                           onclick="mostra('apple')">
+                    Apple Pay
+                </label><br>
+
+                <label>
+                    <input type="radio" name="metodo" value="KLARNA"
+                           onclick="mostra('klarna')">
+                    Klarna
                 </label>
+            </div>
+
+            <!-- CARTA -->
+            <div id="cartaBox" class="form-group" style="display:none">
+                <h3>Pagamento con carta</h3>
+
+                <label>Numero carta</label>
+                <input type="text" placeholder="1234 5678 9012 3456">
+
+                <label>Nome titolare</label>
+                <input type="text" placeholder="Mario Rossi">
+
+                <div class="row">
+                    <div>
+                        <label>Data scadenza</label>
+                        <input type="text" placeholder="MM/AA">
+                    </div>
+                    <div>
+                        <label>CVV</label>
+                        <input type="text" placeholder="123">
+                    </div>
+                </div>
+            </div>
+
+            <!-- PAYPAL -->
+            <div id="paypalBox" class="form-group" style="display:none">
+                <h3>Pagamento con PayPal</h3>
+
+                <div class="payment-row">
+                    <div>
+                        <label>Email</label>
+                        <input type="email">
+                    </div>
+
+                    <div>
+                        <label>Password</label>
+                        <input type="password">
+                    </div>
+                </div>
+            </div>
+
+            <div id="appleBox" class="form-group" style="display:none">
+                <h3>Pagamento con Apple Pay</h3>
+
+                <div class="payment-row">
+                    <div>
+                        <label>Apple ID</label>
+                        <input type="email">
+                    </div>
+
+                    <div>
+                        <label>Password</label>
+                        <input type="password">
+                    </div>
+                </div>
+            </div>
+
+            <!-- KLARNA -->
+            <div id="klarnaBox" class="form-group" style="display:none">
+                <h3>Pagamento con Klarna</h3>
+
+                <div class="payment-row">
+                    <div>
+                        <label>Email</label>
+                        <input type="email">
+                    </div>
+
+                    <div>
+                        <label>Codice di verifica</label>
+                        <input type="text" placeholder="Codice OTP">
+                    </div>
+                </div>
             </div>
 
             <button type="submit" class="btn primary">
@@ -65,6 +162,21 @@
 
     </section>
 </main>
+
+<script>
+    function mostra(metodo) {
+
+        const box = ["carta", "paypal", "apple", "klarna"];
+
+        box.forEach(b => {
+            const el = document.getElementById(b + "Box");
+            if (el) el.style.display = "none";
+        });
+
+        const selected = document.getElementById(metodo + "Box");
+        if (selected) selected.style.display = "block";
+    }
+</script>
 
 </body>
 </html>

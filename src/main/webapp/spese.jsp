@@ -1,6 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.List" %>
-<%@ page import="it.unisa.oikonaos.model.Pagamento" %>
+<%@ page import="it.unisa.oikonaos.model.TassaTrimestrale" %>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -17,8 +17,8 @@
 <jsp:include page="/include/header-navbar.jsp" />
 
 <%
-    List<Pagamento> pagamenti =
-            (List<Pagamento>) request.getAttribute("pagamenti");
+    List<TassaTrimestrale> tasse =
+            (List<TassaTrimestrale>) request.getAttribute("tasse");
 %>
 
 <main class="dashboard">
@@ -40,40 +40,53 @@
 
                 <tbody>
                 <%
-                    if (pagamenti != null && !pagamenti.isEmpty()) {
-                        for (Pagamento p : pagamenti) {
+                    if (tasse != null && !tasse.isEmpty()) {
+                        for (TassaTrimestrale t : tasse) {
                 %>
                 <tr>
-                    <td><%= p.getPeriodo() %></td>
-
-                    <td><strong>€ <%= p.getImportoPagato() %></strong></td>
+                    <td><%= t.getTrimestreRiferimento() %></td>
 
                     <td>
-                        <% if (p.isPagato()) { %>
+                        <strong>€ <%= t.getImportoDovuto() %></strong>
+                    </td>
+
+                    <td>
+                        <% if (t.isPagata()) { %>
                         <span class="status status-paid">PAGATA</span>
-                        <% } else if (p.isScaduta()) { %>
-                        <span class="status status-expired">SCADUTA</span>
                         <% } else { %>
                         <span class="status status-pending">DA PAGARE</span>
                         <% } %>
                     </td>
 
                     <td>
-                        <% if (!p.isPagato()) { %>
-                        <form method="get"
+                        <% if (!t.isPagata()) { %>
+
+                        <!-- TASSA NON PAGATA -->
+                        <form method="post"
                               action="${pageContext.request.contextPath}/SpeseController"
                               style="display:inline;">
 
-                            <input type="hidden" name="action" value="confirm">
-                            <input type="hidden" name="idPagamento"
-                                   value="<%= p.getIdPagamento() %>">
+                            <input type="hidden" name="action" value="startPay">
+                            <input type="hidden" name="idTassa" value="<%= t.getIdTassa() %>">
 
                             <button type="submit" class="btn ghost">
                                 Paga
                             </button>
                         </form>
+
+                        <% } else if (t.hasRicevuta()) { %>
+
+                        <!-- TASSA PAGATA + RICEVUTA -->
+                        <a href="${pageContext.request.contextPath}/RicevutaController?idPagamento=<%= t.getIdPagamento() %>"
+                           class="btn ghost">
+                            Ricevuta
+                        </a>
+
                         <% } else { %>
+
+                        <!-- TASSA PAGATA MA SENZA RICEVUTA -->
                         –
+
                         <% } %>
                     </td>
                 </tr>

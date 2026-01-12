@@ -1,7 +1,9 @@
 package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.PagamentoDAO;
+import it.unisa.oikonaos.dao.TassaDAO;
 import it.unisa.oikonaos.model.Pagamento;
+import it.unisa.oikonaos.model.TassaTrimestrale;
 import it.unisa.oikonaos.model.Utente;
 
 import jakarta.servlet.ServletException;
@@ -12,7 +14,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.util.List;
 
 @WebServlet(name = "SpeseController", value = "/SpeseController")
@@ -22,10 +23,20 @@ public class SpeseController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        Utente utente = (Utente) session.getAttribute("utente");
+
+        if (utente == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
 
+        /* CONFERMA PAGAMENTO */
         if ("confirm".equals(action)) {
-            long idPagamento = Long.parseLong(request.getParameter("idPagamento"));
+            long idPagamento =
+                    Long.parseLong(request.getParameter("idPagamento"));
 
             Pagamento pagamento =
                     new PagamentoDAO().getPagamentoById(idPagamento);
@@ -36,19 +47,14 @@ public class SpeseController extends HttpServlet {
             return;
         }
 
-        HttpSession session = request.getSession(false);
-        Utente utente = (Utente) session.getAttribute("utente");
+        /* LISTA TASSE (LE MIE SPESE)*/
+        TassaDAO tassaDAO = new TassaDAO();
+        List<TassaTrimestrale> tasse =
+                tassaDAO.getTasseByUtente(utente.getIdUtente());
 
-        if (utente == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp");
-            return;
-        }
-
-        PagamentoDAO pagamentoDAO = new PagamentoDAO();
-        List<Pagamento> pagamenti = pagamentoDAO.getPagamentiByUtente(utente.getIdUtente());
-
-        request.setAttribute("pagamenti", pagamenti);
-        request.getRequestDispatcher("/spese.jsp").forward(request, response);
+        request.setAttribute("tasse", tasse);
+        request.getRequestDispatcher("/spese.jsp")
+                .forward(request, response);
     }
 
     @Override
@@ -65,12 +71,43 @@ public class SpeseController extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        if ("pay".equals(action)) {
-            long idPagamento = Long.parseLong(request.getParameter("idPagamento"));
+        // 1) Avvio pagamento: crea record pagamento e vai alla conferma
+        if ("startPay".equals(action)) {
 
-            String metodo =
-                    request.getParameter("metodo");
-            new PagamentoDAO().registraPagamentoOnline(idPagamento, metodo);
+            long idTassa = Long.parseLong(request.getParameter("idTassa"));
+
+            PagamentoDAO pagamentoDAO = new PagamentoDAO();
+            long idPagamento = pagamentoDAO.creaPagamentoDaTassa(idTassa, utente.getIdUtente());
+
+            if (idPagamento <= 0) {
+                // fallimento: torna alla lista (puoi anche mettere ?error=1)
+                response.sendRedirect(request.getContextPath() + "/SpeseController");
+                return;
+            }
+
+            response.sendRedirect(
+                    request.getContextPath() + "/SpeseController?action=confirm&idPagamento=" + idPagamento
+            );
+            return;
+        }
+
+        // 2) Conferma pagamento: aggiorna pagamento + ricevuta + tassa pagata
+        if ("pay".equals(action)) {
+
+            long idPagamento = Long.parseLong(request.getParameter("idPagamento"));
+            String metodo = request.getParameter("metodo");
+
+            PagamentoDAO pagamentoDAO = new PagamentoDAO();
+            pagamentoDAO.registraPagamentoOnline(idPagamento, metodo);
+
+            // ora marca la tassa come PAGATA (dopo conferma)
+            Pagamento pag = pagamentoDAO.getPagamentoById(idPagamento);
+            if (pag != null) {
+                new TassaDAO().marcaComePagata(pag.getIdTassa());
+            }
+
+            response.sendRedirect(request.getContextPath() + "/SpeseController");
+            return;
         }
 
         response.sendRedirect(request.getContextPath() + "/SpeseController");

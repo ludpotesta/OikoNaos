@@ -74,13 +74,14 @@ public class PagamentoDAO {
 
         String sql = """
         SELECT p.ID_Pagamento,
+               p.ID_Tassa,
                p.ImportoPagato,
                p.DataPagamento,
                p.MetodoPagamento,
                t.TrimestreRiferimento,
                t.Scadenza
         FROM pagamento p
-        JOIN tassatrimestrale t ON p.ID_Tassa = t.ID_Tassa
+        LEFT JOIN tassatrimestrale t ON p.ID_Tassa = t.ID_Tassa
         WHERE p.ID_Pagamento = ?
     """;
 
@@ -93,11 +94,16 @@ public class PagamentoDAO {
             if (rs.next()) {
                 Pagamento p = new Pagamento();
 
-                p.setIdPagamento(idPagamento);
+                p.setIdPagamento(rs.getLong("ID_Pagamento"));
+                p.setIdTassa(rs.getLong("ID_Tassa"));
                 p.setImportoPagato(rs.getBigDecimal("ImportoPagato"));
                 p.setMetodoPagamento(rs.getString("MetodoPagamento"));
                 p.setPeriodo(rs.getString("TrimestreRiferimento"));
-                p.setDataScadenza(rs.getDate("Scadenza").toLocalDate());
+
+                Date scad = rs.getDate("Scadenza");
+                if (scad != null) {
+                    p.setDataScadenza(scad.toLocalDate());
+                }
 
                 Timestamp ts = rs.getTimestamp("DataPagamento");
                 if (ts != null) {
@@ -114,4 +120,50 @@ public class PagamentoDAO {
         return null;
     }
 
+    public long creaPagamentoDaTassa(long idTassa, long idUtente) {
+
+        String checkSql = """
+        SELECT ID_Pagamento
+        FROM pagamento
+        WHERE ID_Tassa = ? AND ID_Utente = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement checkPs = con.prepareStatement(checkSql)) {
+
+            checkPs.setLong(1, idTassa);
+            checkPs.setLong(2, idUtente);
+
+            ResultSet rs = checkPs.executeQuery();
+            if (rs.next()) {
+                // pagamento già esistente → riusa
+                return rs.getLong("ID_Pagamento");
+            }
+
+            String insertSql = """
+            INSERT INTO pagamento (ImportoPagato, MetodoPagamento, ID_Tassa, ID_Utente)
+            SELECT ImportoDovuto, 'ONLINE', ID_Tassa, ID_Utente
+            FROM tassatrimestrale
+            WHERE ID_Tassa = ? AND ID_Utente = ?
+        """;
+
+            try (PreparedStatement insertPs = con.prepareStatement(insertSql,
+                    PreparedStatement.RETURN_GENERATED_KEYS)) {
+
+                insertPs.setLong(1, idTassa);
+                insertPs.setLong(2, idUtente);
+                insertPs.executeUpdate();
+
+                ResultSet keys = insertPs.getGeneratedKeys();
+                if (keys.next()) {
+                    return keys.getLong(1);
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return -1;
+    }
 }
