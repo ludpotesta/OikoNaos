@@ -1,19 +1,17 @@
 package it.unisa.oikonaos.controller;
 
-import it.unisa.oikonaos.dao.UserDAO;
-import it.unisa.oikonaos.dao.CredenzialiDAO;
-import it.unisa.oikonaos.model.Credenziali;
+import it.unisa.oikonaos.dao.*;
+import it.unisa.oikonaos.model.CodiceIdentificativo;
 import it.unisa.oikonaos.model.Utente;
+import util.database;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.sql.Connection;
 
 @WebServlet(name = "RegistrazioneController", value = "/RegistrazioneController")
 public class RegistrazioneController extends HttpServlet {
@@ -30,7 +28,6 @@ public class RegistrazioneController extends HttpServlet {
         String password = request.getParameter("password");
         String codice = request.getParameter("codiceID");
 
-        // Validazione input base
         if (nome == null || cognome == null || email == null ||
                 telefono == null || username == null ||
                 password == null || codice == null ||
@@ -42,17 +39,40 @@ public class RegistrazioneController extends HttpServlet {
             return;
         }
 
-        try {
-            UserDAO userDAO = new UserDAO();
-            CredenzialiDAO credenzialiDAO = new CredenzialiDAO();
+        try (Connection con = database.getConnection()) {
 
-            if (credenzialiDAO.usernameEsistente(username)){
-                System.out.println("Username gia in uso");
+            con.setAutoCommit(false);
+
+            CredenzialiDAO credenzialiDAO = new CredenzialiDAO();
+            UserDAO userDAO = new UserDAO();
+            CodiceIdentificativoDAO codiceDAO = new CodiceIdentificativoDAO();
+
+            // Username già esistente
+            if (credenzialiDAO.usernameEsistente(username)) {
                 response.sendRedirect(request.getContextPath() + "/register.jsp?error=username");
+                return;
             }
 
-            // Registrazione
-            userDAO.registerUser(nome, cognome, email, telefono, username, password, codice);
+            // Verifica codice (CON LOCK)
+            CodiceIdentificativo codiceValido =
+                    codiceDAO.getCodiceValidoForUpdate(con, codice);
+
+            if (codiceValido == null) {
+                response.sendRedirect(request.getContextPath() + "/register.jsp?error=codice");
+                return;
+            }
+
+            // Registrazione utente (stessa connessione!)
+            long idUtente = userDAO.registerUser(
+                    con, nome, cognome, email, telefono,
+                    username, password,
+                    codiceValido.getIdComunita()
+            );
+
+            // Consumo codice
+            codiceDAO.marcaComeUsato(con, codice, idUtente);
+
+            con.commit();
 
             // Login automatico
             Utente utente = userDAO.login(username, password);
@@ -60,15 +80,12 @@ public class RegistrazioneController extends HttpServlet {
             HttpSession session = request.getSession(true);
             session.setAttribute("utente", utente);
 
-            System.out.println("Utente registrato e loggato: " + utente.getNome());
-
-            // Redirect post-registrazione
             response.sendRedirect(request.getContextPath() + "/home.jsp?msg=registrato");
 
         } catch (Exception e) {
             e.printStackTrace();
-
-            String errorMessage = URLEncoder.encode(e.getMessage(), "UTF-8");
+            String msg = URLEncoder.encode("Errore durante la registrazione", "UTF-8");
+            response.sendRedirect(request.getContextPath() + "/register.jsp?error=" + msg);
         }
     }
 }

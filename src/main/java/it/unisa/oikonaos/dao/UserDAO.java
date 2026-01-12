@@ -2,44 +2,33 @@ package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.Utente;
 import util.database;
-import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
+
+import java.sql.*;
 
 public class UserDAO {
 
-    public void registerUser(
+    /* ==========================================================
+       REGISTRAZIONE UTENTE (NO codice, NO transazione)
+       ========================================================== */
+    public long registerUser(
+            Connection con,
             String nome,
             String cognome,
             String email,
             String telefono,
             String username,
             String password,
-            String codiceID
+            long idComunita
     ) throws Exception {
 
-        Connection con = database.getConnection();
-        con.setAutoCommit(false);
+        // 1. Inserimento utente
+        long idUtente = insertUtente(con, nome, cognome, email, telefono, idComunita);
 
-        try {
+        // 2. Inserimento credenziali
+        insertCredenziali(con, username, password, idUtente);
 
-            // 1. Inserimento utente con comunità
-            long idUtente = insertUtente(con, nome, cognome, email, telefono);
-
-            // 2. Inserimento credenziali (con hash)
-            insertCredenziali(con, username, password, idUtente);
-
-            // 3. Marca codice come usato
-            markCodiceUsato(con, codiceID, idUtente);
-
-            con.commit();
-
-        } catch (Exception e) {
-            con.rollback();
-            throw e;
-        } finally {
-            con.setAutoCommit(true);
-            con.close();
-        }
+        return idUtente;
     }
 
     /* ==========================
@@ -51,10 +40,14 @@ public class UserDAO {
             String nome,
             String cognome,
             String email,
-            String telefono
+            String telefono,
+            long idComunita
     ) throws Exception {
 
-        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo) VALUES (?, ?, ?, ?, 'COINQUILINO')";
+        String sql = """
+            INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita)
+            VALUES (?, ?, ?, ?, 'COINQUILINO', ?)
+        """;
 
         try (PreparedStatement ps =
                      con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -63,12 +56,16 @@ public class UserDAO {
             ps.setString(2, cognome);
             ps.setString(3, email);
             ps.setString(4, telefono);
+            ps.setLong(5, idComunita);
 
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            return rs.getLong(1);
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (!rs.next()) {
+                    throw new SQLException("Errore creazione utente");
+                }
+                return rs.getLong(1);
+            }
         }
     }
 
@@ -81,7 +78,10 @@ public class UserDAO {
 
         String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
-        String sql = "INSERT INTO Credenziali (Username, PasswordHash, ID_Utente) VALUES (?, ?, ?)";
+        String sql = """
+            INSERT INTO Credenziali (Username, PasswordHash, ID_Utente)
+            VALUES (?, ?, ?)
+        """;
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -91,24 +91,18 @@ public class UserDAO {
         }
     }
 
-    private void markCodiceUsato(
-            Connection con,
-            String codiceID,
-            long idUtente
-    ) throws Exception {
-
-        String sql = "UPDATE CodiceIdentificativo SET Stato = 'USATO',  ID_Utente_Utilizzatore = ? WHERE Codice = ?";
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setLong(1, idUtente);
-            ps.setString(2, codiceID);
-            ps.executeUpdate();
-        }
-    }
-       //LOGIN
+    /* ==========================================================
+       LOGIN (INVARIATO)
+       ========================================================== */
     public Utente login(String username, String password) throws Exception {
 
-        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Telefono, u.Ruolo, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
+        String sql = """
+            SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email,
+                   u.Telefono, u.Ruolo, c.PasswordHash
+            FROM Utente u
+            JOIN Credenziali c ON u.ID_Utente = c.ID_Utente
+            WHERE c.Username = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -136,9 +130,17 @@ public class UserDAO {
             return u;
         }
     }
-        //MODIFICA DEL PROFILO
+
+    /* ==========================================================
+       MODIFICA PROFILO (INVARIATO)
+       ========================================================== */
     public void updateProfilo(Utente u) throws Exception {
-        String sql = "UPDATE Utente SET Nome = ?, Cognome = ?, Email = ?, Telefono = ? WHERE ID_Utente = ? ";
+
+        String sql = """
+            UPDATE Utente
+            SET Nome = ?, Cognome = ?, Email = ?, Telefono = ?
+            WHERE ID_Utente = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -152,5 +154,4 @@ public class UserDAO {
             ps.executeUpdate();
         }
     }
-
 }
