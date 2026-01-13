@@ -8,6 +8,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @WebServlet(name = "BachecaEventiController", value = "/BachecaEventiController")
@@ -27,17 +29,52 @@ public class BachecaEventiController extends HttpServlet {
 
         try {
             EventoDAO dao = new EventoDAO();
-
             List<EventoBachecaDTO> eventi =
                     dao.getEventiBacheca(u.getIdUtente());
+
+            LocalDateTime now = LocalDateTime.now();
+            DateTimeFormatter formatter =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            for (EventoBachecaDTO e : eventi) {
+
+                boolean eventoPassato =
+                        e.getDataFine() != null && e.getDataFine().isBefore(now);
+
+                boolean iscrivibile =
+                        !eventoPassato
+                                && !e.isIscritto()
+                                && e.getPostiDisponibili() > 0;
+
+                boolean disiscrivibile =
+                        !eventoPassato
+                                && e.isIscritto();
+
+                if (e.getDataInizio() != null) {
+                    e.setDataInizioFormatted(
+                            e.getDataInizio().format(formatter)
+                    );
+                }
+
+                if (e.getDataFine() != null) {
+                    e.setDataFineFormatted(
+                            e.getDataFine().format(formatter)
+                    );
+                }
+
+                e.setIscrivibile(iscrivibile);
+                e.setDisiscrivibile(disiscrivibile);
+            }
 
             request.setAttribute("eventi", eventi);
             request.getRequestDispatcher("/bachecaEventi.jsp")
                     .forward(request, response);
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect(request.getContextPath() + "/home.jsp?error=generico");
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            response.sendRedirect(
+                    request.getContextPath() + "/home.jsp?error=generico"
+            );
         }
     }
 }

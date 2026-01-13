@@ -142,4 +142,38 @@ public class EventoDAO {
         }
     }
 
+    public void disiscriviUtenteDaEvento(long idEvento, long idUtente) throws Exception {
+
+        String deleteSql = """
+        DELETE FROM iscrizioneevento
+        WHERE ID_Evento = ? AND ID_Utente = ?
+    """;
+
+        String updateSql = """
+        UPDATE evento
+        SET PostiDisponibili = PostiDisponibili + 1
+        WHERE ID_Evento = ?
+    """;
+
+        try (Connection con = database.getConnection()) {
+
+            con.setAutoCommit(false);
+
+            try (PreparedStatement psDelete = con.prepareStatement(deleteSql);
+                 PreparedStatement psUpdate = con.prepareStatement(updateSql)) {
+
+                psDelete.setLong(1, idEvento);
+                psDelete.setLong(2, idUtente);
+                psDelete.executeUpdate();
+
+                psUpdate.setLong(1, idEvento);
+                psUpdate.executeUpdate();
+
+                con.commit();
+            } catch (Exception ex) {
+                con.rollback();
+                throw ex;
+            }
+        }
+    }
 }

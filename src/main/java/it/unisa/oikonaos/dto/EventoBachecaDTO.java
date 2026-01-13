@@ -10,8 +10,12 @@ public class EventoBachecaDTO {
     private String luogo;
     private LocalDateTime dataInizio;
     private LocalDateTime dataFine;
+    private String dataInizioFormatted;
+    private String dataFineFormatted;
     private int postiDisponibili;
     private boolean iscritto;
+    private boolean iscrivibile;
+    private boolean disiscrivibile;
 
     public EventoBachecaDTO() {
     }
@@ -78,4 +82,37 @@ public class EventoBachecaDTO {
     public void setIscritto(boolean iscritto) {
         this.iscritto = iscritto;
     }
+
+    public boolean isIscrivibile() {
+        return iscrivibile;
+    }
+
+    public void setIscrivibile(boolean iscrivibile) {
+        this.iscrivibile = iscrivibile;
+    }
+
+    public boolean isDisiscrivibile() {
+        return disiscrivibile;
+    }
+
+    public void setDisiscrivibile(boolean disiscrivibile) {
+        this.disiscrivibile = disiscrivibile;
+    }
+
+    public String getDataInizioFormatted() {
+        return dataInizioFormatted;
+    }
+
+    public void setDataInizioFormatted(String dataInizioFormatted) {
+        this.dataInizioFormatted = dataInizioFormatted;
+    }
+
+    public String getDataFineFormatted() {
+        return dataFineFormatted;
+    }
+
+    public void setDataFineFormatted(String dataFineFormatted) {
+        this.dataFineFormatted = dataFineFormatted;
+    }
+
 }

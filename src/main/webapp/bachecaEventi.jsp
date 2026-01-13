@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="it.unisa.oikonaos.dto.EventoBachecaDTO, java.util.List" %>
-<%@ page import="java.time.format.DateTimeFormatter" %>
 
 <!DOCTYPE html>
 <html lang="it">
@@ -14,115 +13,80 @@
 
 <jsp:include page="/include/header-navbar.jsp" />
 
-<main class="dashboard">
+<main class="page">
 
-    <h1 class="page-title">Bacheca Eventi</h1>
+    <header class="page-header">
+        <h1 class="page-title">Bacheca Eventi</h1>
+        <p class="page-subtitle">
+            Eventi e attività della tua comunità
+        </p>
+    </header>
 
-    <div class="table-container">
+    <%
+        List<EventoBachecaDTO> eventi =
+                (List<EventoBachecaDTO>) request.getAttribute("eventi");
+    %>
 
-        <%
-            List<EventoBachecaDTO> eventi =
-                    (List<EventoBachecaDTO>) request.getAttribute("eventi");
+    <% if (eventi == null || eventi.isEmpty()) { %>
 
-            DateTimeFormatter formatter =
-                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    <div class="card">
+        <div class="empty-state">
+            Nessun evento disponibile al momento.
+        </div>
+    </div>
 
-            if (eventi == null || eventi.isEmpty()) {
-        %>
-        <p class="muted">Non sono presenti eventi al momento.</p>
-        <%
-        } else {
-            for (EventoBachecaDTO e : eventi) {
+    <% } else { %>
 
-                // DEFINITA UNA SOLA VOLTA
-                String titolo = e.getTitolo().toLowerCase();
-        %>
+    <% for (EventoBachecaDTO e : eventi) { %>
 
-        <!-- CARD EVENTO -->
-        <div class="event-highlight">
+    <div class="card" style="margin-bottom:24px;">
 
-            <!-- CONTENUTO -->
-            <div class="event-highlight-body">
-                <div class="bacheca-eventi-item">
-                <h2 class="event-highlight-title">
+        <!-- HEADER EVENTO -->
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:20px;">
+            <div>
+                <h2 style="margin:0 0 6px;">
                     <%= e.getTitolo() %>
                 </h2>
 
-                <div class="event-highlight-meta">
-                    <span>
-                        📅 <%= e.getDataInizio().format(formatter) %>
-                        –
-                        <%= e.getDataFine().format(formatter) %>
-                    </span><br>
-                    <span>📍 <%= e.getLuogo() %></span>
+                <div style="color:var(--muted); font-size:0.95rem;">
+                    📅 <%= e.getDataInizioFormatted() %> – <%= e.getDataFineFormatted() %><br>
+                    📍 <%= e.getLuogo() %>
                 </div>
-
-                <p class="event-highlight-description">
-                    <%= e.getDescrizione() %>
-                </p>
-
-                <div class="event-highlight-footer">
-                    <strong>Posti disponibili:</strong>
-                    <%= e.getPostiDisponibili() %>
-                </div>
-                </div>
-                <!-- AZIONI -->
-                <div class="event-highlight-actions">
-                    <%
-                        if (e.isIscritto()) {
-                    %>
-                    <span class="badge">Iscritto</span>
-                    <%
-                    } else if (e.getPostiDisponibili() > 0) {
-                    %>
-                    <form action="<%= request.getContextPath() %>/ConfermaIscrizioneEventoController"
-                          method="post">
-                        <input type="hidden" name="idEvento"
-                               value="<%= e.getIdEvento() %>">
-                        <button type="submit" class="btn primary">
-                            Iscriviti
-                        </button>
-                    </form>
-                    <%
-                    } else {
-                    %>
-                    <span class="badge">Completo</span>
-                    <%
-                        }
-                    %>
-                </div>
-
             </div>
 
-            <!-- ICONA -->
-            <div class="event-highlight-icon">
-                <%
-                    if (titolo.contains("cucina")) {
-                %> 🍳
-                <%
-                } else if (titolo.contains("pilates") || titolo.contains("fitness")) {
-                %> 🧘
-                <%
-                } else if (titolo.contains("picnic")) {
-                %> 🧺
-                <%
-                } else {
-                %> 📌
-                <%
-                    }
-                %>
-            </div>
+            <span class="status">
+                Posti disponibili: <%= e.getPostiDisponibili() %>
+            </span>
+        </div>
+
+        <!-- DESCRIZIONE -->
+        <p style="margin:18px 0; line-height:1.6;">
+            <%= e.getDescrizione() %>
+        </p>
+
+        <!-- AZIONI -->
+        <div class="card-actions" style="justify-content:flex-start; gap:12px;">
+
+            <% if (e.isIscrivibile()) { %>
+            <a class="btn primary"
+               href="${pageContext.request.contextPath}/IscrizioneEventoController?idEvento=<%= e.getIdEvento() %>">
+                Iscriviti
+            </a>
+            <% } %>
+
+            <% if (e.isDisiscrivibile()) { %>
+            <a class="btn ghost"
+               href="${pageContext.request.contextPath}/DisiscrizioneEventoController?idEvento=<%= e.getIdEvento() %>">
+                Disiscriviti
+            </a>
+            <% } %>
 
         </div>
 
-        <%
-                }
-            }
-        %>
-
     </div>
+    <% } %>
+    <% } %>
 
 </main>
-
 </body>
 </html>
