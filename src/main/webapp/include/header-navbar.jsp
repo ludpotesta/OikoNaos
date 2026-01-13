@@ -10,8 +10,8 @@
 
 <header class="topbar">
 
-    <!-- BRAND -->
-    <div class="brand">
+    <!-- SINISTRA: BRAND OIKONAOS -->
+    <div class="brand brand-left">
         <a href="${pageContext.request.contextPath}/index.jsp"
            class="brand-link">
             <img class="logo"
@@ -23,7 +23,17 @@
         </a>
     </div>
 
-    <!-- NAV LINKS -->
+    <!-- CENTRO: BOTTONE HOME (solo coinquilino loggato) -->
+    <% if (u != null && !"SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
+    <div class="nav-center">
+        <a href="${pageContext.request.contextPath}/home.jsp"
+           class="btn ghost">
+            Home
+        </a>
+    </div>
+    <% } %>
+
+    <!-- NAV LINKS (login / supervisore) -->
     <nav class="nav-links">
 
         <%-- UTENTE NON LOGGATO --%>
@@ -59,31 +69,11 @@
             Ticket
         </a>
 
-        <%-- ======================
-             COINQUILINO
-             ====================== --%>
-        <% } else { %>
-
-        <a class="btn ghost"
-           href="${pageContext.request.contextPath}/home.jsp">
-            Profilo
-        </a>
-
-        <a class="btn ghost"
-           href="${pageContext.request.contextPath}/PrenotazioneController?action=list">
-            Prenotazioni
-        </a>
-
-        <a class="btn ghost"
-           href="${pageContext.request.contextPath}/TicketController?action=list">
-            Ticket
-        </a>
-
         <% } %>
 
     </nav>
 
-    <!-- USER MENU (solo se loggato) -->
+    <!-- MENU UTENTE (solo se loggato) -->
     <% if (u != null) { %>
     <div class="user-menu-container">
 
@@ -121,7 +111,6 @@
         menu.style.display = (menu.style.display === "block") ? "none" : "block";
     }
 
-    // chiude il menu cliccando fuori
     document.addEventListener("click", function (e) {
         const menu = document.getElementById("userMenu");
         const btn = document.getElementById("menuBtn");
