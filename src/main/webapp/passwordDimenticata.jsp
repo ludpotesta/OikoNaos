@@ -12,41 +12,50 @@
 
 <main class="login-page">
 
-    <section class="login-card">
+    <div class="login-wrapper">
 
-        <h2>Recupero password</h2>
+        <section class="login-card">
 
-        <form action="RichiestaResetPasswordController" method="post">
+            <h2>Recupero password</h2>
 
-            <input type="email" name="email" placeholder="Inserisci la tua email" required>
-            <button type="submit">
-                Richiedi reset
-            </button>
+            <form action="RichiestaResetPasswordController" method="post">
+                <input type="email" name="email" placeholder="Inserisci la tua email" required>
+                <button type="submit">Richiedi reset</button>
+            </form>
 
-        </form>
+            <%
+                String success = request.getParameter("success");
+                String link = request.getParameter("link");
 
+                if ("ok".equals(success)) {
+            %>
+            <p class="info-text">
+                Se l’email esiste, riceverai le istruzioni per il reset.
+            </p>
+            <%
+                }
+            %>
+
+        </section>
+
+        <%-- LINK RESET (DEV) SOTTO LA CARD --%>
         <%
-            String success = request.getParameter("success");
-            String link = request.getParameter("link");
-
-            if ("ok".equals(success)) {
+            if ("ok".equals(success) && link != null) {
         %>
-        <p class="info-text">
-            Se l’email esiste, riceverai le istruzioni per il reset.
-        </p>
-
-        <% if (link != null) { %>
-        <p>
-            <strong>Link reset (dev):</strong><br>
-            <a href="<%= link %>"><%= link %></a>
-        </p>
-        <% } %>
-
+        <div class="reset-dev-box">
+            <span class="reset-dev-label">Reset password</span>
+            <p class="reset-dev-text">
+                Utilizza questo link per modificare la tua password:
+            </p>
+            <a href="<%= link %>" class="reset-dev-link">
+                <%= link %>
+            </a>
+        </div>
         <%
             }
         %>
 
-    </section>
+    </div>
 
 </main>
 

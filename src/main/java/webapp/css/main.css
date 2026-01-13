@@ -541,3 +541,53 @@ body{
     background: #ffffff;
     color: var(--ink);
 }
+
+.reset-dev-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 8px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.reset-dev-link {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    color: var(--brand);
+    text-decoration: underline;
+
+    word-break: break-all;
+}
+
+.reset-dev-link:hover {
+    color: var(--brand-ink);
+}
+
+.reset-dev-box {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 24px;
+    padding: 16px 18px;
+
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px dashed rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow);
+
+    text-align: center;
+}
+
+.reset-dev-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 6px 0 10px;
+}
+
+.login-card .info-text {
+    color: #e8eef6;
+}

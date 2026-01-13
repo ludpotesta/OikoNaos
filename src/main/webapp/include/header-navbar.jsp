@@ -26,9 +26,7 @@
     <!-- NAV LINKS -->
     <nav class="nav-links">
 
-        <%-- ======================
-             UTENTE NON LOGGATO
-             ====================== --%>
+        <%-- UTENTE NON LOGGATO --%>
         <% if (u == null) { %>
 
         <a class="btn ghost"

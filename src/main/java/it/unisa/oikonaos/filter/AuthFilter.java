@@ -22,15 +22,15 @@ public class AuthFilter implements Filter {
 
         HttpSession session = request.getSession(false);
 
-        // 1. ESCLUSIONI: Risorse e pagine sempre accessibili (anche non loggati)
+        // 1. RISORSE E PAGINE PUBBLICHE
         if (path.equals("/login.jsp")
                 || path.equals("/register.jsp")
                 || path.equals("/index.jsp")
                 || path.equals("/passwordDimenticata.jsp")
                 || path.equals("/resetPassword.jsp")
-                || path.equals("/ResetPasswordController")
-                || path.equals("/RichiestaResetPasswordController")
-                || path.equals("/ConfermaResetPasswordController")
+                || path.equals("/forgot-password.jsp")
+                || path.startsWith("/RichiestaResetPasswordController")
+                || path.startsWith("/ResetPasswordController")
                 || path.equals("/AutenticazioneController")
                 || path.equals("/RegistrazioneController")
                 || path.equals("/LogoutController")
@@ -46,28 +46,23 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // 2. CONTROLLO AUTENTICAZIONE: Se non sei loggato, vai al login
+        // 2. CONTROLLO AUTENTICAZIONE
         if (session == null || session.getAttribute("utente") == null) {
-            response.sendRedirect(request.getContextPath() + "/login.jsp?error=session");
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        // 3. CONTROLLO AUTORIZZAZIONE: Gestione dei ruoli
+        // 3. CONTROLLO AUTORIZZAZIONE RUOLI
         Utente utente = (Utente) session.getAttribute("utente");
 
-        // Protezione specifica per le cartelle o i controller "Supervisore"
         if (path.startsWith("/supervisore") || path.contains("Supervisore")) {
             if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
-                // Se non sei supervisore, ti mando alla home con l'errore
-                // La home.jsp non ha più il redirect interno, quindi il loop si ferma qui.
-                System.out.println("[AuthFilter] BLOCCO -> redirect login (non loggato) path=" + path);
-
                 response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
                 return;
             }
         }
 
-        // 4. ACCESSO CONSENTITO: Prosegui verso la risorsa richiesta
+        // 4. ACCESSO CONSENTITO
         chain.doFilter(req, res);
     }
 }

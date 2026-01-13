@@ -18,16 +18,18 @@
 <jsp:include page="/include/header-navbar.jsp" />
 <%
     String errore = request.getParameter("error");
+    String from = request.getParameter("from");
+
     if ("login".equals(errore)) {
 %>
 <script>
     alert("Accesso negato: non hai i permessi per visualizzare questa pagina.");
 </script>
 <%
-    } else if ("session".equals(errore)) {
+} else if ("session".equals(errore)) {
 %>
 <script>
-    alert("Accesso negato: non sei loggato, accedi o registrati per accedere.");
+    alert("Accesso negato: devi effettuare il login.");
 </script>
 <%
     }

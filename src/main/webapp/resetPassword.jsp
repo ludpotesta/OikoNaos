@@ -16,24 +16,7 @@
 
         <h2>Reimposta password</h2>
 
-        <%
-            String token = request.getParameter("token");
-            if (token == null || token.isBlank()) {
-        %>
-        <p class="login-error">
-            Link di reset non valido o scaduto.
-        </p>
-        <%
-                return;
-            }
-        %>
-
         <form action="${pageContext.request.contextPath}/ResetPasswordController" method="post">
-
-            <!-- token passato via URL -->
-            <input type="hidden"
-                   name="token"
-                   value="<%= token %>">
 
             <input type="password"
                    name="nuovaPassword"
@@ -53,7 +36,7 @@
 
         <% if ("token".equals(request.getParameter("error"))) { %>
         <p class="login-error">
-            Token non valido o scaduto.
+            Sessione di reset non valida o scaduta.
         </p>
         <% } %>
 

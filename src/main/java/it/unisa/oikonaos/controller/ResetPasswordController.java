@@ -2,16 +2,14 @@ package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.CredenzialiDAO;
 import it.unisa.oikonaos.dao.TokenResetPasswordDAO;
-import it.unisa.oikonaos.model.Utente;
-import it.unisa.oikonaos.dao.UserDAO;
-import util.PasswordValidator;
-
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.*;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.io.IOException;
-
-import org.mindrot.jbcrypt.BCrypt;
 
 @WebServlet(name = "ResetPasswordController", value = "/ResetPasswordController")
 public class ResetPasswordController extends HttpServlet {
@@ -20,19 +18,26 @@ public class ResetPasswordController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
 
-        String token = request.getParameter("token");
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("resetToken") == null) {
+            response.sendRedirect(request.getContextPath() + "/resetPassword.jsp?error=token");
+            return;
+        }
+
+        String token = (String) session.getAttribute("resetToken");
         String nuovaPassword = request.getParameter("nuovaPassword");
         String conferma = request.getParameter("confermaPassword");
 
-        if (token == null || nuovaPassword == null || conferma == null ||
+        if (nuovaPassword == null || conferma == null ||
                 nuovaPassword.isBlank() || conferma.isBlank()) {
 
-            response.sendRedirect("resetPassword.jsp?error=campi&token=" + token);
+            response.sendRedirect(request.getContextPath() + "/resetPassword.jsp?error=campi");
             return;
         }
 
         if (!nuovaPassword.equals(conferma)) {
-            response.sendRedirect("resetPassword.jsp?error=match&token=" + token);
+            response.sendRedirect(request.getContextPath() + "/resetPassword.jsp?error=match");
             return;
         }
 
@@ -41,24 +46,21 @@ public class ResetPasswordController extends HttpServlet {
             Long idUtente = tokenDAO.getIdUtenteByToken(token);
 
             if (idUtente == null) {
-                response.sendRedirect("resetPassword.jsp?error=token");
+                response.sendRedirect(request.getContextPath() + "/resetPassword.jsp?error=token");
                 return;
             }
 
-            CredenzialiDAO credDAO = new CredenzialiDAO();
-            String hash = org.mindrot.jbcrypt.BCrypt.hashpw(
-                    nuovaPassword,
-                    org.mindrot.jbcrypt.BCrypt.gensalt()
-            );
+            String hash = BCrypt.hashpw(nuovaPassword, BCrypt.gensalt());
+            new CredenzialiDAO().updatePassword(idUtente, hash);
 
-            credDAO.updatePassword(idUtente, hash);
             tokenDAO.invalidateToken(token);
+            session.invalidate(); // 🔥 IMPORTANTISSIMO
 
-            response.sendRedirect("login.jsp?success=reset");
+            response.sendRedirect(request.getContextPath() + "/login.jsp?success=reset");
 
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("resetPassword.jsp?error=generico");
+            response.sendRedirect(request.getContextPath() + "/resetPassword.jsp?error=generico");
         }
     }
 }
