@@ -73,7 +73,6 @@
 
     </nav>
 
-    <!-- MENU UTENTE (solo se loggato) -->
     <% if (u != null) { %>
     <div class="user-menu-container">
 

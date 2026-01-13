@@ -749,11 +749,6 @@ body{
     gap:12px;
 }
 
-/* =========================================================
-   LANDING PAGE – STRUTTURA DEFINITIVA (MOCKUP)
-   ========================================================= */
-
-/* BLOCCO BLU IN ALTO */
 .landing-top{
     display:flex;
     justify-content:center;
@@ -783,7 +778,6 @@ body{
     line-height:1.65;
 }
 
-/* SEZIONE SOTTO: TESTO + MASCOTTE */
 .landing-bottom{
     max-width:1200px;
     margin:0 auto;
@@ -794,7 +788,6 @@ body{
     align-items:center;
 }
 
-/* CARD BIANCA – COS’È OIKONAOS */
 .landing-info{
     background:#fff;
     padding:36px 38px;
@@ -815,13 +808,11 @@ body{
     line-height:1.75;
 }
 
-/* Testo etimologico (spiegazione del "Tempio") */
 .landing-info p:first-of-type{
     font-size:0.95rem;
     color:var(--ink-soft);
 }
 
-/* MASCOTTE (RIUSATA, CONTROLLATA) */
 .landing-mascot{
     display:flex;
     justify-content:center;
@@ -864,8 +855,6 @@ body{
     }
 }
 
-/* HEADER HOME COINQUILINO CON MASCOTTE */
-
 .header-with-mascot{
     display:flex;
     align-items:center;
@@ -893,8 +882,6 @@ body{
     display:block;
     filter:drop-shadow(0 16px 28px rgba(0,0,0,.15));
 }
-
-/* ===== LANDING: LOGO + TESTO (LAYOUT 40/60) ===== */
 
 .landing-bottom{
     max-width:1200px;
@@ -1103,4 +1090,27 @@ body{
     margin-bottom: 48px;   /* spazio tra eventi */
     padding-bottom: 24px;
     border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+
+.status.active {
+    background-color: #e6f4ea;
+    color: #1e7e34;
+    font-weight: 600;
+}
+
+.status.terminated {
+    background-color: #fbeaea;
+    color: #a71d2a;
+    font-weight: 600;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group.full,
+.form-actions.full {
+    grid-column: 1 / -1;
 }

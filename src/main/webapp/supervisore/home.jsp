@@ -5,7 +5,6 @@
     <title>Area Supervisore - OikoNaos</title>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
     <style>
-        /* Aggiunta di un piccolo tweak locale per le card della dashboard */
         .dashboard-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -52,6 +51,12 @@
                 <span class="icon-box">📅</span>
                 <span style="font-size: 1.2rem; font-weight: 800; color: var(--ink);">Gestione Prenotazioni</span>
                 <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">Monitora l'occupazione delle sale e il riepilogo globale.</p>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/SupervisoreEventiController" class="btn ghost admin-card" style="padding: 40px 20px; height: auto; box-shadow: var(--shadow);">
+                <span class="icon-box">📌</span>
+                <span style="font-size: 1.2rem; font-weight: 800; color: var(--ink);">Gestione Eventi</span>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">Crea, modifica ed elimina gli eventi della community.</p>
             </a>
         </div>
     </div>

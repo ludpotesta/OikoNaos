@@ -30,7 +30,16 @@ public class ConfermaIscrizioneEventoController extends HttpServlet {
 
         try {
             EventoDAO dao = new EventoDAO();
-            EventoBachecaDTO evento = dao.getEventoById(idEvento, u.getIdUtente());
+
+            EventoBachecaDTO evento =
+                    dao.getEventoById(idEvento, u.getIdUtente());
+
+            if (evento == null) {
+                response.sendRedirect(
+                        request.getContextPath() + "/bachecaEventi.jsp?error=generico"
+                );
+                return;
+            }
 
             request.setAttribute("evento", evento);
             request.getRequestDispatcher("/confermaIscrizioneEvento.jsp")
