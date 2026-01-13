@@ -22,9 +22,6 @@
 
     <section class="dashboard-card">
 
-        <!-- ======================
-             DATI PERSONALI
-             ====================== -->
         <h2 class="section-title">Dati personali</h2>
 
         <form action="${pageContext.request.contextPath}/ModificaDatiController"
@@ -72,9 +69,7 @@
 
         <hr class="divider">
 
-        <!-- ======================
-             CREDENZIALI
-             ====================== -->
+
         <h2 class="section-title">Credenziali di accesso</h2>
 
         <form action="${pageContext.request.contextPath}/ModificaCredenzialiController"

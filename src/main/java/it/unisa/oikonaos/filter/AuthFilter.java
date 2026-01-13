@@ -34,6 +34,7 @@ public class AuthFilter implements Filter {
                 || path.equals("/AutenticazioneController")
                 || path.equals("/RegistrazioneController")
                 || path.equals("/LogoutController")
+                || path.startsWith("/BachecaEventiController")
                 || path.startsWith("/assets/")
                 || path.startsWith("/css/")
                 || path.startsWith("/js/")

@@ -76,12 +76,12 @@
         </a>
 
         <!-- BACHECA EVENTI -->
-        <div class="dashboard-card disabled">
+        <a href="${pageContext.request.contextPath}/BachecaEventiController"
+           class="dashboard-card dashboard-link">
             <span class="icon">📌</span>
-            <h3>Bacheca Eventi</h3>
-            <p>Avvisi e comunicazioni della community.</p>
-            <span class="badge">Coming soon</span>
-        </div>
+                <h3>Bacheca Eventi</h3>
+                <p>Avvisi e comunicazioni della comunità.</p>
+        </a>
 
         <!-- SPESE -->
         <a href="${pageContext.request.contextPath}/SpeseController"
