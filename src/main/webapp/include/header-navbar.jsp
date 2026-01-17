@@ -10,33 +10,31 @@
 
 <header class="topbar">
 
-    <!-- SINISTRA: BRAND OIKONAOS -->
-    <div class="brand brand-left">
-        <a href="${pageContext.request.contextPath}/index.jsp"
-           class="brand-link">
+    <div class="brand">
+        <a href="<%=
+        (u == null)
+            ? request.getContextPath() + "/index.jsp"
+            : (
+                "SUPERVISORE".equalsIgnoreCase(u.getRuolo())
+                    ? request.getContextPath() + "/supervisore/home.jsp"
+                    : request.getContextPath() + "/home.jsp"
+              )
+    %>" class="brand-link">
+
             <img class="logo"
                  src="${pageContext.request.contextPath}/assets/oikonaosLogo.png"
                  alt="Logo OikoNaos" />
+
             <span class="brand-name">
-                Oiko<span class="brand-accent">Naos</span>
-            </span>
+            Oiko<span class="brand-accent">Naos</span>
+        </span>
         </a>
     </div>
 
-    <!-- CENTRO: BOTTONE HOME (solo coinquilino loggato) -->
-    <% if (u != null && !"SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
-    <div class="nav-center">
-        <a href="${pageContext.request.contextPath}/home.jsp"
-           class="btn ghost">
-            Home
-        </a>
-    </div>
-    <% } %>
+    <div></div>
 
-    <!-- NAV LINKS (login / supervisore) -->
     <nav class="nav-links">
 
-        <%-- UTENTE NON LOGGATO --%>
         <% if (u == null) { %>
 
         <a class="btn ghost"
@@ -49,59 +47,40 @@
             Registrati
         </a>
 
-        <%-- ======================
-             SUPERVISORE
-             ====================== --%>
-        <% } else if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
+        <% } else { %>
 
-        <a class="btn ghost"
-           href="${pageContext.request.contextPath}/supervisore/home.jsp">
-            Home
-        </a>
+        <div class="user-menu-container">
 
-        <a class="btn ghost"
-           href="${pageContext.request.contextPath}/SupervisorePrenotazioniController?action=list">
-            Prenotazioni
-        </a>
+            <button type="button"
+                    class="burger"
+                    id="menuBtn"
+                    onclick="toggleMenu()"
+                    aria-label="Menu utente">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
 
-        <a class="btn ghost"
-           href="${pageContext.request.contextPath}/SupervisoreTicketController?action=list">
-            Ticket
-        </a>
+            <div class="menu" id="userMenu">
+                <div class="menu-header">
+                    <small>Loggato come</small>
+                    <strong><%= u.getNome() %></strong>
+                </div>
+
+                <a href="${pageContext.request.contextPath}/LogoutController"
+                   class="logout-link">
+                    Esci
+                </a>
+            </div>
+
+        </div>
 
         <% } %>
 
     </nav>
 
-    <% if (u != null) { %>
-    <div class="user-menu-container">
-
-        <button type="button"
-                class="burger"
-                id="menuBtn"
-                aria-label="Menu utente"
-                onclick="toggleMenu()">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <div class="menu" id="userMenu">
-            <div class="menu-header">
-                <small>Loggato come</small>
-                <strong><%= u.getNome() %></strong>
-            </div>
-
-            <a href="${pageContext.request.contextPath}/LogoutController"
-               class="logout-link">
-                Esci
-            </a>
-        </div>
-
-    </div>
-    <% } %>
-
 </header>
+
 
 <script>
     function toggleMenu() {
