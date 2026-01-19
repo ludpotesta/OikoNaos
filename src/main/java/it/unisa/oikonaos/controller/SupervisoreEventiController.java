@@ -60,9 +60,7 @@ public class SupervisoreEventiController extends HttpServlet {
                 return;
             }
 
-            /* =========================
-               FORM NUOVO EVENTO
-               ========================= */
+            /* FORM NUOVO EVENTO */
             if ("new".equals(action)) {
                 request.getRequestDispatcher("/supervisore/nuovoEvento.jsp")
                         .forward(request, response);
@@ -122,6 +120,42 @@ public class SupervisoreEventiController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        String action = request.getParameter("action");
+        EventoDAO dao = new EventoDAO();
+
+    /* CANCELLA EVENTO */
+        if ("delete".equals(action)) {
+            try {
+                String rawId = request.getParameter("idEvento");
+
+                if (rawId == null || rawId.isBlank()) {
+                    response.sendRedirect(
+                            request.getContextPath() +
+                                    "/SupervisoreEventiController?error=campi"
+                    );
+                    return;
+                }
+
+                long idEvento = Long.parseLong(rawId);
+                dao.eliminaEvento(idEvento);   // HARD DELETE
+
+                response.sendRedirect(
+                        request.getContextPath() +
+                                "/SupervisoreEventiController"
+                );
+                return;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect(
+                        request.getContextPath() +
+                                "/SupervisoreEventiController?error=generic"
+                );
+                return;
+            }
+        }
+
+    /* CREAZIONE NUOVO EVENTO */
         try {
             String titolo = request.getParameter("titolo");
             String descrizione = request.getParameter("descrizione");
@@ -161,8 +195,8 @@ public class SupervisoreEventiController extends HttpServlet {
             evento.setDataFine(dataFine);
             evento.setIdOrganizzatore(1L);
 
-            EventoDAO dao = new EventoDAO();
             dao.creaEvento(evento);
+
             response.sendRedirect(
                     request.getContextPath() +
                             "/SupervisoreEventiController"

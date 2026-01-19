@@ -32,9 +32,7 @@ public class SupervisoreTicketController extends HttpServlet {
 
         try {
 
-            /* =====================
-               DETTAGLI TICKET
-               ===================== */
+            /* DETTAGLI TICKET */
             if ("details".equals(action)) {
 
                 long idTicket;
@@ -45,9 +43,7 @@ public class SupervisoreTicketController extends HttpServlet {
                     return;
                 }
 
-                // Recupera ticket + autore
                 Ticket ticket = ticketDAO.doRetrieveByIdWithAutore(idTicket);
-
                 if (ticket == null) {
                     response.sendRedirect(request.getContextPath() + "/SupervisoreTicketController");
                     return;
@@ -66,9 +62,7 @@ public class SupervisoreTicketController extends HttpServlet {
                 return;
             }
 
-            /* =====================
-               LISTA TICKET
-               ===================== */
+            /* LISTA TICKET */
             List<Ticket> lista = ticketDAO.doRetrieveAll();
             request.setAttribute("listaGlobaleTicket", lista);
 
@@ -87,25 +81,39 @@ public class SupervisoreTicketController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        Utente utente = (session != null) ? (Utente) session.getAttribute("utente") : null;
+
+        // Solo SUPERVISORE
+        if (utente == null || !"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
 
+        /* AGGIORNA STATO TICKET */
         if ("updateStato".equals(action)) {
             try {
-                long id = Long.parseLong(request.getParameter("idTicket"));
+                long idTicket = Long.parseLong(request.getParameter("idTicket"));
                 String nuovoStato = request.getParameter("nuovoStato");
 
-                new TicketDAO().updateStato(id, nuovoStato);
+                new TicketDAO().updateStato(idTicket, nuovoStato);
 
                 response.sendRedirect(
                         request.getContextPath() + "/SupervisoreTicketController"
                 );
+                return;
 
             } catch (Exception e) {
                 e.printStackTrace();
                 response.sendRedirect(
                         request.getContextPath() + "/SupervisoreTicketController?error=update"
                 );
+                return;
             }
         }
+
+        response.sendRedirect(request.getContextPath() + "/SupervisoreTicketController");
     }
 }
