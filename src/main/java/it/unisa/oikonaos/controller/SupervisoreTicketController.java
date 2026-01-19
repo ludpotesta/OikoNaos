@@ -19,9 +19,7 @@ public class SupervisoreTicketController extends HttpServlet {
             throws ServletException, IOException {
 
         HttpSession session = request.getSession(false);
-        Utente utente = (session != null)
-                ? (Utente) session.getAttribute("utente")
-                : null;
+        Utente utente = (session != null) ? (Utente) session.getAttribute("utente") : null;
 
         // Solo SUPERVISORE
         if (utente == null || !"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
@@ -30,7 +28,7 @@ public class SupervisoreTicketController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
-        TicketDAO dao = new TicketDAO();
+        TicketDAO ticketDAO = new TicketDAO();
 
         try {
 
@@ -47,7 +45,8 @@ public class SupervisoreTicketController extends HttpServlet {
                     return;
                 }
 
-                Ticket ticket = dao.doRetrieveByIdWithAutore(idTicket);
+                // Recupera ticket + autore
+                Ticket ticket = ticketDAO.doRetrieveByIdWithAutore(idTicket);
 
                 if (ticket == null) {
                     response.sendRedirect(request.getContextPath() + "/SupervisoreTicketController");
@@ -55,14 +54,14 @@ public class SupervisoreTicketController extends HttpServlet {
                 }
 
                 AllegatoDAO allegatoDAO = new AllegatoDAO();
+
                 request.setAttribute("ticket", ticket);
                 request.setAttribute(
                         "allegati",
                         allegatoDAO.doRetrieveByTicket(idTicket)
                 );
 
-                // RIUSO DELLA STESSA JSP
-                request.getRequestDispatcher("/dettagliTicket.jsp")
+                request.getRequestDispatcher("/supervisore/dettagliTicketSupervisore.jsp")
                         .forward(request, response);
                 return;
             }
@@ -70,8 +69,9 @@ public class SupervisoreTicketController extends HttpServlet {
             /* =====================
                LISTA TICKET
                ===================== */
-            List<Ticket> lista = dao.doRetrieveAll();
+            List<Ticket> lista = ticketDAO.doRetrieveAll();
             request.setAttribute("listaGlobaleTicket", lista);
+
             request.getRequestDispatcher("/supervisore/ticketSupervisore.jsp")
                     .forward(request, response);
 
