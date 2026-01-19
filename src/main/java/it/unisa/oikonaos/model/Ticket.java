@@ -15,6 +15,8 @@ public class Ticket implements Serializable {
     private Timestamp dataChiusura;
     private long idAutore;
     private long idSupervisore;
+    private String nomeAutore;
+    private String cognomeAutore;
 
     public Ticket() {
     }
@@ -87,6 +89,22 @@ public class Ticket implements Serializable {
     }
     public void setIdSupervisor(long idSupervisore) {
         this.idSupervisore = idSupervisore;
+    }
+
+    public String getNomeAutore() {
+        return nomeAutore;
+    }
+
+    public void setNomeAutore(String nomeAutore) {
+        this.nomeAutore = nomeAutore;
+    }
+
+    public String getCognomeAutore() {
+        return cognomeAutore;
+    }
+
+    public void setCognomeAutore(String cognomeAutore) {
+        this.cognomeAutore = cognomeAutore;
     }
 }
 

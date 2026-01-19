@@ -64,39 +64,40 @@ public class TicketController extends HttpServlet {
                 return;
             } else if ("details".equals(action)) {
 
-            long idTicket;
+                long idTicket;
 
-            try {
-                idTicket = Long.parseLong(request.getParameter("idTicket"));
-            } catch (NumberFormatException e) {
-                response.sendRedirect(request.getContextPath() + "/TicketController");
+                try {
+                    idTicket = Long.parseLong(request.getParameter("idTicket"));
+                } catch (NumberFormatException e) {
+                    response.sendRedirect(request.getContextPath() + "/TicketController");
+                    return;
+                }
+
+                Ticket ticket = dao.doRetrieveByIdAndUtente(
+                        idTicket,
+                        utente.getIdUtente()
+                );
+
+                if (ticket == null) {
+                    response.sendRedirect(request.getContextPath() + "/TicketController");
+                    return;
+                }
+
+                AllegatoDAO allegatoDAO = new AllegatoDAO();
+                request.setAttribute(
+                        "allegati",
+                        allegatoDAO.doRetrieveByTicket(idTicket)
+                );
+
+                request.setAttribute("ticket", ticket);
+                request.getRequestDispatcher("/dettagliTicket.jsp")
+                        .forward(request, response);
                 return;
             }
 
-            Ticket ticket = dao.doRetrieveByIdAndUtente(
-                    idTicket,
-                    utente.getIdUtente()
-            );
-
-            if (ticket == null) {
-                response.sendRedirect(request.getContextPath() + "/TicketController");
-                return;
-            }
-
-            AllegatoDAO allegatoDAO = new AllegatoDAO();
-            request.setAttribute(
-                    "allegati",
-                    allegatoDAO.doRetrieveByTicket(idTicket)
-            );
-
-            request.setAttribute("ticket", ticket);
-            request.getRequestDispatcher("/dettagliTicket.jsp")
-                    .forward(request, response);
-            return;
-        }
-
-        // action non riconosciuta
+            // action non riconosciuta
             response.sendRedirect("home.jsp");
+
 
         } catch (Exception e) {
             throw new ServletException(e);

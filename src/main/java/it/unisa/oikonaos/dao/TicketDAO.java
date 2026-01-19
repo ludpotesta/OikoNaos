@@ -217,4 +217,46 @@ public class TicketDAO {
 
         return null;
     }
+
+    public Ticket doRetrieveByIdWithAutore(long idTicket) {
+
+        String sql = """
+        SELECT t.*, u.Nome, u.Cognome
+        FROM ticket t
+        JOIN utente u ON t.ID_Autore = u.ID_Utente
+        WHERE t.ID_Ticket = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idTicket);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Ticket t = new Ticket();
+
+                t.setIdTicket(rs.getLong("ID_Ticket"));
+                t.setTitolo(rs.getString("Titolo"));
+                t.setDescrizione(rs.getString("Descrizione"));
+                t.setCategoria(rs.getString("Categoria"));
+                t.setPriorita(rs.getString("Priorita"));
+                t.setStato(rs.getString("Stato"));
+                t.setDataApertura(rs.getTimestamp("DataApertura"));
+
+                //info autore (SOLO per supervisore)
+                t.setNomeAutore(rs.getString("Nome"));
+                t.setCognomeAutore(rs.getString("Cognome"));
+
+                return t;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+
 }
