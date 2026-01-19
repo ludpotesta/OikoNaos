@@ -1,10 +1,13 @@
 package it.unisa.oikonaos.controller;
 
+import it.unisa.oikonaos.dao.AllegatoDAO;
 import it.unisa.oikonaos.dao.TicketDAO;
-import it.unisa.oikonaos.model.*;
-import jakarta.servlet.*;
+import it.unisa.oikonaos.model.Ticket;
+import it.unisa.oikonaos.model.Utente;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -15,19 +18,60 @@ public class SupervisoreTicketController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        Utente utente = (Utente) request.getSession().getAttribute("utente");
+        HttpSession session = request.getSession(false);
+        Utente utente = (session != null)
+                ? (Utente) session.getAttribute("utente")
+                : null;
 
-        // Protezione: solo SUPERVISORE
+        // Solo SUPERVISORE
         if (utente == null || !"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
+        String action = request.getParameter("action");
+        TicketDAO dao = new TicketDAO();
+
         try {
-            TicketDAO dao = new TicketDAO();
+
+            /* =====================
+               DETTAGLI TICKET
+               ===================== */
+            if ("details".equals(action)) {
+
+                long idTicket;
+                try {
+                    idTicket = Long.parseLong(request.getParameter("idTicket"));
+                } catch (NumberFormatException e) {
+                    response.sendRedirect(request.getContextPath() + "/SupervisoreTicketController");
+                    return;
+                }
+
+                Ticket ticket = dao.doRetrieveByIdWithAutore(idTicket);
+
+                if (ticket == null) {
+                    response.sendRedirect(request.getContextPath() + "/SupervisoreTicketController");
+                    return;
+                }
+
+                AllegatoDAO allegatoDAO = new AllegatoDAO();
+                request.setAttribute("ticket", ticket);
+                request.setAttribute(
+                        "allegati",
+                        allegatoDAO.doRetrieveByTicket(idTicket)
+                );
+
+                // RIUSO DELLA STESSA JSP
+                request.getRequestDispatcher("/dettagliTicket.jsp")
+                        .forward(request, response);
+                return;
+            }
+
+            /* =====================
+               LISTA TICKET
+               ===================== */
             List<Ticket> lista = dao.doRetrieveAll();
             request.setAttribute("listaGlobaleTicket", lista);
-
             request.getRequestDispatcher("/supervisore/ticketSupervisore.jsp")
                     .forward(request, response);
 
@@ -52,7 +96,6 @@ public class SupervisoreTicketController extends HttpServlet {
 
                 new TicketDAO().updateStato(id, nuovoStato);
 
-                //redirect corretto
                 response.sendRedirect(
                         request.getContextPath() + "/SupervisoreTicketController"
                 );
@@ -66,4 +109,3 @@ public class SupervisoreTicketController extends HttpServlet {
         }
     }
 }
-

@@ -135,7 +135,12 @@
                     #<%= t.getIdTicket() %>
                 </td>
 
-                <td><%= t.getTitolo() %></td>
+                <td>
+                    <a href="<%= request.getContextPath() %>/SupervisoreTicketController?action=details&idTicket=<%= t.getIdTicket() %>"
+                       class="link-primary">
+                        <%= t.getTitolo() %>
+                    </a>
+                </td>
 
                 <td>
                     <span class="status-badge <%= statusClass %>">
