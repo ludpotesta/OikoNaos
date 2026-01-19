@@ -52,8 +52,9 @@
             <div class="form-group">
                 <label for="categoria">Categoria</label>
                 <select id="categoria" name="categoria" required>
-                    <option value="Hardware">Hardware</option>
-                    <option value="Software">Software</option>
+                    <option value="SPAZIO_COMUNE">Spazio comune</option>
+                    <option value="ABITAZIONE_PRIVATA">Abitazione privata</option>
+                    <option value="ALTRO">Altro</option>
                 </select>
             </div>
 

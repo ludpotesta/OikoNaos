@@ -62,7 +62,12 @@
                 <tbody>
                 <% for (Ticket t : lista) { %>
                 <tr>
-                    <td><%= t.getTitolo() %></td>
+                    <td>
+                        <a class="ticket-title-link"
+                           href="<%= request.getContextPath() %>/TicketController?action=details&idTicket=<%= t.getIdTicket() %>">
+                            <%= t.getTitolo() %>
+                        </a>
+                    </td>
                     <td><%= t.getCategoria() %></td>
                     <td><%= t.getPriorita() %></td>
                     <td>

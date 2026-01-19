@@ -24,4 +24,17 @@
         <servlet-name>HomeController</servlet-name>
         <url-pattern>/HomeController</url-pattern>
     </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DownloadAllegato</servlet-name>
+        <servlet-class>
+            it.unisa.oikonaos.controller.DownloadAllegatoController
+        </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DownloadAllegato</servlet-name>
+        <url-pattern>/download-allegato</url-pattern>
+    </servlet-mapping>
+
 </web-app>

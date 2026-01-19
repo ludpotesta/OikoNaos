@@ -1114,3 +1114,13 @@ body{
 .form-actions.full {
     grid-column: 1 / -1;
 }
+
+.ticket-title-link {
+    color: var(--text);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.ticket-title-link:hover {
+    text-decoration: underline;
+}

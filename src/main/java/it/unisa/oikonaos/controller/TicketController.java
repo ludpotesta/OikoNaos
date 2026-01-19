@@ -2,6 +2,7 @@ package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.TicketDAO;
 import it.unisa.oikonaos.dao.AllegatoDAO;
+import it.unisa.oikonaos.model.Ticket;
 import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -18,7 +19,8 @@ import java.util.Collection;
         maxRequestSize = 25 * 1024 * 1024     // max 5 file
 )
 public class TicketController extends HttpServlet {
-
+    // CARTELLA FISICA DEGLI UPLOAD
+    private static final String UPLOAD_DIR = "C:/OikoNaos/uploads";
 
     //VISUALIZZAZIONE TICKET
     @Override
@@ -60,9 +62,40 @@ public class TicketController extends HttpServlet {
                 request.getRequestDispatcher("ticket.jsp")
                         .forward(request, response);
                 return;
+            } else if ("details".equals(action)) {
+
+            long idTicket;
+
+            try {
+                idTicket = Long.parseLong(request.getParameter("idTicket"));
+            } catch (NumberFormatException e) {
+                response.sendRedirect(request.getContextPath() + "/TicketController");
+                return;
             }
 
-            // action non riconosciuta
+            Ticket ticket = dao.doRetrieveByIdAndUtente(
+                    idTicket,
+                    utente.getIdUtente()
+            );
+
+            if (ticket == null) {
+                response.sendRedirect(request.getContextPath() + "/TicketController");
+                return;
+            }
+
+            AllegatoDAO allegatoDAO = new AllegatoDAO();
+            request.setAttribute(
+                    "allegati",
+                    allegatoDAO.doRetrieveByTicket(idTicket)
+            );
+
+            request.setAttribute("ticket", ticket);
+            request.getRequestDispatcher("/dettagliTicket.jsp")
+                    .forward(request, response);
+            return;
+        }
+
+        // action non riconosciuta
             response.sendRedirect("home.jsp");
 
         } catch (Exception e) {
@@ -91,7 +124,9 @@ public class TicketController extends HttpServlet {
         try {
             TicketDAO ticketDAO = new TicketDAO();
 
-            //CANCELLA TICKET
+            // =====================
+            // CANCELLA TICKET
+            // =====================
             if ("delete".equals(action)) {
                 long idTicket = Long.parseLong(request.getParameter("idTicket"));
 
@@ -100,15 +135,17 @@ public class TicketController extends HttpServlet {
                         utente.getIdUtente()
                 );
 
-                if (!deleted) {
-                    response.sendRedirect("TicketController?error=not_deletable");
-                } else {
-                    response.sendRedirect("TicketController?msg=deleted");
-                }
+                response.sendRedirect(
+                        deleted
+                                ? "TicketController?msg=deleted"
+                                : "TicketController?error=not_deletable"
+                );
                 return;
             }
 
-            //CREA NUOVO TICKET
+            // =====================
+            // CREA TICKET
+            // =====================
             String titolo = request.getParameter("titolo");
             String descrizione = request.getParameter("descrizione");
             String categoria = request.getParameter("categoria");
@@ -119,7 +156,6 @@ public class TicketController extends HttpServlet {
                 return;
             }
 
-            // Crea ticket
             long idTicket = ticketDAO.creaTicket(
                     titolo,
                     descrizione,
@@ -128,40 +164,40 @@ public class TicketController extends HttpServlet {
                     utente.getIdUtente()
             );
 
-            /* =========================
-               GESTIONE ALLEGATI (MAX 5)
-               ========================= */
+            // =====================
+            // GESTIONE ALLEGATI
+            // =====================
             AllegatoDAO allegatoDAO = new AllegatoDAO();
-            Collection<Part> parts = request.getParts();
+
+            File uploadDir = new File(UPLOAD_DIR);
+            if (!uploadDir.exists()) uploadDir.mkdirs();
+
             int count = 0;
 
-            String uploadPath = getServletContext().getRealPath("/uploads");
-            File dir = new File(uploadPath);
-            if (!dir.exists()) dir.mkdirs();
-
-            for (Part part : parts) {
-                if ("allegati".equals(part.getName()) && part.getSize() > 0) {
-
-                    if (count >= 5) break;
-
-                    String fileName = Paths.get(part.getSubmittedFileName())
-                            .getFileName().toString();
-
-                    File file = new File(dir, fileName);
-                    part.write(file.getAbsolutePath());
-
-                    allegatoDAO.salva(
-                            fileName,
-                            "uploads/" + fileName,
-                            part.getContentType(),
-                            idTicket
-                    );
-
-                    count++;
+            for (Part part : request.getParts()) {
+                if (!"allegati".equals(part.getName()) || part.getSize() == 0) {
+                    continue;
                 }
+
+                if (count >= 5) break;
+
+                String fileName = Paths.get(part.getSubmittedFileName())
+                        .getFileName().toString();
+
+                File file = new File(uploadDir, fileName);
+                part.write(file.getAbsolutePath());
+
+                // SALVIAMO IL PERCORSO LOGICO
+                allegatoDAO.salva(
+                        fileName,
+                        file.getAbsolutePath(), // ✅ PERCORSO REALE
+                        part.getContentType(),
+                        idTicket
+                );
+
+                count++;
             }
 
-            // Torna alla lista ticket
             response.sendRedirect("TicketController");
 
         } catch (Exception e) {

@@ -162,7 +162,6 @@ public class TicketDAO {
     /* ==========================================================
        CANCELLAZIONE SICURA TICKET (SOLO AUTORE, SOLO APERTO)
        ========================================================== */
-
     public boolean deleteTicketIfAperto(long idTicket, long idAutore)
             throws Exception {
 
@@ -181,5 +180,41 @@ public class TicketDAO {
 
             return ps.executeUpdate() > 0;
         }
+    }
+
+    public Ticket doRetrieveByIdAndUtente(long idTicket, long idUtente) {
+
+        String sql = """
+        SELECT *
+        FROM ticket
+        WHERE ID_Ticket = ?
+          AND ID_Autore = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idTicket);
+            ps.setLong(2, idUtente);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Ticket t = new Ticket();
+                t.setIdTicket(rs.getLong("ID_Ticket"));
+                t.setTitolo(rs.getString("Titolo"));
+                t.setDescrizione(rs.getString("Descrizione"));
+                t.setCategoria(rs.getString("Categoria"));
+                t.setPriorita(rs.getString("Priorita"));
+                t.setStato(rs.getString("Stato"));
+                t.setDataApertura(rs.getTimestamp("DataApertura"));
+                return t;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }
