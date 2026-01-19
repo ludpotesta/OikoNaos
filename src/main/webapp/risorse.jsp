@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="it.unisa.oikonaos.model.Utente" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="it">
 <head>
@@ -29,11 +30,17 @@
     <section class="dashboard-grid">
         <h2>Risorse richieste</h2>
 
-            <c:forEach var="r" items="${risorseRichieste}">
+        <c:if test="${empty richiesteAttive}">
+            <p>Nessuna richiesta attiva.</p>
+        </c:if>
+
+            <c:forEach var="r" items="${richiesteAttive}">
                 <div class="dashboard-card active">
-                    <h3>${r.nome}</h3>
-                    <p>${r.descrizione}</p>
-                    <span class="badge">${r.stato}</span>
+                    <h3>${r.nomeRisorsa}</h3>
+                    <p>
+                        Dal ${r.dataInizio} al ${r.dataFine}
+                    </p>
+                    <strong>Stato: ${r.stato}</strong>
                 </div>
             </c:forEach>
 
@@ -41,23 +48,35 @@
     </section>
 
     <!-- GRID DI TUTTE LE RISORSE -->
-    <section class="dashboard-grid">
-        <h2>Risorse disponibili</h2>
+    <h2>Risorse Disponibili</h2>
+    <c:if test="${empty risorseDisponibili}">
+        <p>Nessuna risorsa disponibile.</p>
+    </c:if>
 
-            <c:forEach var="r" items="${risorseDisponibili}">
-                <div class="dashboard-card active">
-                    <h3>${r.nome}</h3>
-                    <p>${r.descrizione}</p>
+    <c:forEach var="r" items="${risorseDisponibili}">
+        <div class="dashboard-card active">
+            <h3>${r.nome}</h3>
+            <p>${r.descrizione}</p>
 
-                    <form method="post" action="RisorsaController">
-                        <input type="hidden" name="idRisorsa" value="${r.id}">
-                        <button type="submit">Richiedi</button>
-                    </form>
-                </div>
-            </c:forEach>
+            <form action="RisorsaController" method="post">
+                <input type="hidden" name="action" value="richiedi">
+                <input type="hidden" name="idRisorsa" value="${r.idRisorsa}">
 
+                <label>Dal:</label>
+                <input type="datetime-local" name="dataInizio" required>
 
-    </section>
+                <label>Al:</label>
+                <input type="datetime-local" name="dataFine" required>
+
+                <label>
+                    <input type="checkbox" name="accettaRegole" required>
+                    Accetto le regole
+                </label>
+
+                <button type="submit">Richiedi</button>
+            </form>
+        </div>
+    </c:forEach>
 
 </main>
 </body>

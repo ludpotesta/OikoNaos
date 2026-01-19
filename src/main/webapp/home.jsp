@@ -92,12 +92,12 @@
         </a>
 
         <!-- RISORSE -->
-        <div class="dashboard-card disabled">
+        <a href="${pageContext.request.contextPath}/RisorsaController"
+           class="dashboard-card active">
             <span class="icon">🧰</span>
             <h3>Risorse</h3>
-            <p>Strumenti e risorse comuni.</p>
-            <span class="badge">Coming soon</span>
-        </div>
+            <p>Gestisci le prenotazioni delle risorse comuni.</p>
+        </a>
 
     </section>
 
