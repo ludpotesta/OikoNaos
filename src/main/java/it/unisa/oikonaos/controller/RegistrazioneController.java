@@ -52,6 +52,7 @@ public class RegistrazioneController extends HttpServlet {
         }
 
         try (Connection con = database.getConnection()) {
+            System.out.println("DB usato = " + con.getCatalog());
 
             con.setAutoCommit(false);
 
