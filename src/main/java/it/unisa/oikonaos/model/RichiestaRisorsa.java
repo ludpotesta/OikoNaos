@@ -1,37 +1,50 @@
 package it.unisa.oikonaos.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
 
 public class RichiestaRisorsa {
-    private long id;
-    private Timestamp dataRichiesta;
+    private long idRichiesta;
+    private LocalDateTime dataInizio;
+    private LocalDateTime dataFine;
     private String stato;
-    private String note;
-    private long idRisorsa;
+    private boolean accettazioneRegole;
     private long idUtente;
-    private Long idSupervisore;
+    private long idRisorsa;
+
+    // campi utili per le JSP
+    private String nomeRisorsa;
+    private String nomeUtente;
 
     public RichiestaRisorsa() {
     }
 
-    public long getId() { return id; }
-    public void setId(long id) { this.id = id; }
+    public long getIdRichiesta() { return idRichiesta; }
+    public void setIdRichiesta(long id) { this.idRichiesta = id; }
 
-    public Timestamp getDataRichiesta() { return dataRichiesta; }
-    public void setDataRichiesta(Timestamp dataRichiesta) { this.dataRichiesta = dataRichiesta; }
+    public LocalDateTime getDataInizio() { return dataInizio; }
+    public void setDataInizio(Timestamp dataInizio) { this.dataInizio = dataInizio.toLocalDateTime(); }
+
+    public LocalDateTime getDataFine() { return dataFine; }
+    public void setDataFine(Timestamp dataFine) { this.dataFine = dataFine.toLocalDateTime(); }
 
     public String getStato() { return stato; }
     public void setStato(String stato) { this.stato = stato; }
 
-    public String getNote() { return note; }
-    public void setNote(String note) { this.note = note; }
-
-    public long getIdRisorsa() { return idRisorsa; }
-    public void setIdRisorsa(long idRisorsa) { this.idRisorsa = this.idRisorsa; }
+    public boolean getAccettazioneRegole() { return accettazioneRegole; }
+    public void setAccettazioneRegole(boolean accetta) { this.accettazioneRegole = accetta; }
 
     public long getIdUtente() { return idUtente; }
     public void setIdUtente(long idUtente) { this.idUtente = idUtente; }
 
-    public Long getIdSupervisore() { return idSupervisore; }
-    public void setIdSupervisore(Long idSupervisore) { this.idSupervisore = idSupervisore; }
+    public long getIdRisorsa() { return idRisorsa; }
+    public void setIdRisorsa(long idRisorsa) { this.idRisorsa = this.idRisorsa; }
+
+    public String getNomeRisorsa() { return nomeRisorsa; }
+    public void setNomeRisorsa(String nomeRisorsa) { this.nomeRisorsa = this.nomeRisorsa; }
+
+    public String getNomeUtente() { return nomeUtente; }
+    public void setNomeUtente(String nomeUtente) { this.nomeUtente = this.nomeUtente; }
+
+
 }
