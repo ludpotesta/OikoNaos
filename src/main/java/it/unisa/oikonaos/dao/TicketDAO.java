@@ -259,4 +259,70 @@ public class TicketDAO {
     }
 
 
+    public List<Ticket> findByFiltri(
+            String stato,
+            String priorita,
+            Date dataCreazione
+    ) throws Exception {
+
+        List<Ticket> tickets = new ArrayList<>();
+
+        StringBuilder sql = new StringBuilder(
+                "SELECT * FROM ticket WHERE 1=1 "
+        );
+
+        if (stato != null && !stato.isBlank()) {
+            sql.append("AND Stato = ? ");
+        }
+
+        if (priorita != null && !priorita.isBlank()) {
+            sql.append("AND Priorita = ? ");
+        }
+
+        if (dataCreazione != null) {
+            sql.append("AND DATE(DataApertura) = ? ");
+        }
+
+        sql.append("ORDER BY DataApertura DESC");
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            int index = 1;
+
+            if (stato != null && !stato.isBlank()) {
+                ps.setString(index++, stato);
+            }
+
+            if (priorita != null && !priorita.isBlank()) {
+                ps.setString(index++, priorita);
+            }
+
+            if (dataCreazione != null) {
+                ps.setDate(index++, dataCreazione);
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                tickets.add(mapResultSetToTicket(rs));
+            }
+        }
+
+        return tickets;
+    }
+
+    private Ticket mapResultSetToTicket(ResultSet rs) throws SQLException {
+        Ticket t = new Ticket();
+        t.setIdTicket(rs.getLong("ID_Ticket"));
+        t.setTitolo(rs.getString("Titolo"));
+        t.setDescrizione(rs.getString("Descrizione"));
+        t.setCategoria(rs.getString("Categoria"));
+        t.setPriorita(rs.getString("Priorita"));
+        t.setStato(rs.getString("Stato"));
+        t.setIdAutore(rs.getLong("ID_Autore"));
+        t.setDataApertura(rs.getTimestamp("DataApertura"));
+        return t;
+    }
+
 }

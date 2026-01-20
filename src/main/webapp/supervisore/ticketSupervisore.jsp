@@ -8,13 +8,53 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 
     <style>
-        /* Container tabella coerente con design system */
+        .ticket-filters {
+            display: flex;
+            gap: 14px;
+            flex-wrap: wrap;
+            align-items: center;
+            background: var(--card);
+            padding: 20px;
+            border-radius: 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(0,0,0,0.05);
+            margin-top: 24px;
+            margin-bottom: 30px;
+        }
+
+        .ticket-filters select,
+        .ticket-filters input {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1px solid #d1d5db;
+            font-family: inherit;
+            font-size: 14px;
+            background: #fff;
+            color: var(--ink);
+        }
+
+        .ticket-filters button {
+            background: var(--brand);
+            color: #fff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, filter 0.2s;
+        }
+
+        .ticket-filters button:hover {
+            filter: brightness(0.9);
+            transform: scale(1.03);
+        }
+
+        /* ===== TABELLA ===== */
         .table-container {
             background: var(--card);
             border-radius: 18px;
             box-shadow: var(--shadow);
             padding: 24px;
-            margin-top: 30px;
             border: 1px solid rgba(0,0,0,0.05);
             overflow-x: auto;
         }
@@ -46,7 +86,6 @@
             background-color: #f2fbfb;
         }
 
-        /* Badge stato ticket */
         .status-badge {
             padding: 6px 12px;
             border-radius: 999px;
@@ -65,7 +104,6 @@
             color: #475569;
         }
 
-        /* Form azioni */
         .form-select {
             padding: 8px 12px;
             border-radius: 10px;
@@ -100,11 +138,36 @@
 
 <main class="page">
 
-    <!-- HEADER PAGINA (stesso stile di coinquilino e prenotazioni supervisore) -->
     <div class="page-header">
         <h1 class="title">Gestione Ticket</h1>
         <p class="page-subtitle">Supporto e segnalazioni</p>
     </div>
+
+    <!-- FILTRI -->
+    <form method="get"
+          action="${pageContext.request.contextPath}/SupervisoreTicketController"
+          class="ticket-filters">
+
+        <select name="stato">
+            <option value="">Tutti gli stati</option>
+            <option value="APERTO" ${param.stato == 'APERTO' ? 'selected' : ''}>Aperto</option>
+            <option value="IN_LAVORAZIONE" ${param.stato == 'IN_LAVORAZIONE' ? 'selected' : ''}>
+                In lavorazione
+            </option>
+            <option value="CHIUSO" ${param.stato == 'CHIUSO' ? 'selected' : ''}>Chiuso</option>
+        </select>
+
+        <select name="priorita">
+            <option value="">Tutte le priorità</option>
+            <option value="BASSA" ${param.priorita == 'BASSA' ? 'selected' : ''}>Bassa</option>
+            <option value="MEDIA" ${param.priorita == 'MEDIA' ? 'selected' : ''}>Media</option>
+            <option value="ALTA" ${param.priorita == 'ALTA' ? 'selected' : ''}>Alta</option>
+        </select>
+
+        <input type="date" name="dataCreazione" value="${param.dataCreazione}">
+
+        <button type="submit">Filtra</button>
+    </form>
 
     <%
         List<Ticket> lista = (List<Ticket>) request.getAttribute("listaGlobaleTicket");
@@ -167,9 +230,7 @@
                             </option>
                         </select>
 
-                        <button type="submit" class="btn-action">
-                            Aggiorna
-                        </button>
+                        <button type="submit" class="btn-action">Aggiorna</button>
                     </form>
                 </td>
             </tr>

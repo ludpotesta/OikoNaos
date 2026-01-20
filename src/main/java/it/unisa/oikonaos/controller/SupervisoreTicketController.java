@@ -7,6 +7,8 @@ import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
+import java.sql.Date;
+
 
 import java.io.IOException;
 import java.util.List;
@@ -62,8 +64,28 @@ public class SupervisoreTicketController extends HttpServlet {
                 return;
             }
 
-            /* LISTA TICKET */
-            List<Ticket> lista = ticketDAO.doRetrieveAll();
+            /* LISTA TICKET (con filtri) */
+
+            String stato = request.getParameter("stato");
+            String priorita = request.getParameter("priorita");
+
+            Date dataCreazione = null;
+
+            try {
+                if (request.getParameter("dataCreazione") != null &&
+                        !request.getParameter("dataCreazione").isBlank()) {
+
+                    dataCreazione = Date.valueOf(request.getParameter("dataCreazione"));
+                }
+            } catch (IllegalArgumentException ignored) {}
+
+
+            List<Ticket> lista = ticketDAO.findByFiltri(
+                    stato,
+                    priorita,
+                    dataCreazione
+            );
+
             request.setAttribute("listaGlobaleTicket", lista);
 
             request.getRequestDispatcher("/supervisore/ticketSupervisore.jsp")
