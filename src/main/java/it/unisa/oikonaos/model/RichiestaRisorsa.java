@@ -1,6 +1,7 @@
 package it.unisa.oikonaos.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class RichiestaRisorsa {
@@ -38,13 +39,23 @@ public class RichiestaRisorsa {
     public void setIdUtente(long idUtente) { this.idUtente = idUtente; }
 
     public long getIdRisorsa() { return idRisorsa; }
-    public void setIdRisorsa(long idRisorsa) { this.idRisorsa = this.idRisorsa; }
+    public void setIdRisorsa(long idRisorsa) { this.idRisorsa = idRisorsa; }
 
     public String getNomeRisorsa() { return nomeRisorsa; }
-    public void setNomeRisorsa(String nomeRisorsa) { this.nomeRisorsa = this.nomeRisorsa; }
+    public void setNomeRisorsa(String nomeRisorsa) { this.nomeRisorsa = nomeRisorsa; }
 
     public String getNomeUtente() { return nomeUtente; }
-    public void setNomeUtente(String nomeUtente) { this.nomeUtente = this.nomeUtente; }
+    public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
 
+    public String getStatoTemporale() {
+        LocalDate oggi = LocalDate.now();
+        LocalDate data = dataInizio.toLocalDate();
+
+        if (data.isBefore(oggi)) {
+            return "SCADUTA";
+        } else {
+            return "ATTIVA";
+        }
+    }
 
 }
