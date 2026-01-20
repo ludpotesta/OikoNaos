@@ -1,6 +1,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="it.unisa.oikonaos.model.Ticket" %>
 <%@ page import="it.unisa.oikonaos.dto.AllegatoDTO" %>
+<%@ page import="it.unisa.oikonaos.model.AggiornamentoTicket" %>
 <%@ page import="java.util.List" %>
 <%@ page import="java.net.URLEncoder" %>
 
@@ -73,6 +74,11 @@
 
 <%
     Ticket ticket = (Ticket) request.getAttribute("ticket");
+
+    List<AggiornamentoTicket> storico =
+            (List<AggiornamentoTicket>) request.getAttribute("storico");
+
+
     List<AllegatoDTO> allegati =
             (List<AllegatoDTO>) request.getAttribute("allegati");
 %>
@@ -136,6 +142,41 @@
             </ul>
         </div>
         <% } %>
+
+        <!-- STORICO AGGIORNAMENTI -->
+        <div style="margin-top:40px;">
+            <h3>Storico aggiornamenti</h3>
+
+            <% if (storico != null && !storico.isEmpty()) { %>
+
+            <% for (AggiornamentoTicket a : storico) { %>
+            <div style="
+                background:#f8fafc;
+                border:1px solid #e5e7eb;
+                border-radius:12px;
+                padding:16px;
+                margin-bottom:14px;
+            ">
+
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>
+                        <%= a.getNomeUtente() %> <%= a.getCognomeUtente() %>
+                    </strong>
+                    <small style="color:#64748b;">
+                        <%= a.getDataAggiornamento() %>
+                    </small>
+                </div>
+
+                <p style="margin:10px 0 0;">
+                    <%= a.getMessaggio() %>
+                </p>
+            </div>
+            <% } %>
+
+            <% } else { %>
+            <p style="color:#64748b;">Nessun aggiornamento presente.</p>
+            <% } %>
+        </div>
 
         <!-- AZIONI -->
         <div class="card-actions">

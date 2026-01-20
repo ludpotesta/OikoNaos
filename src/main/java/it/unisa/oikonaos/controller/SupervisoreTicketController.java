@@ -1,6 +1,7 @@
 package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.AllegatoDAO;
+import it.unisa.oikonaos.dao.AggiornamentoTicketDAO;
 import it.unisa.oikonaos.dao.TicketDAO;
 import it.unisa.oikonaos.model.Ticket;
 import it.unisa.oikonaos.model.Utente;
@@ -57,6 +58,13 @@ public class SupervisoreTicketController extends HttpServlet {
                 request.setAttribute(
                         "allegati",
                         allegatoDAO.doRetrieveByTicket(idTicket)
+                );
+
+                AggiornamentoTicketDAO aggiornamentoDAO = new AggiornamentoTicketDAO();
+
+                request.setAttribute(
+                        "storico",
+                        aggiornamentoDAO.doRetrieveByTicket(idTicket)
                 );
 
                 request.getRequestDispatcher("/supervisore/dettagliTicketSupervisore.jsp")
@@ -120,12 +128,16 @@ public class SupervisoreTicketController extends HttpServlet {
                 long idTicket = Long.parseLong(request.getParameter("idTicket"));
                 String nuovoStato = request.getParameter("nuovoStato");
 
+                // aggiorna stato ticket
                 new TicketDAO().updateStato(idTicket, nuovoStato);
 
-                response.sendRedirect(
-                        request.getContextPath() + "/SupervisoreTicketController"
+                // salva aggiornamento nello storico
+                AggiornamentoTicketDAO aggiornamentoDAO = new AggiornamentoTicketDAO();
+                aggiornamentoDAO.creaAggiornamento(
+                        idTicket,
+                        utente.getIdUtente(),
+                        "Stato aggiornato a: " + nuovoStato.replace("_", " ")
                 );
-                return;
 
             } catch (Exception e) {
                 e.printStackTrace();
