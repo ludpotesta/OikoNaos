@@ -58,6 +58,19 @@
                 <span style="font-size: 1.2rem; font-weight: 800; color: var(--ink);">Gestione Eventi</span>
                 <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">Crea, modifica ed elimina gli eventi della community.</p>
             </a>
+
+            <a href="${pageContext.request.contextPath}/SupervisoreTasseController"
+               class="btn ghost admin-card"
+               style="padding: 40px 20px; height: auto; box-shadow: var(--shadow);">
+                <span class="icon-box">💰</span>
+                <span style="font-size: 1.2rem; font-weight: 800; color: var(--ink);">
+                        Gestione Tasse
+                </span>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">
+                    Inserisci e consulta le tasse trimestrali della community.
+                </p>
+            </a>
+
         </div>
     </div>
 
