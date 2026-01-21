@@ -91,12 +91,12 @@
         }
 
         .btn-success {
-            background: #22c55e;
+            background: #2563eb;
             color: white;
         }
 
         .btn-danger {
-            background: #ef4444;
+            background: #60a5fa;
             color: white;
         }
 
@@ -109,6 +109,14 @@
             color: white;
         }
 
+        .page-header + .card {
+            margin-top: 0;
+        }
+
+        .status-scaduta {
+            background: #e5e7eb;
+            color: #374151;
+        }
     </style>
 </head>
 
@@ -118,12 +126,11 @@
 
 <main class="dashboard">
 
-    <h1>Gestione Risorse</h1>
-    <p class="subtitle">
-        Inserisci nuove risorse e gestisci le richieste dei coinquilini.
-    </p>
+    <header class="page-header" style="margin-bottom: 24px;">
+        <h1 class="page-title">Gestione Risorse</h1>
+        <p class="page-subtitle">Inserisci nuove risorse e gestisci le richieste dei coinquilini</p>
+    </header>
 
-    <!-- ================= INSERIMENTO RISORSA ================= -->
     <section class="card">
         <h2>Nuova Risorsa</h2>
 
@@ -159,7 +166,7 @@
         </form>
     </section>
 
-    <!-- ================= LISTA RISORSE ================= -->
+    <!-- LISTA RISORSE -->
     <section class="card">
         <h2>Risorse presenti</h2>
 
@@ -200,7 +207,7 @@
         </table>
     </section>
 
-    <!-- ================= RICHIESTE RISORSE ================= -->
+    <!-- RICHIESTE RISORSE -->
     <section class="card">
         <h2>Richieste dei coinquilini</h2>
 
@@ -233,14 +240,23 @@
                             ${req.dataFineFormatted}
                     </td>
                     <td>
-                        <span class="status-badge status-${fn:toLowerCase(req.stato)}">
-                                ${req.stato}
-                        </span>
+                        <c:choose>
+                            <c:when test="${req.statoTemporale eq 'SCADUTA'}">
+                                <span class="status-badge status-scaduta">
+                                    SCADUTA
+                                </span>
+                            </c:when>
+                            <c:otherwise>
+                                <span class="status-badge status-${fn:toLowerCase(req.stato)}">
+                                        ${req.stato}
+                                </span>
+                            </c:otherwise>
+                        </c:choose>
                     </td>
 
                     <td class="actions">
-                        <c:if test="${req.stato eq 'RICHIESTA'}">
-                            <div class="action-buttons">
+                        <c:if test="${req.stato eq 'RICHIESTA' and req.statoTemporale ne 'SCADUTA'}">
+                        <div class="action-buttons">
                                 <form method="post"
                                       action="${pageContext.request.contextPath}/SupervisoreRisorseController">
                                     <input type="hidden" name="action" value="accettaRichiesta">

@@ -117,8 +117,6 @@ public class RisorsaController extends HttpServlet {
             }
 
             RichiestaRisorsaDAO richiestaDAO = new RichiestaRisorsaDAO();
-
-            // ❗ controllo conflitto
             if (richiestaDAO.esisteConflitto(idRisorsa, giorno)) {
                 response.sendRedirect(
                         request.getContextPath() + "/RisorsaController?error=disponibile"

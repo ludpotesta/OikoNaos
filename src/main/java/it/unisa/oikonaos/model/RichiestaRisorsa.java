@@ -59,12 +59,16 @@ public class RichiestaRisorsa {
         }
     }
 
+    public boolean isScaduta() {
+        return dataInizio.toLocalDate().isBefore(LocalDate.now());
+    }
+
     public String getDataInizioFormatted() {
-        return dataInizio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        return dataInizio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
     public String getDataFineFormatted() {
-        return dataFine.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+        return dataFine.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
     }
 
 }
