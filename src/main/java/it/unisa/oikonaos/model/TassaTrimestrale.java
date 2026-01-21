@@ -12,6 +12,40 @@ public class TassaTrimestrale {
     private String stato; // PAGATA / NON_PAGATA
     private Long idPagamento;
     private boolean hasRicevuta;
+    private String nomeUtente;
+    private String cognomeUtente;
+    private Long idUtente;
+    private boolean pagata;
+
+    public boolean isPagata() {
+        return pagata;
+    }
+
+    public void setPagata(boolean pagata) {
+        this.pagata = pagata;
+    }
+
+    public boolean isScaduta() {
+        return scadenza != null && scadenza.isBefore(LocalDate.now());
+    }
+
+    public boolean isOrdinaria() {
+        return trimestreRiferimento != null && !trimestreRiferimento.isBlank();
+    }
+
+    public String getNomeUtente() { return nomeUtente; }
+    public void setNomeUtente(String nomeUtente) { this.nomeUtente = nomeUtente; }
+
+    public String getCognomeUtente() { return cognomeUtente; }
+    public void setCognomeUtente(String cognomeUtente) { this.cognomeUtente = cognomeUtente; }
+
+    public Long getIdUtente() {
+        return idUtente;
+    }
+
+    public void setIdUtente(Long idUtente) {
+        this.idUtente = idUtente;
+    }
 
     public boolean hasRicevuta() {
         return hasRicevuta;
@@ -69,7 +103,4 @@ public class TassaTrimestrale {
         this.stato = stato;
     }
 
-    public boolean isPagata() {
-        return "PAGATA".equalsIgnoreCase(stato);
-    }
 }

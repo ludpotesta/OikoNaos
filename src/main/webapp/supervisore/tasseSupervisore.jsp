@@ -1,11 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ page import="it.unisa.oikonaos.model.TassaTrimestrale, java.util.List" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <!DOCTYPE html>
 <html lang="it">
 <head>
     <meta charset="UTF-8">
     <title>Gestione Tasse - Supervisore</title>
+
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 
     <style>
@@ -28,11 +29,14 @@
             margin-top: 20px;
         }
 
-        .form-grid input {
+        .form-grid input,
+        .form-grid select,
+        select {
             padding: 10px 14px;
             border-radius: 10px;
             border: 1px solid #d1d5db;
             font-family: inherit;
+            font-size: 0.95rem;
         }
 
         .btn-primary {
@@ -43,12 +47,6 @@
             border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
-            transition: transform 0.2s, filter 0.2s;
-        }
-
-        .btn-primary:hover {
-            filter: brightness(0.9);
-            transform: scale(1.03);
         }
 
         table {
@@ -77,8 +75,6 @@
             font-size: 11px;
             font-weight: 700;
             display: inline-block;
-            background: #f1f5f9;
-            color: #475569;
         }
 
         .status-active {
@@ -104,7 +100,7 @@
         <p class="page-subtitle">Backoffice amministrativo</p>
     </div>
 
-    <!-- INSERIMENTO NUOVA TASSA -->
+    <!-- FORM INSERIMENTO TASSA -->
     <div class="card">
         <h2>Inserisci nuova tassa</h2>
 
@@ -112,20 +108,41 @@
               action="${pageContext.request.contextPath}/SupervisoreTasseController">
 
             <div class="form-grid">
-                <input type="text"
-                       name="trimestre"
-                       placeholder="Trimestre (es. Q1 2026)"
-                       required>
+                <select name="tipo" required>
+                    <option value="ORDINARIA">Tassa ordinaria (trimestrale)</option>
+                    <option value="STRAORDINARIA">Tassa straordinaria / penale</option>
+                </select>
 
-                <input type="number"
-                       name="importo"
-                       step="0.01"
-                       placeholder="Importo (€)"
-                       required>
+                <input type="text" name="trimestre"
+                       placeholder="Trimestre (es. Q1 2026)" required>
 
-                <input type="date"
-                       name="scadenza"
-                       required>
+                <input type="number" name="importo" step="0.01"
+                       placeholder="Importo (€)" required>
+
+                <input type="date" name="scadenza" required>
+            </div>
+
+            <div style="margin-top: 18px;">
+                <label><strong>Destinatari</strong></label><br>
+                <label>
+                    <input type="radio" name="destinatario" value="TUTTI" checked>
+                    Tutti i coinquilini
+                </label>
+                <label style="margin-left: 20px;">
+                    <input type="radio" name="destinatario" value="SINGOLO">
+                    Coinquilino specifico
+                </label>
+            </div>
+
+            <div style="margin-top: 12px;">
+                <select name="idUtente">
+                    <option value="">— Seleziona coinquilino (opzionale) —</option>
+                    <c:forEach var="u" items="${coinquilini}">
+                        <option value="${u.idUtente}">
+                                ${u.nome} ${u.cognome}
+                        </option>
+                    </c:forEach>
+                </select>
             </div>
 
             <div style="margin-top:20px;">
@@ -140,49 +157,77 @@
     <div class="card">
         <h2>Tasse esistenti</h2>
 
-        <%
-            List<TassaTrimestrale> tasse =
-                    (List<TassaTrimestrale>) request.getAttribute("tasse");
-        %>
+        <c:choose>
+            <c:when test="${not empty tasse}">
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Trimestre</th>
+                        <th>Importo</th>
+                        <th>Scadenza</th>
+                        <th>Destinatari</th>
+                        <th>Stato</th>
+                    </tr>
+                    </thead>
+                    <tbody>
 
-        <% if (tasse != null && !tasse.isEmpty()) { %>
+                    <c:forEach var="t" items="${tasse}">
+                        <tr>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${empty t.idUtente}">
+                                        <a href="${pageContext.request.contextPath}/SupervisoreDettagliTassaController?idTassa=${t.idTassa}">
+                                                ${t.trimestreRiferimento}
+                                        </a>
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${t.trimestreRiferimento}
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
 
-        <table>
-            <thead>
-            <tr>
-                <th>Trimestre</th>
-                <th>Importo</th>
-                <th>Scadenza</th>
-                <th>Stato</th>
-            </tr>
-            </thead>
-            <tbody>
+                            <td>€ ${t.importoDovuto}</td>
 
-            <% for (TassaTrimestrale t : tasse) { %>
-            <tr>
-                <td><%= t.getTrimestreRiferimento() %></td>
-                <td>€ <%= String.format("%.2f", t.getImportoDovuto()) %></td>
-                <td><%= t.getScadenza() %></td>
-                <%
-                    boolean scaduta = t.getScadenza().isBefore(java.time.LocalDate.now());
-                    String stato = scaduta ? "SCADUTA" : "ATTIVA";
-                %>
-                <td>
-                    <span class="status <%= scaduta ? "status-expired" : "status-active" %>">
-                        <%= stato %>
-                    </span>
-                </td>
-            </tr>
-            <% } %>
+                            <td>${t.scadenza}</td>
 
-            </tbody>
-        </table>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${empty t.idUtente}">
+                                        Tutti i coinquilini
+                                    </c:when>
+                                    <c:otherwise>
+                                        ${t.nomeUtente} ${t.cognomeUtente}
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
 
-        <% } else { %>
+                            <td>
+                                <c:choose>
+                                    <c:when test="${not empty t.idUtente}">
+                                        <span class="status ${t.pagata ? 'status-active' : 'status-expired'}">
+                                                ${t.pagata ? 'PAGATA' : 'NON PAGATA'}
+                                        </span>
+                                    </c:when>
 
-        <p class="muted">Nessuna tassa presente nel sistema.</p>
+                                    <c:otherwise>
+                                        <span class="status ${t.scaduta ? 'status-expired' : 'status-active'}">
+                                                ${t.scaduta ? 'SCADUTA' : 'ATTIVA'}
+                                        </span>
+                                    </c:otherwise>
+                                </c:choose>
+                            </td>
+                        </tr>
+                    </c:forEach>
 
-        <% } %>
+                    </tbody>
+                </table>
+            </c:when>
+
+            <c:otherwise>
+                <p class="muted">Nessuna tassa presente nel sistema.</p>
+            </c:otherwise>
+        </c:choose>
+
     </div>
 
 </main>

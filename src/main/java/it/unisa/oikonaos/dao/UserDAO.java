@@ -14,11 +14,12 @@ public class UserDAO {
             String email,
             String telefono,
             String username,
-            String password
+            String password,
+            long idComunita
     ) throws Exception {
 
         // 1. Inserimento utente
-        long idUtente = insertUtente(con, nome, cognome, email, telefono);
+        long idUtente = insertUtente(con, nome, cognome, email, telefono, idComunita);
 
         // 2. Inserimento credenziali
         insertCredenziali(con, username, password, idUtente);
@@ -31,12 +32,13 @@ public class UserDAO {
             String nome,
             String cognome,
             String email,
-            String telefono
+            String telefono,
+            long idComunita
     ) throws Exception {
 
         String sql = """
-            INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo)
-            VALUES (?, ?, ?, ?, 'COINQUILINO')
+            INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita)
+            VALUES (?, ?, ?, ?, 'COINQUILINO', ?)
         """;
 
         try (PreparedStatement ps =
@@ -46,6 +48,7 @@ public class UserDAO {
             ps.setString(2, cognome);
             ps.setString(3, email);
             ps.setString(4, telefono);
+            ps.setLong(5, idComunita);
 
             ps.executeUpdate();
 
@@ -164,6 +167,29 @@ public class UserDAO {
             }
         }
         return null;
+    }
+
+    public long getIdComunitaByUtente(long idUtente) throws Exception {
+
+        String sql = """
+        SELECT ID_Comunita
+        FROM Utente
+        WHERE ID_Utente = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idUtente);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getLong("ID_Comunita");
+            } else {
+                throw new IllegalStateException("Utente senza comunità");
+            }
+        }
     }
 
 }
