@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-    @WebServlet(name = "SupervisorePrenotazioniController", value = "/SupervisorePrenotazioniController")
+@WebServlet(name = "SupervisorePrenotazioniController", value = "/SupervisorePrenotazioniController")
 public class SupervisorePrenotazioniController extends HttpServlet {
 
     @Override

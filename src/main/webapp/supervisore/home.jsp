@@ -56,7 +56,7 @@
             <a href="${pageContext.request.contextPath}/SupervisoreEventiController" class="btn ghost admin-card" style="padding: 40px 20px; height: auto; box-shadow: var(--shadow);">
                 <span class="icon-box">📌</span>
                 <span style="font-size: 1.2rem; font-weight: 800; color: var(--ink);">Gestione Eventi</span>
-                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">Crea, modifica ed elimina gli eventi della community.</p>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">Crea ed elimina gli eventi della community.</p>
             </a>
 
             <a href="${pageContext.request.contextPath}/SupervisoreTasseController"
@@ -68,6 +68,18 @@
                 </span>
                 <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">
                     Inserisci e consulta le tasse trimestrali della community.
+                </p>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/SupervisoreRisorseController"
+               class="btn ghost admin-card"
+               style="padding: 40px 20px; height: auto; box-shadow: var(--shadow);">
+                <span class="icon-box">🧰</span>
+                <span style="font-size: 1.2rem; font-weight: 800; color: var(--ink);">
+                    Gestione Risorse
+                </span>
+                <p style="color: var(--muted); font-size: 0.9rem; margin-top: 8px;">
+                    Inserisci nuove risorse condivise e gestisci le richieste dei coinquilini.
                 </p>
             </a>
 

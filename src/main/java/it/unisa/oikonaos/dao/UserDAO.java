@@ -168,4 +168,28 @@ public class UserDAO {
         }
         return null;
     }
+
+    public long getIdComunitaByUtente(long idUtente) throws Exception {
+
+        String sql = """
+        SELECT ID_Comunita
+        FROM Utente
+        WHERE ID_Utente = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idUtente);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getLong("ID_Comunita");
+            } else {
+                throw new IllegalStateException("Utente senza comunità");
+            }
+        }
+    }
+
 }

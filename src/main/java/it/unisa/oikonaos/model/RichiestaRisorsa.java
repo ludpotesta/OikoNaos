@@ -3,6 +3,7 @@ package it.unisa.oikonaos.model;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class RichiestaRisorsa {
     private long idRichiesta;
@@ -56,6 +57,14 @@ public class RichiestaRisorsa {
         } else {
             return "ATTIVA";
         }
+    }
+
+    public String getDataInizioFormatted() {
+        return dataInizio.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
+    }
+
+    public String getDataFineFormatted() {
+        return dataFine.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"));
     }
 
 }

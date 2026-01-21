@@ -8,7 +8,6 @@ public class Risorsa {
     private String descrizione;
     private String regoleUso;
     private BigDecimal penale;
-    private boolean disponibile;
 
     public Risorsa() {
     }
@@ -27,8 +26,5 @@ public class Risorsa {
 
     public BigDecimal getPenale() { return penale; }
     public void setPenale(BigDecimal penale) { this.penale = penale; }
-
-    public boolean getDisponibile() { return disponibile; }
-    public void setDisponibile(boolean disponibile) { this.disponibile = disponibile; }
 }
 
