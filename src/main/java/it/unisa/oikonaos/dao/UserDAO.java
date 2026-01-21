@@ -3,6 +3,8 @@ package it.unisa.oikonaos.dao;
 import it.unisa.oikonaos.model.Utente;
 import util.database;
 import org.mindrot.jbcrypt.BCrypt;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.sql.*;
 
@@ -192,4 +194,34 @@ public class UserDAO {
         }
     }
 
+    public List<Utente> doRetrieveCoinquiliniEscluso(long idDaEscludere)
+            throws Exception {
+
+        List<Utente> utenti = new ArrayList<>();
+
+        String sql = """
+        SELECT *
+        FROM utente
+        WHERE Ruolo = 'COINQUILINO'
+          AND ID_Utente <> ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idDaEscludere);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Utente u = new Utente();
+                    u.setIdUtente(rs.getLong("ID_Utente"));
+                    u.setNome(rs.getString("Nome"));
+                    u.setCognome(rs.getString("Cognome"));
+                    utenti.add(u);
+                }
+            }
+        }
+
+        return utenti;
+    }
 }

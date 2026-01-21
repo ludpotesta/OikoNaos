@@ -12,19 +12,37 @@ import java.util.Optional;
 public class RicevutaDAO {
 
     public void creaRicevuta(long idPagamento) {
+        String checkSql = """
+            SELECT 1
+            FROM ricevuta
+            WHERE ID_Pagamento = ?
+        """;
 
-        String sql = """
-        INSERT INTO ricevuta (ID_Pagamento, CodiceTransazione)
-        VALUES (?, ?)
-    """;
+        String insertSql = """
+            INSERT INTO ricevuta (ID_Pagamento, CodiceTransazione)
+            SELECT ID_Pagamento, ?
+            FROM pagamento
+            WHERE ID_Pagamento = ?
+              AND DataPagamento IS NOT NULL
+        """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (Connection con = database.getConnection()) {
 
-            ps.setLong(1, idPagamento);
-            ps.setString(2, "TX-" + System.currentTimeMillis()); // codice fittizio ma valido
+            // Controllo duplicati
+            try (PreparedStatement ps = con.prepareStatement(checkSql)) {
+                ps.setLong(1, idPagamento);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    return; // ricevuta già esistente
+                }
+            }
 
-            ps.executeUpdate();
+            // Creazione ricevuta
+            try (PreparedStatement ps = con.prepareStatement(insertSql)) {
+                ps.setString(1, "TX-" + System.currentTimeMillis());
+                ps.setLong(2, idPagamento);
+                ps.executeUpdate();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,12 +52,14 @@ public class RicevutaDAO {
     public Optional<Ricevuta> getRicevutaByPagamento(long idPagamento) {
 
         String sql = """
-        SELECT r.ID_Ricevuta, r.CodiceTransazione, r.DataEmissione,
-               p.ImportoPagato
-        FROM ricevuta r
-        JOIN pagamento p ON r.ID_Pagamento = p.ID_Pagamento
-        WHERE r.ID_Pagamento = ?
-    """;
+            SELECT r.ID_Ricevuta,
+                   r.CodiceTransazione,
+                   r.DataEmissione,
+                   p.ImportoPagato
+            FROM ricevuta r
+            JOIN pagamento p ON r.ID_Pagamento = p.ID_Pagamento
+            WHERE r.ID_Pagamento = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -63,4 +83,3 @@ public class RicevutaDAO {
         return Optional.empty();
     }
 }
-
