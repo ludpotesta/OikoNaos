@@ -7,7 +7,6 @@ public class CodiceIdentificativo {
     private String codice;
     private String stato;
     private LocalDateTime dataCreazione;
-    private long idComunita;
     private Long idUtenteUtilizzatore;
 
     public CodiceIdentificativo() {
@@ -16,7 +15,6 @@ public class CodiceIdentificativo {
     public CodiceIdentificativo(String codice, String stato, long idComunita) {
         this.codice = codice;
         this.stato = stato;
-        this.idComunita = idComunita;
     }
 
     public String getCodice() {
@@ -41,14 +39,6 @@ public class CodiceIdentificativo {
 
     public void setDataCreazione(LocalDateTime dataCreazione) {
         this.dataCreazione = dataCreazione;
-    }
-
-    public long getIdComunita() {
-        return idComunita;
-    }
-
-    public void setIdComunita(long idComunita) {
-        this.idComunita = idComunita;
     }
 
     public Long getIdUtenteUtilizzatore() {

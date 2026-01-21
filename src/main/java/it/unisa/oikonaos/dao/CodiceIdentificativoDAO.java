@@ -14,7 +14,7 @@ public class CodiceIdentificativoDAO {
             Connection con, String codice) throws SQLException {
 
         String sql = """
-            SELECT Codice, Stato, ID_Comunita
+            SELECT Codice, Stato
             FROM codiceidentificativo
             WHERE Codice = ?
               AND Stato = 'ATTIVO'
@@ -29,7 +29,6 @@ public class CodiceIdentificativoDAO {
                     CodiceIdentificativo c = new CodiceIdentificativo();
                     c.setCodice(rs.getString("Codice"));
                     c.setStato(rs.getString("Stato"));
-                    c.setIdComunita(rs.getLong("ID_Comunita"));
                     return c;
                 }
             }
@@ -72,27 +71,5 @@ public class CodiceIdentificativoDAO {
                 return rs.next();
             }
         }
-    }
-
-    public Long getIdComunitaByCodice(String codice) throws Exception {
-
-        String sql = """
-            SELECT ID_Comunita
-            FROM codiceidentificativo
-            WHERE Codice = ?
-        """;
-
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setString(1, codice);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getLong("ID_Comunita");
-                }
-            }
-        }
-        return null;
     }
 }

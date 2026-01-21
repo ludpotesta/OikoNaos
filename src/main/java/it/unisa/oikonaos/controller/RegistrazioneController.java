@@ -77,8 +77,7 @@ public class RegistrazioneController extends HttpServlet {
 
             long idUtente = userDAO.registerUser(
                     con, nome, cognome, email, telefono,
-                    username, password,
-                    codiceValido.getIdComunita()
+                    username, password
             );
 
             codiceDAO.marcaComeUsato(con, codice, idUtente);
