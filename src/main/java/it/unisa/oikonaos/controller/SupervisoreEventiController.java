@@ -120,10 +120,18 @@ public class SupervisoreEventiController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        HttpSession session = request.getSession(false);
+        Utente u = (session != null) ? (Utente) session.getAttribute("utente") : null;
+
+        if (u == null || !"SUPERVISORE".equalsIgnoreCase(u.getRuolo())) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
         String action = request.getParameter("action");
         EventoDAO dao = new EventoDAO();
 
-    /* CANCELLA EVENTO */
+        /* CANCELLA EVENTO */
         if ("delete".equals(action)) {
             try {
                 String rawId = request.getParameter("idEvento");
@@ -193,7 +201,7 @@ public class SupervisoreEventiController extends HttpServlet {
             evento.setPostiDisponibili(postiTotali);
             evento.setDataInizio(dataInizio);
             evento.setDataFine(dataFine);
-            evento.setIdOrganizzatore(1L);
+            evento.setIdOrganizzatore(u.getIdUtente());
 
             dao.creaEvento(evento);
 
