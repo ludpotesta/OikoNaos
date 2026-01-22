@@ -34,7 +34,7 @@
             %>
 
             <div class="grid-cards">
-                <a class="card" href="${pageContext.request.contextPath}/profilo.jsp">
+                <a class="card" href="${pageContext.request.contextPath}/home.jsp">
                     <h3>Profilo</h3>
                     <p>Visualizza e modifica i tuoi dati.</p>
                 </a>
@@ -55,11 +55,11 @@
                 </a>
 
                 <% if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
-                <a class="card" href="${pageContext.request.contextPath}/admin/ticketAdmin.jsp">
+                <a class="card" href="${pageContext.request.contextPath}/SupervisoreTicketController">
                     <h3>Area Supervisore - Ticket</h3>
                     <p>Gestisci i ticket della comunità.</p>
                 </a>
-                <a class="card" href="${pageContext.request.contextPath}/AdminPrenotazioneController">
+                <a class="card" href="${pageContext.request.contextPath}/SupervisorePrenotazioniController">
                     <h3>Area Supervisore - Prenotazioni</h3>
                     <p>Gestisci le prenotazioni della comunità.</p>
                 </a>

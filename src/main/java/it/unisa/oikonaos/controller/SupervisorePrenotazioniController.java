@@ -18,7 +18,7 @@ public class SupervisorePrenotazioniController extends HttpServlet {
 
         // PROTEZIONE: Se non è supervisore, torna alla home o al login
         if (utente == null || !utente.getRuolo().equalsIgnoreCase("SUPERVISORE")) {
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
             return;
         }
 
@@ -28,10 +28,10 @@ public class SupervisorePrenotazioniController extends HttpServlet {
             List<Prenotazione> tutteLePrenotazioni = dao.doRetrieveAll();
 
             request.setAttribute("listaGlobalePrenotazioni", tutteLePrenotazioni);
-            request.getRequestDispatcher("supervisore/gestionePgestionePrenotazioni.jsp").forward(request, response);
+            request.getRequestDispatcher("supervisore/prenotazioniSupervisore.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("profilo.jsp?error=db");
+            response.sendRedirect("home.jsp?error=db");
         }
     }
 }

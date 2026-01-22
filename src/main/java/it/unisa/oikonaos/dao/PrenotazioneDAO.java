@@ -78,6 +78,7 @@ public class PrenotazioneDAO {
                 Prenotazione p = new Prenotazione();
                 p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
                 p.setData(rs.getDate("DataPrenotazione"));
+                p.setStato(rs.getString("Stato"));
                 p.setIdUtente(rs.getLong("ID_Utente"));
                 p.setIdPostazione(rs.getLong("ID_Postazione"));
                 p.setIdFasciaOraria(rs.getLong("ID_Fascia"));
@@ -96,45 +97,6 @@ public class PrenotazioneDAO {
             ps.setLong(1, idPrenotazione);
             ps.executeUpdate();
         }
-    }
-
-    public List<Prenotazione> findAllByComunita(long idComunita) throws SQLException {
-
-        String sql = """
-        SELECT p.*, u.Nome, u.Cognome, po.Numero, a.Nome AS NomeAmbiente, f.OraInizio, f.OraFine
-        FROM Prenotazione p
-        JOIN Utente u ON p.ID_Utente = u.ID_Utente
-        JOIN Postazione po ON p.ID_Postazione = po.ID_Postazione
-        JOIN Ambiente a ON po.ID_Ambiente = a.ID_Ambiente
-        JOIN FasciaOraria f ON p.ID_Fascia = f.ID_Fascia
-        WHERE u.ID_Comunita = ?
-        ORDER BY p.DataPrenotazione DESC
-        """;
-
-
-        List<Prenotazione> list = new ArrayList<>();
-
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setLong(1, idComunita);
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                Prenotazione p = new Prenotazione();
-                p.setIdPrenotazione(rs.getLong("ID_Prenotazione"));
-                p.setData(rs.getDate("DataPrenotazione"));
-                p.setStato(rs.getString("Stato"));
-                p.setIdUtente(Long.parseLong(rs.getString("ID_Utente")));
-                p.setIdPostazione(Long.parseLong(rs.getString("ID_Postazione")));
-                p.setOrarioInizio(rs.getTime("OraInizio"));
-                p.setOrarioFine(rs.getTime("OraFine"));
-                list.add(p);
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return list;
     }
 
 }

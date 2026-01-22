@@ -21,16 +21,14 @@ public class UserDAO {
         con.setAutoCommit(false);
 
         try {
-            // 1. Verifica codice e recupera comunità
-            Long idComunita = checkCodice(con, codiceID);
 
-            // 2. Inserimento utente con comunità
-            long idUtente = insertUtente(con, nome, cognome, email, telefono, idComunita);
+            // 1. Inserimento utente con comunità
+            long idUtente = insertUtente(con, nome, cognome, email, telefono);
 
-            // 3. Inserimento credenziali (con hash)
+            // 2. Inserimento credenziali (con hash)
             insertCredenziali(con, username, password, idUtente);
 
-            // 4. Marca codice come usato
+            // 3. Marca codice come usato
             markCodiceUsato(con, codiceID, idUtente);
 
             con.commit();
@@ -48,30 +46,15 @@ public class UserDAO {
        METODI DI SUPPORTO
        ========================== */
 
-    private Long checkCodice(Connection con, String codiceComunita) throws Exception {
-        String sql = "SELECT ID_Comunita FROM CodiceIdentificativo WHERE Codice = ? AND Stato = 'ATTIVO'";
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, codiceComunita);
-            ResultSet rs = ps.executeQuery();
-
-            if (!rs.next()) {
-                throw new IllegalArgumentException("Codice non valido o già utilizzato");
-            }
-            return rs.getLong("ID_Comunita");
-        }
-    }
-
     private long insertUtente(
             Connection con,
             String nome,
             String cognome,
             String email,
-            String telefono,
-            long idComunita
+            String telefono
     ) throws Exception {
 
-        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo, ID_Comunita) VALUES (?, ?, ?, ?, 'COINQUILINO', ?)";
+        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo VALUES (?, ?, ?, ?, 'COINQUILINO')";
 
         try (PreparedStatement ps =
                      con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -80,7 +63,6 @@ public class UserDAO {
             ps.setString(2, cognome);
             ps.setString(3, email);
             ps.setString(4, telefono);
-            ps.setLong(5, idComunita);
 
             ps.executeUpdate();
 
@@ -126,7 +108,7 @@ public class UserDAO {
        //LOGIN
     public Utente login(String username, String password) throws Exception {
 
-        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, u.ID_Comunita, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
+        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -149,7 +131,6 @@ public class UserDAO {
             u.setCognome(rs.getString("Cognome"));
             u.setEmail(rs.getString("Email"));
             u.setRuolo(rs.getString("Ruolo"));
-            u.setIdComunita(rs.getLong("ID_Comunita"));
 
             return u;
         }
