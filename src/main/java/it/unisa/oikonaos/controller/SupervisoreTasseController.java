@@ -25,9 +25,6 @@ public class SupervisoreTasseController extends HttpServlet {
         utenteDAO = new UserDAO();
     }
 
-    /* ===========================
-       GET – VISUALIZZAZIONE PAGINA
-       =========================== */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -96,6 +93,7 @@ public class SupervisoreTasseController extends HttpServlet {
             double importo = Double.parseDouble(request.getParameter("importo"));
             Date scadenza = Date.valueOf(request.getParameter("scadenza"));
 
+            /* TASSA SINGOLA */
             if ("SINGOLO".equals(destinatario)) {
 
                 String idParam = request.getParameter("idUtente");
@@ -106,26 +104,29 @@ public class SupervisoreTasseController extends HttpServlet {
                 Long idUtente = Long.parseLong(idParam);
 
                 if (idUtente.equals(utente.getIdUtente())) {
-                    throw new IllegalArgumentException("Non puoi assegnare una tassa a te stesso");
-                }
-
-                tassaDAO.creaTassa(trimestre, importo, scadenza, tipo, idUtente);
-
-            } else if ("TUTTI".equals(destinatario)) {
-                List<Utente> coinquilini = utenteDAO.doRetrieveAllCoinquilini();
-                for (Utente u : coinquilini) {
-                    if (u.getIdUtente() == utente.getIdUtente()) {
-                        continue; // evita tassa al supervisore
-                    }
-
-                    tassaDAO.creaTassa(
-                            trimestre,
-                            importo,
-                            scadenza,
-                            tipo,
-                            u.getIdUtente()
+                    throw new IllegalArgumentException(
+                            "Non puoi assegnare una tassa a te stesso"
                     );
                 }
+
+                tassaDAO.creaTassa(
+                        trimestre,
+                        importo,
+                        scadenza,
+                        tipo,
+                        idUtente
+                );
+
+            /* TASSA GLOBALE */
+            } else if ("TUTTI".equals(destinatario)) {
+
+                tassaDAO.creaTassa(
+                        trimestre,
+                        importo,
+                        scadenza,
+                        tipo,
+                        null
+                );
             }
 
             response.sendRedirect(

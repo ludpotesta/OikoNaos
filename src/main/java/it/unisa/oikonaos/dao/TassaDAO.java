@@ -111,13 +111,16 @@ public class TassaDAO {
         List<TassaTrimestrale> tasse = new ArrayList<>();
 
         String sql = """
-           SELECT t.*, u.Nome, u.Cognome, p.ID_Pagamento
-           FROM tassatrimestrale t
-           LEFT JOIN utente u ON t.ID_Utente = u.ID_Utente
-           LEFT JOIN pagamento p ON t.ID_Tassa = p.ID_Tassa
-           ORDER BY t.Scadenza DESC
+            SELECT t.*,
+                   u.Nome,
+                   u.Cognome,
+                   MAX(p.ID_Pagamento) AS ID_Pagamento
+            FROM tassatrimestrale t
+            LEFT JOIN utente u ON t.ID_Utente = u.ID_Utente
+            LEFT JOIN pagamento p ON t.ID_Tassa = p.ID_Tassa
+            GROUP BY t.ID_Tassa
+            ORDER BY t.Scadenza DESC
         """;
-
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
