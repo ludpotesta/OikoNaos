@@ -2,7 +2,7 @@ package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.Risorsa;
 import it.unisa.oikonaos.model.Utente;
-import util.database;
+import util.Database;
 import org.mindrot.jbcrypt.BCrypt;
 import java.util.List;
 import java.util.ArrayList;
@@ -91,7 +91,7 @@ public class UserDAO {
             WHERE c.Username = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
@@ -126,7 +126,7 @@ public class UserDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, u.getNome());
@@ -147,7 +147,7 @@ public class UserDAO {
             FROM utente
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -173,7 +173,7 @@ public class UserDAO {
         WHERE ID_Utente = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -205,7 +205,7 @@ public class UserDAO {
           AND ID_Utente <> ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idDaEscludere);

@@ -5,7 +5,7 @@ import it.unisa.oikonaos.model.CodiceIdentificativo;
 import it.unisa.oikonaos.model.Utente;
 import util.PasswordValidator;
 import java.nio.charset.StandardCharsets;
-import util.database;
+import util.Database;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -51,7 +51,7 @@ public class RegistrazioneController extends HttpServlet {
             return;
         }
 
-        try (Connection con = database.getConnection()) {
+        try (Connection con = Database.getConnection()) {
             System.out.println("DB usato = " + con.getCatalog());
 
             con.setAutoCommit(false);

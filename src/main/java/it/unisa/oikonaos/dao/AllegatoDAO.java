@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.dto.AllegatoDTO;
-import util.database;
+import util.Database;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +17,7 @@ public class AllegatoDAO {
 
         String sql = "INSERT INTO allegato (NomeFile, PathFile, TipoFile, ID_Ticket) VALUES (?, ?, ?, ?)";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nomeFile);
@@ -39,7 +39,7 @@ public class AllegatoDAO {
         WHERE ID_Ticket = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTicket);

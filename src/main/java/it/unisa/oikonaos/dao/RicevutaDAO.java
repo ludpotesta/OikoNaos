@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.Ricevuta;
-import util.database;
+import util.Database;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +26,7 @@ public class RicevutaDAO {
               AND DataPagamento IS NOT NULL
         """;
 
-        try (Connection con = database.getConnection()) {
+        try (Connection con = Database.getConnection()) {
 
             // Controllo duplicati
             try (PreparedStatement ps = con.prepareStatement(checkSql)) {
@@ -61,7 +61,7 @@ public class RicevutaDAO {
             WHERE r.ID_Pagamento = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPagamento);

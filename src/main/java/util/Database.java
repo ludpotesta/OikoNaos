@@ -6,7 +6,7 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 
 /* Questa classe serve a centralizzare la gestione delle connessioni al DB */
-public class database {
+public class Database {
 
     private static DataSource dataSource;
 
