@@ -1,5 +1,6 @@
 package it.unisa.oikonaos.dao;
 
+import it.unisa.oikonaos.model.Risorsa;
 import it.unisa.oikonaos.model.Utente;
 import util.database;
 import org.mindrot.jbcrypt.BCrypt;
@@ -138,6 +139,32 @@ public class UserDAO {
         }
     }
 
+    public List<Utente> doRetrieveAllCoinquilini() throws Exception {
+        List<Utente> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT ID_Utente, Nome, Cognome, Email, Telefono, Ruolo
+            FROM utente
+        """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Utente u = new Utente();
+                u.setIdUtente(rs.getLong("ID_Utente"));
+                u.setNome(rs.getString("Nome"));
+                u.setCognome(rs.getString("Cognome"));
+                u.setEmail(rs.getString("Email"));
+                u.setTelefono(rs.getString("Telefono"));
+                u.setRuolo(rs.getString("Ruolo"));
+                lista.add(u);
+            }
+        }
+        return lista;
+    }
+
     public Utente getUtenteById(long idUtente) throws Exception {
 
         String sql = """
@@ -164,29 +191,6 @@ public class UserDAO {
             }
         }
         return null;
-    }
-
-    public long getIdComunitaByUtente(long idUtente) throws Exception {
-
-        String sql = """
-        SELECT ID_Comunita
-        FROM Utente
-        WHERE ID_Utente = ?
-    """;
-
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
-
-            ps.setLong(1, idUtente);
-
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                return rs.getLong("ID_Comunita");
-            } else {
-                throw new IllegalStateException("Utente senza comunità");
-            }
-        }
     }
 
     public List<Utente> doRetrieveCoinquiliniEscluso(long idDaEscludere)

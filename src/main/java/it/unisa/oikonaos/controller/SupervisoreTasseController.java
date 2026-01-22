@@ -78,20 +78,6 @@ public class SupervisoreTasseController extends HttpServlet {
 
         try {
             String trimestre = request.getParameter("trimestre");
-            trimestre = trimestre.trim();
-
-            if (trimestre.length() > 20) {
-                throw new IllegalArgumentException(
-                        "Trimestre troppo lungo: " + trimestre
-                );
-            }
-
-            System.out.println("DEBUG TRIMESTRE = [" + trimestre + "]");
-            System.out.println("LUNGHEZZA = " + trimestre.length());
-
-            String tipo = request.getParameter("tipo"); // ORDINARIA / STRAORDINARIA
-            String destinatario = request.getParameter("destinatario");
-
             if (trimestre == null || trimestre.isBlank()) {
                 response.sendRedirect(
                         request.getContextPath() + "/SupervisoreTasseController?error=trimestre"
@@ -99,20 +85,47 @@ public class SupervisoreTasseController extends HttpServlet {
                 return;
             }
 
+            trimestre = trimestre.trim();
+            if (trimestre.length() > 20) {
+                throw new IllegalArgumentException("Trimestre troppo lungo");
+            }
+
+            String tipo = request.getParameter("tipo"); // ORDINARIA / STRAORDINARIA
+            String destinatario = request.getParameter("destinatario");
+
             double importo = Double.parseDouble(request.getParameter("importo"));
             Date scadenza = Date.valueOf(request.getParameter("scadenza"));
 
-            Long idUtente = null;
             if ("SINGOLO".equals(destinatario)) {
-                String id = request.getParameter("idUtente");
-                if (id != null && !id.isBlank()) {
-                    idUtente = Long.parseLong(id);
-                }
-            }
 
-            tassaDAO.creaTassa(trimestre, importo, scadenza, tipo, idUtente);
-            if (idUtente != null && idUtente.equals(utente.getIdUtente())) {
-                throw new IllegalArgumentException("Non puoi assegnare una tassa a te stesso");
+                String idParam = request.getParameter("idUtente");
+                if (idParam == null || idParam.isBlank()) {
+                    throw new IllegalArgumentException("Coinquilino non selezionato");
+                }
+
+                Long idUtente = Long.parseLong(idParam);
+
+                if (idUtente.equals(utente.getIdUtente())) {
+                    throw new IllegalArgumentException("Non puoi assegnare una tassa a te stesso");
+                }
+
+                tassaDAO.creaTassa(trimestre, importo, scadenza, tipo, idUtente);
+
+            } else if ("TUTTI".equals(destinatario)) {
+                List<Utente> coinquilini = utenteDAO.doRetrieveAllCoinquilini();
+                for (Utente u : coinquilini) {
+                    if (u.getIdUtente() == utente.getIdUtente()) {
+                        continue; // evita tassa al supervisore
+                    }
+
+                    tassaDAO.creaTassa(
+                            trimestre,
+                            importo,
+                            scadenza,
+                            tipo,
+                            u.getIdUtente()
+                    );
+                }
             }
 
             response.sendRedirect(

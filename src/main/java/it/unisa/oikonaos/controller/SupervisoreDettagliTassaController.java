@@ -52,17 +52,6 @@ public class SupervisoreDettagliTassaController extends HttpServlet {
                 return;
             }
 
-            Long idComunita;
-            try {
-                idComunita = userDAO.getIdComunitaByUtente(supervisore.getIdUtente());
-            } catch (IllegalStateException e) {
-                // Supervisore senza comunità → stato non valido
-                response.sendRedirect(
-                        request.getContextPath() + "/SupervisoreTasseController?error=nocomunita"
-                );
-                return;
-            }
-
             List<Utente> coinquilini =
                     userDAO.doRetrieveCoinquiliniEscluso(supervisore.getIdUtente());
 
