@@ -15,10 +15,10 @@ public class RichiestaRisorsaDAO {
                               Date dataFine) throws Exception {
 
         String sql = """
-            INSERT INTO richiestarisorsa
-            (ID_Risorsa, ID_Utente, DataInizio, DataFine)
-            VALUES (?, ?, ?, ?)
-        """;
+        INSERT INTO richiestarisorsa
+        (ID_Risorsa, ID_Utente, DataInizio, DataFine, Stato)
+        VALUES (?, ?, ?, ?, 'RICHIESTA')
+    """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

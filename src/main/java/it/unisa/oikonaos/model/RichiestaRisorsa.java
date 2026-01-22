@@ -52,15 +52,11 @@ public class RichiestaRisorsa {
         LocalDate oggi = LocalDate.now();
         LocalDate data = dataInizio.toLocalDate();
 
-        if (data.isBefore(oggi)) {
-            return "SCADUTA";
-        } else {
-            return "ATTIVA";
-        }
+        return data.isBefore(oggi) ? "PASSATA" : "FUTURA";
     }
 
     public boolean isScaduta() {
-        return dataInizio.toLocalDate().isBefore(LocalDate.now());
+        return "PASSATA".equals(getStatoTemporale());
     }
 
     public String getDataInizioFormatted() {

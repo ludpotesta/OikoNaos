@@ -20,6 +20,11 @@
             background: #f1f5f9;
             color: #64748b;
         }
+
+        .status-pending {
+            background: #fff7ed;
+            color: #c2410c;
+        }
     </style>
 </head>
 <body>
@@ -29,8 +34,7 @@
 <main class="dashboard">
 
     <!-- RISORSE RICHIESTE -->
-    <section style="margin-top: 32px;">
-        <h2>Risorse richieste</h2>
+    <h1 class="page-title">Risorse Richieste</h1>
 
         <c:if test="${empty richiesteAttive}">
             <p>Nessuna richiesta attiva.</p>
@@ -75,16 +79,19 @@
 
                             <!-- STATO -->
                             <td style="padding:16px; border-bottom:1px solid var(--bg);">
-                    <span class="${r.statoTemporale == 'ATTIVA' ? 'status-active' : 'status-past'}"
-                          style="
-                              display:inline-block;
-                              padding:6px 12px;
-                              border-radius:999px;
-                              font-size:11px;
-                              font-weight:800;
-                          ">
-                            ${r.statoTemporale}
-                    </span>
+                                <span class="status
+                                        ${r.stato == 'APPROVATA' ? 'status-active' :
+                                          r.stato == 'RICHIESTA' ? 'status-pending' :
+                                          'status-past'}"
+                                                              style="
+                                              display:inline-block;
+                                              padding:6px 12px;
+                                              border-radius:999px;
+                                              font-size:11px;
+                                              font-weight:800;
+                                          ">
+                                                                ${r.stato}
+                                </span>
                             </td>
                         </tr>
                     </c:forEach>
@@ -95,8 +102,7 @@
     </section>
 
     <!-- RISORSE DISPONIBILI -->
-    <h2>Risorse disponibili</h2>
-
+    <h2 class="page-title">Risorse Disponibili</h2>
     <c:if test="${empty risorseDisponibili}">
         <p>Nessuna risorsa disponibile.</p>
     </c:if>
