@@ -162,7 +162,7 @@
                 <table>
                     <thead>
                     <tr>
-                        <th>Trimestre</th>
+                        <th>Tassa</th>
                         <th>Importo</th>
                         <th>Scadenza</th>
                         <th>Destinatari</th>

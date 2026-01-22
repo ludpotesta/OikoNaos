@@ -13,10 +13,7 @@ import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(
-        name = "SupervisoreDettagliTassaController",
-        value = "/SupervisoreDettagliTassaController"
-)
+@WebServlet(name = "SupervisoreDettagliTassaController", value = "/SupervisoreDettagliTassaController")
 public class SupervisoreDettagliTassaController extends HttpServlet {
 
     @Override
@@ -33,14 +30,21 @@ public class SupervisoreDettagliTassaController extends HttpServlet {
         }
 
         try {
-            long idTassa = Long.parseLong(request.getParameter("idTassa"));
+            String idTassaParam = request.getParameter("idTassa");
+            if (idTassaParam == null) {
+                response.sendRedirect(
+                        request.getContextPath() + "/SupervisoreTasseController?error=badrequest"
+                );
+                return;
+            }
+
+            long idTassa = Long.parseLong(idTassaParam);
 
             TassaDAO tassaDAO = new TassaDAO();
             UserDAO userDAO = new UserDAO();
             PagamentoDAO pagamentoDAO = new PagamentoDAO();
 
             TassaTrimestrale tassa = tassaDAO.getTassaById(idTassa);
-
             if (tassa == null) {
                 response.sendRedirect(
                         request.getContextPath() + "/SupervisoreTasseController?error=notfound"
@@ -48,13 +52,23 @@ public class SupervisoreDettagliTassaController extends HttpServlet {
                 return;
             }
 
-            //COINQUILINI
+            Long idComunita;
+            try {
+                idComunita = userDAO.getIdComunitaByUtente(supervisore.getIdUtente());
+            } catch (IllegalStateException e) {
+                // Supervisore senza comunità → stato non valido
+                response.sendRedirect(
+                        request.getContextPath() + "/SupervisoreTasseController?error=nocomunita"
+                );
+                return;
+            }
+
             List<Utente> coinquilini =
                     userDAO.doRetrieveCoinquiliniEscluso(supervisore.getIdUtente());
 
-            //UTENTI CHE HANNO PAGATO
             List<Long> utentiPaganti =
                     pagamentoDAO.getUtentiCheHannoPagato(idTassa);
+
             request.setAttribute("tassa", tassa);
             request.setAttribute("coinquilini", coinquilini);
             request.setAttribute("utentiPaganti", utentiPaganti);
@@ -62,6 +76,10 @@ public class SupervisoreDettagliTassaController extends HttpServlet {
             request.getRequestDispatcher("/supervisore/dettagliTasseSupervisore.jsp")
                     .forward(request, response);
 
+        } catch (NumberFormatException e) {
+            response.sendRedirect(
+                    request.getContextPath() + "/SupervisoreTasseController?error=badrequest"
+            );
         } catch (Exception e) {
             e.printStackTrace();
             response.sendRedirect(
