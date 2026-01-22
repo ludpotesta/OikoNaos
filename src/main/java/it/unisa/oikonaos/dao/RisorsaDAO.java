@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.Risorsa;
-import util.database;
+import util.Database;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,7 +16,7 @@ public class RisorsaDAO {
             VALUES (?, ?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, r.getNome());
@@ -42,7 +42,7 @@ public class RisorsaDAO {
             FROM risorsacondivisa
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 

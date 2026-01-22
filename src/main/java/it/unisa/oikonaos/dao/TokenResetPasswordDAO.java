@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.TokenResetPassword;
-import util.database;
+import util.Database;
 
 import java.security.SecureRandom;
 import java.sql.*;
@@ -22,7 +22,7 @@ public class TokenResetPasswordDAO {
             VALUES (?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
@@ -43,7 +43,7 @@ public class TokenResetPasswordDAO {
             WHERE Token = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
@@ -69,7 +69,7 @@ public class TokenResetPasswordDAO {
 
         String sql = "DELETE FROM tokenresetpassword WHERE Token = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
@@ -81,7 +81,7 @@ public class TokenResetPasswordDAO {
 
         String sql = "DELETE FROM tokenresetpassword WHERE ID_Utente = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -109,7 +109,7 @@ public class TokenResetPasswordDAO {
           AND DataScadenza > NOW()
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
@@ -126,7 +126,7 @@ public class TokenResetPasswordDAO {
 
         String sql = "DELETE FROM tokenresetpassword WHERE Token = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);

@@ -1,6 +1,6 @@
 package it.unisa.oikonaos.dao;
 
-import util.database;
+import util.Database;
 import java.sql.*;
 
 public class CredenzialiDAO {
@@ -9,7 +9,7 @@ public class CredenzialiDAO {
 
         String sql = "SELECT 1 FROM credenziali WHERE Username = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
@@ -25,7 +25,7 @@ public class CredenzialiDAO {
             WHERE Email = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, email);
@@ -42,7 +42,7 @@ public class CredenzialiDAO {
             WHERE Username = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
@@ -59,7 +59,7 @@ public class CredenzialiDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -76,7 +76,7 @@ public class CredenzialiDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nuovoUsername);
@@ -93,7 +93,7 @@ public class CredenzialiDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nuovaPasswordHash);

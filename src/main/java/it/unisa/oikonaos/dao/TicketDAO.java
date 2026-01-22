@@ -1,6 +1,6 @@
 package it.unisa.oikonaos.dao;
 
-import util.database;
+import util.Database;
 import it.unisa.oikonaos.model.Ticket;
 
 import java.sql.*;
@@ -22,7 +22,7 @@ public class TicketDAO {
             VALUES (?, ?, ?, ?, ?, 'APERTO')
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps =
                      con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -62,7 +62,7 @@ public class TicketDAO {
             ORDER BY DataApertura DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idAutore);
@@ -102,7 +102,7 @@ public class TicketDAO {
             ORDER BY DataApertura DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -131,7 +131,7 @@ public class TicketDAO {
             WHERE ID_Ticket = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nuovoStato);
@@ -151,7 +151,7 @@ public class TicketDAO {
               AND Stato = 'APERTO'
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTicket);
@@ -170,7 +170,7 @@ public class TicketDAO {
           AND ID_Autore = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTicket);
@@ -206,7 +206,7 @@ public class TicketDAO {
         WHERE t.ID_Ticket = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTicket);
@@ -264,7 +264,7 @@ public class TicketDAO {
 
         sql.append("ORDER BY DataApertura DESC");
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql.toString())) {
 
             int index = 1;

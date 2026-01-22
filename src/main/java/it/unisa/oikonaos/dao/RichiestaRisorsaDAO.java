@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.RichiestaRisorsa;
-import util.database;
+import util.Database;
 import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class RichiestaRisorsaDAO {
         VALUES (?, ?, ?, ?, 'RICHIESTA')
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idRisorsa);
@@ -46,7 +46,7 @@ public class RichiestaRisorsaDAO {
             ORDER BY rr.DataInizio DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -81,7 +81,7 @@ public class RichiestaRisorsaDAO {
             ORDER BY rr.DataInizio DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -107,7 +107,7 @@ public class RichiestaRisorsaDAO {
             WHERE ID_Richiesta = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, stato);
@@ -125,7 +125,7 @@ public class RichiestaRisorsaDAO {
               AND DATE(DataInizio) = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idRisorsa);
@@ -145,7 +145,7 @@ public class RichiestaRisorsaDAO {
             WHERE ID_Risorsa = ?
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idRisorsa);

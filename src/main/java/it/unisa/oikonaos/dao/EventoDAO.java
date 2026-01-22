@@ -2,7 +2,7 @@ package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.dto.EventoBachecaDTO;
 import it.unisa.oikonaos.model.Evento;
-import util.database;
+import util.Database;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -35,7 +35,7 @@ public class EventoDAO {
 
         List<EventoBachecaDTO> eventi = new ArrayList<>();
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente); // ✔ SOLO UNO
@@ -81,7 +81,7 @@ public class EventoDAO {
         WHERE ID_Evento = ?
     """;
 
-        try (Connection con = database.getConnection()) {
+        try (Connection con = Database.getConnection()) {
             con.setAutoCommit(false);
 
             try (PreparedStatement check = con.prepareStatement(checkSql)) {
@@ -120,7 +120,7 @@ public class EventoDAO {
         WHERE e.ID_Evento = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -149,7 +149,7 @@ public class EventoDAO {
 
         String sql = "SELECT * FROM evento WHERE ID_Evento = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idEvento);
@@ -192,7 +192,7 @@ public class EventoDAO {
         WHERE ID_Evento = ?
     """;
 
-        try (Connection con = database.getConnection()) {
+        try (Connection con = Database.getConnection()) {
 
             con.setAutoCommit(false);
 
@@ -233,7 +233,7 @@ public class EventoDAO {
         ORDER BY DataInizio DESC
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -275,7 +275,7 @@ public class EventoDAO {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, e.getTitolo());
@@ -305,7 +305,7 @@ public class EventoDAO {
         WHERE ID_Evento = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, e.getTitolo());
@@ -330,7 +330,7 @@ public class EventoDAO {
 
         String sql = "DELETE FROM evento WHERE ID_Evento = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idEvento);

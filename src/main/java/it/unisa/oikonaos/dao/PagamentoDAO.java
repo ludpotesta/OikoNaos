@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.Pagamento;
-import util.database;
+import util.Database;
 
 
 import java.sql.*;
@@ -18,7 +18,7 @@ public class PagamentoDAO {
         String sql = "SELECT p.ID_Pagamento, p.ImportoPagato, p.DataPagamento, p.MetodoPagamento, p.ID_Tassa, t.TrimestreRiferimento, t.Scadenza FROM pagamento p JOIN tassatrimestrale t ON p.ID_Tassa = t.ID_Tassa\n WHERE p.ID_Utente = ?\n ORDER BY t.Scadenza DESC";
 
         System.out.println("SQL PAGAMENTI:\n" + sql);
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -61,7 +61,7 @@ public class PagamentoDAO {
           AND DataPagamento IS NULL
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, metodo);
@@ -93,7 +93,7 @@ public class PagamentoDAO {
         WHERE p.ID_Pagamento = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPagamento);
@@ -144,7 +144,7 @@ public class PagamentoDAO {
         WHERE ID_Tassa = ?
     """;
 
-        try (Connection con = database.getConnection()) {
+        try (Connection con = Database.getConnection()) {
 
             // 1️⃣ Controllo: esiste già un pagamento per questa tassa e utente?
             try (PreparedStatement ps = con.prepareStatement(checkSql)) {
@@ -193,7 +193,7 @@ public class PagamentoDAO {
           AND DataPagamento IS NOT NULL
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTassa);

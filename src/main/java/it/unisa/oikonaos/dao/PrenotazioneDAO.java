@@ -1,6 +1,6 @@
 package it.unisa.oikonaos.dao;
 
-import util.database;
+import util.Database;
 import it.unisa.oikonaos.model.Prenotazione;
 
 import java.sql.*;
@@ -16,7 +16,7 @@ public class PrenotazioneDAO {
             VALUES (?, ?, ?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setDate(1, p.getData());
@@ -42,7 +42,7 @@ public class PrenotazioneDAO {
             LIMIT 1
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setDate(1, data);
@@ -77,7 +77,7 @@ public class PrenotazioneDAO {
             ORDER BY pr.DataPrenotazione DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -120,7 +120,7 @@ public class PrenotazioneDAO {
             ORDER BY pr.DataPrenotazione DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -153,7 +153,7 @@ public class PrenotazioneDAO {
         WHERE ID_Prenotazione = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPrenotazione);
@@ -183,7 +183,7 @@ public class PrenotazioneDAO {
               AND Stato = 'ATTIVA'
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPrenotazione);

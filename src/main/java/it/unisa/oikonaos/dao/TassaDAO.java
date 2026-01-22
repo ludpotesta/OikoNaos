@@ -1,7 +1,7 @@
 package it.unisa.oikonaos.dao;
 
 import it.unisa.oikonaos.model.TassaTrimestrale;
-import util.database;
+import util.Database;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -32,7 +32,7 @@ public class TassaDAO {
             """;
 
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
@@ -65,7 +65,7 @@ public class TassaDAO {
 
         String sql = "UPDATE tassatrimestrale SET Stato = 'PAGATA' WHERE ID_Tassa = ?";
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTassa);
@@ -88,7 +88,7 @@ public class TassaDAO {
         VALUES (?, ?, ?, ?, ?)
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, trimestre);
@@ -122,7 +122,7 @@ public class TassaDAO {
             ORDER BY t.Scadenza DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
@@ -157,7 +157,7 @@ public class TassaDAO {
         WHERE t.ID_Tassa = ?
     """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTassa);

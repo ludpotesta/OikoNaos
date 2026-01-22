@@ -1,6 +1,6 @@
 package it.unisa.oikonaos.dao;
 
-import util.database;
+import util.Database;
 import java.sql.*;
 import it.unisa.oikonaos.model.AggiornamentoTicket;
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class AggiornamentoTicketDAO {
             VALUES (?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, msg);
@@ -41,7 +41,7 @@ public class AggiornamentoTicketDAO {
             ORDER BY a.DataAggiornamento DESC
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = Database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTicket);
