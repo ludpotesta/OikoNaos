@@ -7,17 +7,9 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * DAO per la gestione dei ticket di assistenza.
- * Contiene esclusivamente logica di accesso ai dati (CRUD),
- * in accordo con il pattern MVC.
- */
 public class TicketDAO {
 
-    /* ==========================================================
-       CREAZIONE TICKET
-       ========================================================== */
-
+    /* CREAZIONE TICKET */
     public long creaTicket(String titolo,
                            String descrizione,
                            String categoria,
@@ -25,7 +17,7 @@ public class TicketDAO {
                            long idAutore) throws Exception {
 
         String sql = """
-            INSERT INTO Ticket
+            INSERT INTO ticket
             (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato)
             VALUES (?, ?, ?, ?, ?, 'APERTO')
         """;
@@ -51,10 +43,6 @@ public class TicketDAO {
         return 0;
     }
 
-    /* ==========================================================
-       RETRIEVE TICKET PER AUTORE (COINQUILINO)
-       ========================================================== */
-
     public List<Ticket> doRetrieveByAutore(long idAutore)
             throws Exception {
 
@@ -69,7 +57,7 @@ public class TicketDAO {
                 Priorita,
                 Stato,
                 DataApertura
-            FROM Ticket
+            FROM ticket
             WHERE ID_Autore = ?
             ORDER BY DataApertura DESC
         """;
@@ -97,10 +85,6 @@ public class TicketDAO {
         return lista;
     }
 
-    /* ==========================================================
-       RETRIEVE TUTTI I TICKET (SUPERVISORE)
-       ========================================================== */
-
     public List<Ticket> doRetrieveAll()
             throws Exception {
 
@@ -114,7 +98,7 @@ public class TicketDAO {
                 Stato,
                 ID_Autore,
                 DataApertura
-            FROM Ticket
+            FROM ticket
             ORDER BY DataApertura DESC
         """;
 
@@ -137,15 +121,12 @@ public class TicketDAO {
         return lista;
     }
 
-    /* ==========================================================
-       AGGIORNAMENTO STATO TICKET (SUPERVISORE)
-       ========================================================== */
-
+    /* AGGIORNAMENTO STATO TICKET (SUPERVISORE) */
     public void updateStato(long idTicket, String nuovoStato)
             throws Exception {
 
         String sql = """
-            UPDATE Ticket
+            UPDATE ticket
             SET Stato = ?
             WHERE ID_Ticket = ?
         """;
@@ -159,14 +140,12 @@ public class TicketDAO {
         }
     }
 
-    /* ==========================================================
-       CANCELLAZIONE SICURA TICKET (SOLO AUTORE, SOLO APERTO)
-       ========================================================== */
+    /* CANCELLAZIONE SICURA TICKET (SOLO AUTORE, SOLO APERTO) */
     public boolean deleteTicketIfAperto(long idTicket, long idAutore)
             throws Exception {
 
         String sql = """
-            DELETE FROM Ticket
+            DELETE FROM ticket
             WHERE ID_Ticket = ?
               AND ID_Autore = ?
               AND Stato = 'APERTO'

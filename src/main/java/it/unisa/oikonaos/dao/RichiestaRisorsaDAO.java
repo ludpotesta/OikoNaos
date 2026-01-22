@@ -4,7 +4,6 @@ import it.unisa.oikonaos.model.RichiestaRisorsa;
 import util.database;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +15,10 @@ public class RichiestaRisorsaDAO {
                               Date dataFine) throws Exception {
 
         String sql = """
-        INSERT INTO richiestarisorsa
-        (ID_Risorsa, ID_Utente, DataInizio, DataFine)
-        VALUES (?, ?, ?, ?)
-    """;
+            INSERT INTO richiestarisorsa
+            (ID_Risorsa, ID_Utente, DataInizio, DataFine)
+            VALUES (?, ?, ?, ?)
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -36,7 +35,16 @@ public class RichiestaRisorsaDAO {
     public List<RichiestaRisorsa> doRetrieveAll() throws Exception {
         List<RichiestaRisorsa> lista = new ArrayList<>();
 
-        String sql = " SELECT rr.*, r.Nome AS NomeRisorsa, u.Nome AS NomeUtente, u.Cognome FROM RichiestaRisorsa rr JOIN RisorsaCondivisa r ON rr.ID_Risorsa = r.ID_Risorsa JOIN Utente u ON rr.ID_Utente = u.ID_Utente ORDER BY rr.DataInizio DESC ";
+        String sql = """
+            SELECT rr.*,
+                   r.Nome AS NomeRisorsa,
+                   u.Nome AS NomeUtente,
+                   u.Cognome
+            FROM richiestarisorsa rr
+            JOIN risorsacondivisa r ON rr.ID_Risorsa = r.ID_Risorsa
+            JOIN utente u ON rr.ID_Utente = u.ID_Utente
+            ORDER BY rr.DataInizio DESC
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -58,21 +66,20 @@ public class RichiestaRisorsaDAO {
         return lista;
     }
 
-
     public List<RichiestaRisorsa> doRetrieveByUtente(long idUtente) throws Exception {
         List<RichiestaRisorsa> lista = new ArrayList<>();
 
         String sql = """
-        SELECT rr.ID_Richiesta,
-               rr.DataInizio,
-               rr.DataFine,
-               rr.Stato,
-               r.Nome AS NomeRisorsa
-        FROM RichiestaRisorsa rr
-        JOIN RisorsaCondivisa r ON rr.ID_Risorsa = r.ID_Risorsa
-        WHERE rr.ID_Utente = ?
-        ORDER BY rr.DataInizio DESC
-    """;
+            SELECT rr.ID_Richiesta,
+                   rr.DataInizio,
+                   rr.DataFine,
+                   rr.Stato,
+                   r.Nome AS NomeRisorsa
+            FROM richiestarisorsa rr
+            JOIN risorsacondivisa r ON rr.ID_Risorsa = r.ID_Risorsa
+            WHERE rr.ID_Utente = ?
+            ORDER BY rr.DataInizio DESC
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -87,7 +94,6 @@ public class RichiestaRisorsaDAO {
                 req.setDataFine(rs.getTimestamp("DataFine"));
                 req.setStato(rs.getString("Stato"));
                 req.setNomeRisorsa(rs.getString("NomeRisorsa"));
-
                 lista.add(req);
             }
         }
@@ -95,7 +101,11 @@ public class RichiestaRisorsaDAO {
     }
 
     public void aggiornaStato(long idRichiesta, String stato) throws Exception {
-        String sql = " UPDATE RichiestaRisorsa SET Stato = ? WHERE ID_Richiesta = ? ";
+        String sql = """
+            UPDATE richiestarisorsa
+            SET Stato = ?
+            WHERE ID_Richiesta = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -106,18 +116,14 @@ public class RichiestaRisorsaDAO {
         }
     }
 
-    // Metodo per il controllo del conflitto tra le richieste
-    public boolean esisteConflitto(
-            long idRisorsa,
-            LocalDate giorno
-    ) throws Exception {
+    public boolean esisteConflitto(long idRisorsa, LocalDate giorno) throws Exception {
 
         String sql = """
-        SELECT COUNT(*)
-        FROM RichiestaRisorsa
-        WHERE ID_Risorsa = ?
-          AND DATE(DataInizio) = ?
-    """;
+            SELECT COUNT(*)
+            FROM richiestarisorsa
+            WHERE ID_Risorsa = ?
+              AND DATE(DataInizio) = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -134,10 +140,10 @@ public class RichiestaRisorsaDAO {
         List<LocalDate> date = new ArrayList<>();
 
         String sql = """
-        SELECT DISTINCT DATE(DataInizio)
-        FROM RichiestaRisorsa
-        WHERE ID_Risorsa = ?
-    """;
+            SELECT DISTINCT DATE(DataInizio)
+            FROM richiestarisorsa
+            WHERE ID_Risorsa = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -152,4 +158,3 @@ public class RichiestaRisorsaDAO {
         return date;
     }
 }
-

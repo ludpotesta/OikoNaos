@@ -6,18 +6,9 @@ import it.unisa.oikonaos.model.Prenotazione;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
-/**
- * DAO per la gestione delle prenotazioni degli spazi comuni.
- * Implementa esclusivamente operazioni di persistenza (CRUD),
- * senza includere logica di business, in accordo con il pattern MVC.
- */
 public class PrenotazioneDAO {
 
-    /* ==========================================================
-       CREAZIONE PRENOTAZIONE
-       ========================================================== */
-
+    /* CREAZIONE PRENOTAZIONE */
     public void creaPrenotazione(Prenotazione p) throws Exception {
         String sql = """
             INSERT INTO prenotazione
@@ -37,11 +28,6 @@ public class PrenotazioneDAO {
             ps.executeUpdate();
         }
     }
-
-    /* ==========================================================
-       VERIFICA CONFLITTO PRENOTAZIONI
-       NOTA: metodo valido per fasce orarie DISCRETE
-       ========================================================== */
 
     public boolean verificaConflitto(Date data, long idPostazione, long idFascia)
             throws Exception {
@@ -68,10 +54,6 @@ public class PrenotazioneDAO {
             }
         }
     }
-
-    /* ==========================================================
-       RETRIEVE PRENOTAZIONI PER UTENTE (VIEW MODEL)
-       ========================================================== */
 
     public List<Prenotazione> doRetrieveByUtente(long idUtente)
             throws Exception {
@@ -118,10 +100,6 @@ public class PrenotazioneDAO {
         return lista;
     }
 
-    /* ==========================================================
-       RETRIEVE TUTTE LE PRENOTAZIONI (SUPERVISORE)
-       ========================================================== */
-
     public List<Prenotazione> doRetrieveAll()
             throws Exception {
 
@@ -162,10 +140,6 @@ public class PrenotazioneDAO {
         return lista;
     }
 
-    /* ==========================================================
-   RETRIEVE PRENOTAZIONE PER ID (CONTROLLO SICUREZZA)
-   ========================================================== */
-
     public Prenotazione doRetrieveById(long idPrenotazione)
             throws Exception {
 
@@ -198,10 +172,7 @@ public class PrenotazioneDAO {
         return null;
     }
 
-    /* ==========================================================
-       CANCELLAZIONE SICURA PRENOTAZIONE
-       ========================================================== */
-
+    /* CANCELLAZIONE SICURA PRENOTAZIONE*/
     public boolean doDelete(long idPrenotazione, long idUtente)
             throws Exception {
 

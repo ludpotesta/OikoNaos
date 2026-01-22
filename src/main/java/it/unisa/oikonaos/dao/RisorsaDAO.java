@@ -11,7 +11,7 @@ public class RisorsaDAO {
     public void doSave(Risorsa r) throws Exception {
 
         String sql = """
-            INSERT INTO RisorsaCondivisa
+            INSERT INTO risorsacondivisa
             (Nome, Descrizione, RegoleUso, Penale)
             VALUES (?, ?, ?, ?)
         """;
@@ -39,7 +39,7 @@ public class RisorsaDAO {
 
         String sql = """
             SELECT ID_Risorsa, Nome, Descrizione, RegoleUso, Penale
-            FROM RisorsaCondivisa
+            FROM risorsacondivisa
         """;
 
         try (Connection con = database.getConnection();

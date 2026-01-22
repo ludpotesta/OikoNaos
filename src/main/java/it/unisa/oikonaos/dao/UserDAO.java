@@ -37,7 +37,7 @@ public class UserDAO {
     ) throws Exception {
 
         String sql = """
-                INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo)
+                INSERT INTO utente (Nome, Cognome, Email, Telefono, Ruolo)
                 VALUES (?, ?, ?, ?, 'COINQUILINO')
             """;
 
@@ -69,7 +69,7 @@ public class UserDAO {
         String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
         String sql = """
-            INSERT INTO Credenziali (Username, PasswordHash, ID_Utente)
+            INSERT INTO credenziali (Username, PasswordHash, ID_Utente)
             VALUES (?, ?, ?)
         """;
 
@@ -86,8 +86,8 @@ public class UserDAO {
         String sql = """
             SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email,
                    u.Telefono, u.Ruolo, c.PasswordHash
-            FROM Utente u
-            JOIN Credenziali c ON u.ID_Utente = c.ID_Utente
+            FROM utente u
+            JOIN credenziali c ON u.ID_Utente = c.ID_Utente
             WHERE c.Username = ?
         """;
 
@@ -121,7 +121,7 @@ public class UserDAO {
     public void updateProfilo(Utente u) throws Exception {
 
         String sql = """
-            UPDATE Utente
+            UPDATE utente
             SET Nome = ?, Cognome = ?, Email = ?, Telefono = ?
             WHERE ID_Utente = ?
         """;
