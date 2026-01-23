@@ -55,7 +55,9 @@
                     LocalDate dataPrenotazione = p.getData().toLocalDate();
                 %>
                 <tr>
-                    <td><%= dataPrenotazione %></td>
+                    <td><%= dataPrenotazione.format(
+                            java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy")
+                    ) %></td>
                     <td><%= p.getNomeAmbiente() %></td>
                     <td>Postazione <%= p.getNumeroPostazione() %></td>
                     <td>
@@ -83,11 +85,11 @@
         <% } %>
 
         <div class="card-actions">
-            <a href="nuovaPrenotazione.jsp" class="btn primary">
+            <a href="${pageContext.request.contextPath}/PrenotazioneController?action=new"
+               class="btn primary">
                 Nuova prenotazione
             </a>
         </div>
-
     </section>
 </main>
 

@@ -29,28 +29,31 @@ public class PrenotazioneDAO {
         }
     }
 
-    public boolean verificaConflitto(Date data, long idPostazione, long idFascia)
-            throws Exception {
+    public boolean verificaConflitto(Date dataPrenotazione,
+                                     long idPostazione,
+                                     long idFascia) throws Exception {
 
         String sql = """
-            SELECT 1
-            FROM prenotazione
-            WHERE DataPrenotazione = ?
-              AND ID_Postazione = ?
-              AND ID_Fascia = ?
-              AND Stato = 'ATTIVA'
-            LIMIT 1
-        """;
+        SELECT COUNT(*)
+        FROM prenotazione
+        WHERE DataPrenotazione = ?
+          AND ID_Postazione = ?
+          AND ID_Fascia = ?
+          AND Stato = 'ATTIVA'
+    """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setDate(1, data);
+            ps.setDate(1, dataPrenotazione);
             ps.setLong(2, idPostazione);
             ps.setLong(3, idFascia);
 
             try (ResultSet rs = ps.executeQuery()) {
-                return rs.next();
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+                return false;
             }
         }
     }
@@ -191,5 +194,53 @@ public class PrenotazioneDAO {
 
             return ps.executeUpdate() > 0;
         }
+    }
+
+    public List<Object[]> doRetrieveAmbienti() throws Exception {
+
+        List<Object[]> lista = new ArrayList<>();
+
+        String sql = "SELECT ID_Ambiente, Nome FROM ambiente ORDER BY Nome";
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                lista.add(new Object[]{
+                        rs.getLong("ID_Ambiente"),
+                        rs.getString("Nome")
+                });
+            }
+        }
+        return lista;
+    }
+
+    public List<long[]> doRetrievePostazioniByAmbiente(long idAmbiente) throws Exception {
+
+        List<long[]> lista = new ArrayList<>();
+
+        String sql = """
+        SELECT ID_Postazione, Numero
+        FROM postazione
+        WHERE ID_Ambiente = ?
+        ORDER BY Numero
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idAmbiente);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    lista.add(new long[]{
+                            rs.getLong("ID_Postazione"),
+                            rs.getLong("Numero")
+                    });
+                }
+            }
+        }
+        return lista;
     }
 }

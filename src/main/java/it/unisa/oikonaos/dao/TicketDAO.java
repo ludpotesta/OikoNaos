@@ -17,10 +17,10 @@ public class TicketDAO {
                            long idAutore) throws Exception {
 
         String sql = """
-            INSERT INTO ticket
-            (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato)
-            VALUES (?, ?, ?, ?, ?, 'APERTO')
-        """;
+        INSERT INTO ticket
+        (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato)
+        VALUES (?, ?, ?, ?, ?, 'APERTO')
+    """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps =
@@ -32,13 +32,11 @@ public class TicketDAO {
             ps.setString(4, priorita);
             ps.setLong(5, idAutore);
 
-            ps.setString(6, "APERTO"); // Stato iniziale di default
             ps.executeUpdate();
+
             ResultSet rs = ps.getGeneratedKeys();
             if (rs.next()) return rs.getLong(1);
             return 0;
-        } finally {
-            if (con != null) con.close();
         }
     }
 
