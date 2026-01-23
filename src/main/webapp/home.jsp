@@ -52,7 +52,7 @@
     <section class="dashboard-grid">
 
         <!-- PRENOTAZIONI -->
-        <a href="${pageContext.request.contextPath}/PrenotazioneController"
+        <a href="${pageContext.request.contextPath}/PrenotazioneController?action=list"
            class="dashboard-card active">
             <span class="icon">📅</span>
             <h3>Prenotazioni</h3>

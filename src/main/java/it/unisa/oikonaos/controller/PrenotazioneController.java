@@ -1,13 +1,19 @@
 package it.unisa.oikonaos.controller;
 
-import it.unisa.oikonaos.dao.*;
-import it.unisa.oikonaos.model.*;
+import it.unisa.oikonaos.dao.PrenotazioneDAO;
+import it.unisa.oikonaos.model.Prenotazione;
+import it.unisa.oikonaos.model.Utente;
+
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
 import java.io.IOException;
-import java.util.List;
+import java.io.PrintWriter;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.util.List;
+
 @WebServlet(name = "PrenotazioneController", value = "/PrenotazioneController")
 public class PrenotazioneController extends HttpServlet {
 
@@ -18,38 +24,56 @@ public class PrenotazioneController extends HttpServlet {
         HttpSession session = request.getSession(false);
         Utente u = (session != null) ? (Utente) session.getAttribute("utente") : null;
 
-        // Non loggato → login
         if (u == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        // Solo COINQUILINO
         if (!"COINQUILINO".equalsIgnoreCase(u.getRuolo())) {
             response.sendRedirect(request.getContextPath() + "/home.jsp?error=permessi");
             return;
         }
 
         String action = request.getParameter("action");
+        PrenotazioneDAO dao = new PrenotazioneDAO();
 
-        // ===== LISTA PRENOTAZIONI =====
-        if (action == null || "list".equals(action)) {
-            try {
-                PrenotazioneDAO dao = new PrenotazioneDAO();
-                List<Prenotazione> lista =
-                        dao.doRetrieveByUtente(u.getIdUtente());
+        try {
 
-                request.setAttribute("listaPrenotazioni", lista);
-                request.getRequestDispatcher("/prenotazioni.jsp")
-                        .forward(request, response);
-            } catch (Exception e) {
-                throw new ServletException(e);
+            if (action == null || "list".equals(action)) {
+                request.setAttribute(
+                        "listaPrenotazioni",
+                        dao.doRetrieveByUtente(u.getIdUtente())
+                );
+                request.getRequestDispatcher("/prenotazioni.jsp").forward(request, response);
+                return;
             }
-            return;
-        }
 
-        // Azione GET non riconosciuta
-        response.sendRedirect(request.getContextPath() + "/home.jsp");
+            if ("new".equals(action)) {
+                request.getRequestDispatcher("/nuovaPrenotazione.jsp")
+                        .forward(request, response);
+                return;
+            }
+
+            if ("postazioni".equals(action)) {
+
+                long idAmbiente = Long.parseLong(request.getParameter("idAmbiente"));
+
+                response.setContentType("text/plain");
+                PrintWriter out = response.getWriter();
+
+                dao.doRetrievePostazioniByAmbiente(idAmbiente)
+                        .forEach(p ->
+                                out.println(p[0] + ";" + p[1])
+                        );
+
+                out.flush();
+                return;
+            }
+            response.sendRedirect(request.getContextPath() + "/home.jsp");
+
+        } catch (Exception e) {
+            throw new ServletException(e);
+        }
     }
 
     @Override
@@ -65,66 +89,21 @@ public class PrenotazioneController extends HttpServlet {
         }
 
         String action = request.getParameter("action");
+        PrenotazioneDAO dao = new PrenotazioneDAO();
 
         try {
-            PrenotazioneDAO dao = new PrenotazioneDAO();
 
-            // ===== DELETE =====
-            if ("delete".equals(action)) {
-                long idPrenotazione =
-                        Long.parseLong(request.getParameter("idPrenotazione"));
-
-                Prenotazione prenotazione = dao.doRetrieveById(idPrenotazione);
-
-                if (prenotazione == null ||
-                        prenotazione.getIdUtente() != u.getIdUtente()) {
-
-                    response.sendError(HttpServletResponse.SC_FORBIDDEN);
-                    return;
-                }
-
-                Date oggi = Date.valueOf(java.time.LocalDate.now());
-
-                if (prenotazione.getData().before(oggi)) {
-                    response.sendError(
-                            HttpServletResponse.SC_FORBIDDEN,
-                            "Impossibile annullare una prenotazione passata"
-                    );
-                    return;
-                }
-
-                dao.doDelete(idPrenotazione, u.getIdUtente());
-
-                response.sendRedirect(
-                        request.getContextPath() +
-                                "/PrenotazioneController?action=list"
-                );
-                return;
-            }
-
-            // ===== CREATE =====
             if ("create".equals(action)) {
 
-                String dataStr = request.getParameter("data");
-                String postazioneStr = request.getParameter("idPostazione");
-                String fasciaStr = request.getParameter("idFascia");
-
-                if (dataStr == null || postazioneStr == null || fasciaStr == null) {
-                    response.sendRedirect("nuovaPrenotazione.jsp?error=campi");
-                    return;
-                }
-
-                Date data = Date.valueOf(dataStr);
-                if (data.before(Date.valueOf(java.time.LocalDate.now()))) {
-                    response.sendRedirect("nuovaPrenotazione.jsp?error=data_passata");
-                    return;
-                }
-
-                long idPostazione = Long.parseLong(postazioneStr);
-                long idFascia = Long.parseLong(fasciaStr);
+                Date data = Date.valueOf(request.getParameter("data"));
+                long idPostazione = Long.parseLong(request.getParameter("idPostazione"));
+                long idFascia = Long.parseLong(request.getParameter("idFascia"));
 
                 if (dao.verificaConflitto(data, idPostazione, idFascia)) {
-                    response.sendRedirect("nuovaPrenotazione.jsp?error=conflitto");
+                    response.sendRedirect(
+                            request.getContextPath() +
+                                    "/PrenotazioneController?action=new&error=conflitto"
+                    );
                     return;
                 }
 
@@ -144,8 +123,10 @@ public class PrenotazioneController extends HttpServlet {
                 return;
             }
 
-            // azione POST non riconosciuta
-            response.sendRedirect(request.getContextPath() + "/home.jsp");
+            response.sendRedirect(
+                    request.getContextPath() +
+                            "/PrenotazioneController?action=list"
+            );
 
         } catch (Exception e) {
             throw new ServletException(e);
