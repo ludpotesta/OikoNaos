@@ -27,6 +27,10 @@ public class SupervisoreTicketController extends HttpServlet {
         String action = request.getParameter("action");
         TicketDAO dao = new TicketDAO();
 
+        String stato = request.getParameter("stato");
+        String priorita = request.getParameter("priorita");
+        String dataCreazione = request.getParameter("dataCreazione");
+
         try {
             if ("details".equals(action)) {
 
@@ -55,7 +59,10 @@ public class SupervisoreTicketController extends HttpServlet {
 
             } else {
 
-                request.setAttribute("listaTicket", dao.doRetrieveAll());
+                request.setAttribute(
+                        "listaTicket",
+                        dao.doRetrieveFiltered(stato, priorita, dataCreazione)
+                );
                 request.getRequestDispatcher("/supervisore/ticketSupervisore.jsp")
                         .forward(request, response);
             }

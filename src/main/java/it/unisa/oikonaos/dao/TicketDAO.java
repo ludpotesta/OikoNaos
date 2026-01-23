@@ -63,8 +63,6 @@ public class TicketDAO {
         return lista;
     }
 
-    // --- METODI PER IL SUPERVISORE (ADMIN) ---
-
     // 1. RECUPERA TUTTI I TICKET (Per la tabella generale)
     public List<Ticket> doRetrieveAll() throws Exception {
         List<Ticket> lista = new ArrayList<>();
@@ -89,7 +87,6 @@ public class TicketDAO {
         return lista;
     }
 
-    // 2. RECUPERA SINGOLO TICKET PER ID (Per la pagina Dettagli - MANCAVA QUESTO)
     public Ticket doRetrieveById(long idTicket) throws Exception {
         String sql = "SELECT * FROM ticket WHERE ID_Ticket = ?";
         try (Connection con = database.getConnection();
@@ -134,4 +131,47 @@ public class TicketDAO {
         }
     }
 
+    public List<Ticket> doRetrieveFiltered(String stato, String priorita, String data)
+            throws Exception {
+
+        StringBuilder sql = new StringBuilder("SELECT * FROM ticket WHERE 1=1");
+        List<Object> params = new ArrayList<>();
+
+        if (stato != null && !stato.isBlank()) {
+            sql.append(" AND Stato = ?");
+            params.add(stato);
+        }
+
+        if (priorita != null && !priorita.isBlank()) {
+            sql.append(" AND Priorita = ?");
+            params.add(priorita);
+        }
+
+        if (data != null && !data.isBlank()) {
+            sql.append(" AND DATE(DataApertura) = ?");
+            params.add(Date.valueOf(data));
+        }
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql.toString())) {
+
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
+            }
+
+            ResultSet rs = ps.executeQuery();
+            List<Ticket> lista = new ArrayList<>();
+
+            while (rs.next()) {
+                Ticket t = new Ticket();
+                t.setIdTicket(rs.getLong("ID_Ticket"));
+                t.setTitolo(rs.getString("Titolo"));
+                t.setStato(rs.getString("Stato"));
+                t.setPriorita(rs.getString("Priorita"));
+                lista.add(t);
+            }
+
+            return lista;
+        }
+    }
 }
