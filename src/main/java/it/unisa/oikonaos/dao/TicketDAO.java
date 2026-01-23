@@ -1,6 +1,7 @@
 package it.unisa.oikonaos.dao;
 
-import util.database; // Manteniamo la tua classe di connessione
+
+import util.database;
 import it.unisa.oikonaos.model.Ticket;
 
 import java.sql.*;
@@ -16,29 +17,25 @@ public class TicketDAO {
                            String priorita,
                            long idAutore) throws Exception {
 
-        String sql = """
-            INSERT INTO ticket
-            (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato)
-            VALUES (?, ?, ?, ?, ?, 'APERTO')
-        """;
+
+        String sql = "INSERT INTO ticket (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato) VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection con = database.getConnection();
-             PreparedStatement ps =
-                     con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+             PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, titolo);
             ps.setString(2, descrizione);
             ps.setString(3, categoria);
             ps.setString(4, priorita);
             ps.setLong(5, idAutore);
+            ps.setString(6, "APERTO"); // Impostiamo lo stato esplicitamente
 
-            ps.setString(6, "APERTO"); // Stato iniziale di default
             ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            if (rs.next()) return rs.getLong(1);
+
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) return rs.getLong(1);
+            }
             return 0;
-        } finally {
-            if (con != null) con.close();
         }
     }
 
@@ -46,20 +43,24 @@ public class TicketDAO {
     public List<Ticket> doRetrieveByAutore(long idAutore) throws Exception {
         List<Ticket> lista = new ArrayList<>();
         String sql = "SELECT * FROM Ticket WHERE ID_Autore = ?";
+
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setLong(1, idAutore);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Ticket t = new Ticket();
-                t.setIdTicket(rs.getLong("ID_Ticket"));
-                t.setTitolo(rs.getString("Titolo"));
-                t.setDescrizione(rs.getString("Descrizione"));
-                t.setCategoria(rs.getString("Categoria"));
-                t.setPriorita(rs.getString("Priorita"));
-                t.setStato(rs.getString("Stato"));
-                t.setDataApertura(rs.getTimestamp("DataApertura"));
-                lista.add(t);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Ticket t = new Ticket();
+                    t.setIdTicket(rs.getLong("ID_Ticket"));
+                    t.setTitolo(rs.getString("Titolo"));
+                    t.setDescrizione(rs.getString("Descrizione"));
+                    t.setCategoria(rs.getString("Categoria"));
+                    t.setPriorita(rs.getString("Priorita"));
+                    t.setStato(rs.getString("Stato"));
+                    t.setDataApertura(rs.getTimestamp("DataApertura"));
+                    t.setIdAutore(rs.getLong("ID_Autore"));
+                    lista.add(t);
+                }
             }
         }
         return lista;
@@ -70,17 +71,17 @@ public class TicketDAO {
     // 1. RECUPERA TUTTI I TICKET (Per la tabella generale)
     public List<Ticket> doRetrieveAll() throws Exception {
         List<Ticket> lista = new ArrayList<>();
-        // Ordiniamo per data decrescente (i più recenti in alto)
         String sql = "SELECT * FROM Ticket ORDER BY DataApertura DESC";
+
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
+
             while (rs.next()) {
                 Ticket t = new Ticket();
                 t.setIdTicket(rs.getLong("ID_Ticket"));
                 t.setTitolo(rs.getString("Titolo"));
                 t.setDescrizione(rs.getString("Descrizione"));
-                // Aggiunti questi campi mancanti nel tuo codice precedente
                 t.setCategoria(rs.getString("Categoria"));
                 t.setPriorita(rs.getString("Priorita"));
                 t.setStato(rs.getString("Stato"));
@@ -92,49 +93,55 @@ public class TicketDAO {
         return lista;
     }
 
-    // 2. RECUPERA SINGOLO TICKET PER ID (Per la pagina Dettagli - MANCAVA QUESTO)
+    // 2. RECUPERA SINGOLO TICKET PER ID
     public Ticket doRetrieveById(long idTicket) throws Exception {
         String sql = "SELECT * FROM Ticket WHERE ID_Ticket = ?";
+
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setLong(1, idTicket);
-            ResultSet rs = ps.executeQuery();
-            if (rs.next()) {
-                Ticket t = new Ticket();
-                t.setIdTicket(rs.getLong("ID_Ticket"));
-                t.setTitolo(rs.getString("Titolo"));
-                t.setDescrizione(rs.getString("Descrizione"));
-                t.setCategoria(rs.getString("Categoria"));
-                t.setPriorita(rs.getString("Priorita"));
-                t.setStato(rs.getString("Stato"));
-                t.setIdAutore(rs.getLong("ID_Autore"));
-                t.setDataApertura(rs.getTimestamp("DataApertura"));
-                return t;
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    Ticket t = new Ticket();
+                    t.setIdTicket(rs.getLong("ID_Ticket"));
+                    t.setTitolo(rs.getString("Titolo"));
+                    t.setDescrizione(rs.getString("Descrizione"));
+                    t.setCategoria(rs.getString("Categoria"));
+                    t.setPriorita(rs.getString("Priorita"));
+                    t.setStato(rs.getString("Stato"));
+                    t.setIdAutore(rs.getLong("ID_Autore"));
+                    t.setDataApertura(rs.getTimestamp("DataApertura"));
+                    return t;
+                }
             }
-            return null; // Nessun ticket trovato
         }
+        return null;
     }
 
-    // 3. AGGIORNA STATO (Es. da Aperto a In Lavorazione)
+    // 3. AGGIORNA STATO
     public void updateStato(long idTicket, String nuovoStato) throws Exception {
         String sql = "UPDATE Ticket SET Stato = ? WHERE ID_Ticket = ?";
+
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setString(1, nuovoStato);
             ps.setLong(2, idTicket);
             ps.executeUpdate();
         }
     }
 
-    // CANCELLAZIONE (Solo se APERTO e dall'autore)
+    // CANCELLAZIONE
     public boolean deleteTicketIfAperto(long idTicket, long idAutore) throws Exception {
         String sql = "DELETE FROM Ticket WHERE ID_Ticket = ? AND ID_Autore = ? AND Stato = 'APERTO'";
+
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
+
             ps.setLong(1, idTicket);
             ps.setLong(2, idAutore);
             return ps.executeUpdate() > 0;
         }
     }
-
 }
