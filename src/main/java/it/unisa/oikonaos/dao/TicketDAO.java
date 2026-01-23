@@ -43,7 +43,7 @@ public class TicketDAO {
     // LISTA TICKET DI UN SINGOLO UTENTE
     public List<Ticket> doRetrieveByAutore(long idAutore) throws Exception {
         List<Ticket> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Ticket WHERE ID_Autore = ?";
+        String sql = "SELECT * FROM ticket WHERE ID_Autore = ?";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, idAutore);
@@ -69,7 +69,7 @@ public class TicketDAO {
     public List<Ticket> doRetrieveAll() throws Exception {
         List<Ticket> lista = new ArrayList<>();
         // Ordiniamo per data decrescente (i più recenti in alto)
-        String sql = "SELECT * FROM Ticket ORDER BY DataApertura DESC";
+        String sql = "SELECT * FROM ticket ORDER BY DataApertura DESC";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -78,7 +78,6 @@ public class TicketDAO {
                 t.setIdTicket(rs.getLong("ID_Ticket"));
                 t.setTitolo(rs.getString("Titolo"));
                 t.setDescrizione(rs.getString("Descrizione"));
-                // Aggiunti questi campi mancanti nel tuo codice precedente
                 t.setCategoria(rs.getString("Categoria"));
                 t.setPriorita(rs.getString("Priorita"));
                 t.setStato(rs.getString("Stato"));
@@ -92,7 +91,7 @@ public class TicketDAO {
 
     // 2. RECUPERA SINGOLO TICKET PER ID (Per la pagina Dettagli - MANCAVA QUESTO)
     public Ticket doRetrieveById(long idTicket) throws Exception {
-        String sql = "SELECT * FROM Ticket WHERE ID_Ticket = ?";
+        String sql = "SELECT * FROM ticket WHERE ID_Ticket = ?";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, idTicket);
@@ -115,7 +114,7 @@ public class TicketDAO {
 
     // 3. AGGIORNA STATO (Es. da Aperto a In Lavorazione)
     public void updateStato(long idTicket, String nuovoStato) throws Exception {
-        String sql = "UPDATE Ticket SET Stato = ? WHERE ID_Ticket = ?";
+        String sql = "UPDATE ticket SET Stato = ? WHERE ID_Ticket = ?";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, nuovoStato);
@@ -126,7 +125,7 @@ public class TicketDAO {
 
     // CANCELLAZIONE (Solo se APERTO e dall'autore)
     public boolean deleteTicketIfAperto(long idTicket, long idAutore) throws Exception {
-        String sql = "DELETE FROM Ticket WHERE ID_Ticket = ? AND ID_Autore = ? AND Stato = 'APERTO'";
+        String sql = "DELETE FROM ticket WHERE ID_Ticket = ? AND ID_Autore = ? AND Stato = 'APERTO'";
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, idTicket);
