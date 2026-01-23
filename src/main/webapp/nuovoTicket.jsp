@@ -28,6 +28,9 @@
               enctype="multipart/form-data"
               class="form">
 
+            <!-- ACTION (OBBLIGATORIA) -->
+            <input type="hidden" name="action" value="create">
+
             <!-- TITOLO -->
             <div class="form-group">
                 <label for="titolo">Titolo</label>
@@ -70,7 +73,9 @@
 
             <!-- ALLEGATI -->
             <div class="form-group">
-                <label for="allegati">Allegati <span style="font-weight:400;">(max 5)</span></label>
+                <label for="allegati">
+                    Allegati <span style="font-weight:400;">(max 5)</span>
+                </label>
                 <input type="file"
                        id="allegati"
                        name="allegati"
