@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
 
-<header class="on-navbar" role="navigation" aria-label="Barra di navigazione principale">
+<header class="on-navbar" aria-label="Barra di navigazione principale">
     <!-- LOGO a sinistra -->
     <div class="on-left">
         <a href="${pageContext.request.contextPath}/HomeController" class="on-logo-link" aria-label="Vai alla home">

@@ -1,71 +1,110 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="it.unisa.oikonaos.model.Utente" %>
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>OikoNaos - Area Coinquilino</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
+</head>
+<body>
+
+<jsp:include page="/include/header-navbar.jsp" />
 
 <%
     Utente u = (Utente) session.getAttribute("utente");
-    if (u == null) {
-        response.sendRedirect(request.getContextPath() + "/login.jsp");
-        return;
+    String errore = request.getParameter("error");
+    if ("ruolo".equals(errore)) {
+%>
+<script>
+    alert("Accesso negato: non hai i permessi per visualizzare questa pagina.");
+</script>
+<%
     }
 %>
 
-<!DOCTYPE html>
-<html lang="it">
-    <head>
-        <meta charset="UTF-8">
-        <title>OikoNaos - Home</title>
-        <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
-    </head>
-    <body>
+<main class="dashboard">
 
-        <jsp:include page="/include/header-navbar.jsp" />
+    <!-- HEADER CON MASCOTTE + SALUTO -->
+    <section class="dashboard-header header-with-mascot">
 
-        <main class="container">
-            <h1>Ciao, <%= u.getNome() %> 👋</h1>
-            <p>Benvenuto in OikoNaos. Scegli cosa vuoi fare.</p>
+        <!-- MASCOTTE -->
+        <div class="header-mascot">
+            <img
+                    src="${pageContext.request.contextPath}/assets/ecateMascotte.png"
+                    alt="Mascotte Ecate"
+            />
+        </div>
 
-            <%
-                String errore = request.getParameter("error");
-                if ("ruolo".equals(errore)) {
-            %>
-            <p class="alert">Non disponi delle autorizzazioni necessarie per accedere.</p>
-            <%
-                }
-            %>
+        <!-- TESTO -->
+        <div class="header-text">
+            <h1 class="dashboard-title">
+                Ciao, <%= u.getNome() %>
+            </h1>
+            <p class="dashboard-subtitle">
+                Benvenuto nella tua area personale.
+            </p>
+        </div>
 
-            <div class="grid-cards">
-                <a class="card" href="${pageContext.request.contextPath}/home.jsp">
-                    <h3>Profilo</h3>
-                    <p>Visualizza e modifica i tuoi dati.</p>
-                </a>
+    </section>
 
-                <a class="card" href="${pageContext.request.contextPath}/PrenotazioneController">
-                    <h3>Prenotazioni</h3>
-                    <p>Gestisci le tue prenotazioni degli spazi.</p>
-                </a>
+    <!-- GRID DELLE FUNZIONALITÀ -->
+    <section class="dashboard-grid">
 
-                <a class="card" href="${pageContext.request.contextPath}/TicketController">
-                    <h3>Ticket</h3>
-                    <p>Apri e monitora segnalazioni di manutenzione.</p>
-                </a>
+        <!-- PRENOTAZIONI -->
+        <a href="${pageContext.request.contextPath}/PrenotazioneController"
+           class="dashboard-card active">
+            <span class="icon">📅</span>
+            <h3>Prenotazioni</h3>
+            <p>Gestisci le tue prenotazioni degli spazi comuni.</p>
+        </a>
 
-                <a class="card danger" href="${pageContext.request.contextPath}/LogoutController">
-                    <h3>Logout</h3>
-                    <p>Esci dal tuo account.</p>
-                </a>
+        <!-- TICKET -->
+        <a href="${pageContext.request.contextPath}/TicketController"
+           class="dashboard-card active">
+            <span class="icon">🎫</span>
+            <h3>Ticket</h3>
+            <p>Invia e monitora le richieste di assistenza.</p>
+        </a>
 
-                <% if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) { %>
-                <a class="card" href="${pageContext.request.contextPath}/SupervisoreTicketController">
-                    <h3>Area Supervisore - Ticket</h3>
-                    <p>Gestisci i ticket della comunità.</p>
-                </a>
-                <a class="card" href="${pageContext.request.contextPath}/SupervisorePrenotazioniController">
-                    <h3>Area Supervisore - Prenotazioni</h3>
-                    <p>Gestisci le prenotazioni della comunità.</p>
-                </a>
-                <% } %>
-            </div>
-        </main>
+        <!-- PROFILO (NON IMPLEMENTATO) -->
+        <a href="${pageContext.request.contextPath}/ModificaDatiController"
+           class="dashboard-card active">
+            <span class="icon">👤</span>
+            <h3>Profilo</h3>
+            <p>Gestisci i tuoi dati personali.</p>
+        </a>
 
-    </body>
+        <!-- BACHECA EVENTI -->
+        <a href="${pageContext.request.contextPath}/BachecaEventiController"
+           class="dashboard-card dashboard-link">
+            <span class="icon">📌</span>
+                <h3>Bacheca Eventi</h3>
+                <p>Avvisi e comunicazioni della comunità.</p>
+        </a>
+
+        <!-- SPESE -->
+        <a href="${pageContext.request.contextPath}/SpeseController"
+           class="dashboard-card active">
+            <span class="icon">💰</span>
+            <h3>Spese</h3>
+            <p>Gestione delle spese condivise.</p>
+        </a>
+
+        <!-- RISORSE -->
+        <a href="${pageContext.request.contextPath}/RisorsaController"
+           class="dashboard-card active">
+            <span class="icon">🧰</span>
+            <h3>Risorse</h3>
+            <p>Gestisci le prenotazioni delle risorse comuni.</p>
+        </a>
+
+    </section>
+
+</main>
+<footer class="footer">
+    &copy; 2025 OikoNaos - Area Coinquilino
+</footer>
+
+</body>
 </html>

@@ -4,19 +4,19 @@
     --muted:#5a6b7b;
     --brand:#1aa3a3;
     --brand-ink:#0c5b5b;
-    --card:#fff;
-    --shadow: 0 10px 30px rgba(0,0,0,.08);
+    --card:#ffffff;
+    --shadow:0 10px 30px rgba(0,0,0,.08);
 }
 
-@font-face {
-    font-family: 'Bryndan Write';
-    src: url('../assets/fonts/BryndanWrite-Regular.woff2') format('woff2'),
-    url('../assets/fonts/BryndanWrite-Regular.ttf') format('truetype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
+/** FONT */
+@font-face{
+    font-family:'Playfair Display', serif;
+    font-weight:400;
+    font-style:normal;
+    font-display:swap;
 }
 
+/** RESET */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -26,7 +26,7 @@ body{
     background:linear-gradient(180deg,var(--bg),#eaf6f6 60%);
 }
 
-/* Topbar */
+/** TOPBAR */
 .topbar{
     position:sticky;
     top:0;
@@ -36,14 +36,14 @@ body{
     justify-content:space-between;
     padding:14px 20px;
     background:rgba(255,255,255,.7);
-    backdrop-filter: blur(8px);
+    backdrop-filter:blur(8px);
     border-bottom:1px solid rgba(0,0,0,.06);
 }
-.brand{display:flex; align-items:center; gap:10px}
-.logo{width:28px; height:28px; color:var(--brand-ink)}
-.brand-name{font-weight:800; letter-spacing:.5px}
+.brand{display:flex;align-items:center;gap:10px}
+.logo{width:28px;height:28px}
+.brand-name{font-weight:800;letter-spacing:.5px}
 
-/* Menu */
+/** MENU */
 .burger{
     display:inline-flex;
     flex-direction:column;
@@ -57,7 +57,11 @@ body{
     border-radius:10px;
     cursor:pointer;
 }
-.burger span{width:20px; height:2px; background:var(--ink); display:block}
+.burger span{
+    width:20px;
+    height:2px;
+    background:var(--ink);
+}
 .menu{
     position:absolute;
     right:20px;
@@ -78,7 +82,7 @@ body{
 }
 .menu a:hover{background:#f2fbfb}
 
-/* Hero */
+/** HERO */
 .hero{
     max-width:1200px;
     margin:0 auto;
@@ -94,80 +98,496 @@ body{
     line-height:1.1;
     margin:0 0 8px;
 }
-
 .title .word{
-    font-family: 'Bryndan Write', cursive;
-    font-size: 56px;
-    font-weight: 400;
-    color: var(--ink);
-    letter-spacing: .5px; 
+    font-family:'Bryndan Write',cursive;
+    font-size:56px;
+    font-weight:400;
+    letter-spacing:.5px;
 }
-
-.title .greek{display:block; font-size:22px; color:var(--muted); font-weight:600}
-.tagline{font-size:20px; color:var(--muted); margin:8px 0 22px}
-.cta{display:flex; gap:12px}
-.btn{
-    display:inline-block;
-    padding:12px 18px;
-    border-radius:12px;
-    text-decoration:none;
+.title .greek{
+    display:block;
+    font-size:22px;
+    color:var(--muted);
     font-weight:600;
-    border:1px solid transparent;
 }
-.btn.primary{background:var(--brand); color:#fff}
-.btn.primary:hover{filter:brightness(.95)}
-.btn.ghost{background:#fff; color:var(--brand-ink); border-color:#cfeeee}
-.btn.ghost:hover{background:#f8ffff}
+.tagline{
+    font-size:20px;
+    color:var(--muted);
+    margin:8px 0 22px;
+}
 
-.mascot{
-    position:relative;
-    align-self:end;
-    text-align:center;
-    overflow:visible;
+/** BUTTONS */
+.btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    padding:12px 18px;
+    border-radius:14px;
+    text-decoration:none;
+    font-weight:700;
+    border:none;
+    cursor:pointer;
 }
+.btn.primary{
+    background:var(--brand);
+    color:#fff;
+}
+.btn.primary:hover{filter:brightness(.95)}
+.btn.ghost{
+    background:#fff;
+    color:var(--brand-ink);
+    border:1px solid #cfeeee;
+}
+
+/** MASCOT */
 .mascot img{
-    width:min(360px, 70%);
-    height:auto;
+    width:min(360px,70%);
     filter:drop-shadow(0 20px 30px rgba(0,0,0,.12));
 }
 
-.bubble{
-    position:absolute;
-    right:0;
-    top:-1.5rem;
-    z-index:10;
-    background:var(--brand);
-    color:#fff;
-    font-size:1rem;
-    border-radius:1rem;
-    padding:0.5rem 0.75rem;
-    box-shadow:var(--shadow);
-    white-space:nowrap;
-}
-.bubble:after{
-    content:"";
-    position:absolute;
-    top:100%;
-    right:1rem;
-    border-width:8px;
-    border-style:solid;
-    border-color:var(--brand) transparent transparent transparent;
-    filter:drop-shadow(0 -1px 0 #d6f2f2);
-}
-
-/* Footer */
+/** FOOTER */
 .footer{
     padding:30px 20px;
     text-align:center;
     color:var(--muted);
 }
 
-/* Responsive */
+/** DASHBOARD */
+.dashboard{
+    max-width:1100px;
+    margin:0 auto;
+    padding:40px 20px 60px;
+}
+.dashboard-header{
+    display:flex;
+    align-items:center;
+    gap:32px;
+    margin-bottom:40px;
+}
+.header-mascot img{
+    width:140px;
+    filter:drop-shadow(0 15px 25px rgba(0,0,0,.12));
+}
+.dashboard-title{
+    font-family:"Playfair Display",serif;
+    font-size:42px;
+    margin:0;
+}
+.dashboard-subtitle{
+    font-size:18px;
+    color:var(--muted);
+}
+
+/** GRID */
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:32px;
+}
+
+/** CARD */
+.dashboard-card{
+    background:var(--card);
+    border-radius:18px;
+    box-shadow:var(--shadow);
+    padding:28px;
+    border:1px solid rgba(0,0,0,.05);
+}
+
+/** FORM INPUT SYSTEM */
+.form-input{
+    width:100%;
+    height:48px;
+    padding:0 20px;
+    border-radius:999px;
+    border:none;
+    background:#fff;
+    font-size:15px;
+    font-weight:500;
+    color:var(--ink);
+    box-shadow:inset 0 0 0 1px rgba(0,0,0,.06);
+    transition:box-shadow .2s ease;
+}
+.form-input::placeholder{
+    color:#9aa7b3;
+}
+.form-input:focus{
+    outline:none;
+    box-shadow:
+            inset 0 0 0 2px var(--brand),
+            0 0 0 4px rgba(26,163,163,.15);
+}
+
+/** FORM LABEL */
+.dashboard-card label{
+    display:block;
+    font-size:14px;
+    font-weight:500;
+    color:var(--muted);
+    margin:16px 0 6px;
+}
+
+/** FORM INFO */
+.info-text{
+    font-size:14px;
+    color:var(--muted);
+    margin-bottom:16px;
+}
+
+/** FORM BUTTON */
+.dashboard-card button{
+    margin-top:24px;
+    height:46px;
+    min-width:180px;
+    background:var(--brand);
+    color:#fff;
+    border:none;
+    border-radius:14px;
+    font-weight:700;
+    cursor:pointer;
+}
+.dashboard-card button:hover{filter:brightness(.95)}
+
+/** SEPARATOR */
+.dashboard-card hr{
+    border:none;
+    height:1px;
+    background:linear-gradient(to right,transparent,#d6f2f2,transparent);
+    margin:24px 0;
+}
+
+/** RESPONSIVE */
 @media (max-width:900px){
-    .hero{grid-template-columns:1fr; text-align:center}
-    .mascot{order:-1}
-    .bubble{
-        right:50%;
-        transform:translateX(50%);
+    .hero{grid-template-columns:1fr;text-align:center}
+    .dashboard-header{flex-direction:column;text-align:center}
+    .dashboard-grid{grid-template-columns:1fr}
+}
+
+/** AUTH CARD (stile login) */
+.dashboard-card--auth{
+    background:#2f3e5c;
+    color:#ffffff;
+    border:none;
+}
+
+/** Titoli e testi auth */
+.dashboard-card--auth label,
+.dashboard-card--auth .info-text{
+    color:#dbe5f0;
+}
+
+/** Input su card scura */
+.dashboard-card--auth .form-input{
+    background:#ffffff;
+    color:var(--ink);
+}
+
+/** Bottone auth */
+.dashboard-card--auth button{
+    width:100%;
+    background:#f6e6b2;
+    color:#2f3e5c;
+    font-weight:800;
+}
+
+.dashboard-card--auth button:hover{
+    filter:brightness(.95);
+}
+
+/** PASSWORD WRAPPER */
+.password-wrapper{
+    position:relative;
+}
+
+/** ICONA OCCHIO A SINISTRA */
+.password-wrapper .toggle-password{
+    position:absolute;
+    left:14px;
+    top:50%;
+    transform:translateY(-50%);
+    background:none;
+    border:none;
+    cursor:pointer;
+    padding:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#9aa7b3;
+}
+
+/** SPAZIO PER L’ICONA DENTRO INPUT */
+.password-wrapper .form-input{
+    padding-left:48px;
+}
+
+/** ICONA ATTIVA */
+.password-wrapper .toggle-password.active{
+    color:var(--brand);
+}
+
+/** NASCONDE ICONA QUANDO NON SERVE */
+.password-wrapper .toggle-password:not(.visible){
+    opacity:0;
+    pointer-events:none;
+}
+
+/** PAGE TITLE */
+.page-title{
+    font-family:"Playfair Display", serif;
+    font-size:44px;
+    margin:0 0 32px;
+}
+
+/** SECTION TITLE */
+.section-title{
+    font-size:20px;
+    font-weight:700;
+    margin:0 0 16px;
+}
+
+/** CARD LAYOUT */
+.dashboard-card{
+    max-width:900px;
+}
+
+/** FORM BUTTON SPACING */
+.dashboard-card form button.btn.primary{
+    margin-top:24px;
+    margin-bottom:32px;
+    padding:10px 18px;
+    font-size:14px;
+    border-radius:12px;
+    width:auto;
+}
+
+
+/** FORM GROUP */
+.form-group{
+    display:flex;
+    flex-direction:column;
+    margin-bottom:20px;
+}
+
+/** LABEL */
+.form-group label{
+    margin-bottom:6px;
+}
+
+.status-badge.pagato {
+    color: #2e7d32;
+    font-weight: 600;
+}
+
+.status-badge.non_pagato {
+    color: #c62828;
+    font-weight: 600;
+}
+
+.status-badge.in_scadenza {
+    color: #ef6c00;
+    font-weight: 600;
+}
+
+.table-container {
+    background: var(--card);
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 24px;
+    margin-top: 30px;
+    border: 1px solid rgba(0,0,0,0.05);
+    overflow-x: auto;
+}
+
+.aesthetic-table th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--primary);
+    padding-bottom: 12px;
+}
+
+.aesthetic-table td {
+    padding: 14px 8px;
+    vertical-align: middle;
+}
+
+.amount {
+    font-weight: 600;
+}
+
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.status-badge.paid {
+    background: #e6f4ea;
+    color: #1e7e34;
+}
+
+.status-badge.pending {
+    background: #fff4e5;
+    color: #b26a00;
+}
+
+.empty-row {
+    text-align: center;
+    color: #777;
+    padding: 24px;
+}
+
+/*STATI SPESE*/
+.status {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+/* 🟢 Pagata */
+.status.status-paid {
+    background-color: #e6f7ee;
+    color: #0f9d58;
+}
+
+/* 🟡 Da pagare (non scaduta) */
+.status.status-pending {
+    background-color: #fff6db;
+    color: #b58b00;
+}
+
+/* 🔴 Scaduta */
+.status.status-expired {
+    background-color: #fdecea;
+    color: #d93025;
+}
+
+.data-table .status.status-paid {
+    background-color: #e6f7ee;
+    color: #0f9d58;
+}
+
+.data-table .status.status-pending {
+    background-color: #fff6db;
+    color: #b58b00;
+}
+
+.data-table .status.status-expired {
+    background-color: #fdecea;
+    color: #d93025;
+}
+
+.payment-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .payment-row {
+        grid-template-columns: 1fr;
     }
+}
+
+.login-card .password-box {
+    margin: 14px 0 22px;
+    padding: 14px 16px;
+    border-radius: 14px;
+
+    background-color: rgba(255, 255, 255, 0.18); /* più chiaro */
+    border: 1px solid rgba(255, 255, 255, 0.35);
+
+    font-size: 0.85rem;
+    color: #ffffff !important; /* FORZATO */
+}
+
+.login-card .password-box strong {
+    display: block;
+    margin-bottom: 8px;
+    color: #ffffff !important;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.login-card .password-box ul {
+    margin: 0;
+    padding-left: 18px;
+}
+
+.login-card .password-box li {
+    margin-bottom: 6px;
+    line-height: 1.45;
+    color: #f1f5f9 !important;
+}
+
+.login-card {
+    background: #2f3e5c;
+    color: #ffffff;
+    border-radius: 18px;
+    box-shadow: var(--shadow);
+    padding: 28px;
+    border: none;
+}
+
+.login-card h2,
+.login-card label {
+    color: #ffffff;
+}
+
+.login-card input {
+    background: #ffffff;
+    color: var(--ink);
+}
+
+.reset-dev-label {
+    display: block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--muted);
+    margin-bottom: 8px;
+
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.reset-dev-link {
+    display: inline-block;
+    font-size: 0.9rem;
+    font-weight: 600;
+
+    color: var(--brand);
+    text-decoration: underline;
+
+    word-break: break-all;
+}
+
+.reset-dev-link:hover {
+    color: var(--brand-ink);
+}
+
+.reset-dev-box {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 24px;
+    padding: 16px 18px;
+
+    background: var(--card);
+    border-radius: 14px;
+    border: 1px dashed rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow);
+
+    text-align: center;
+}
+
+.reset-dev-text {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 6px 0 10px;
+}
+
+.login-card .info-text {
+    color: #e8eef6;
 }

@@ -7,7 +7,7 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 
 @WebFilter("/*")
-public class AuthFilter implements Filter{
+public class AuthFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -17,20 +17,27 @@ public class AuthFilter implements Filter{
         HttpServletResponse response = (HttpServletResponse) res;
 
         String path = request.getServletPath();
+        System.out.println("[AuthFilter] servletPath=" + path
+                + " | uri=" + request.getRequestURI());
+
         HttpSession session = request.getSession(false);
 
-        System.out.println("Request: " + path);
-
-        //Risorse pubbliche / statiche
-        if (path.contains("/index.jsp")
-                || path.contains("/login.jsp")
-                || path.contains("/register.jsp")
-                || path.contains("/AutenticazioneController")
-                || path.contains("/RegistrazioneController")
-                || path.contains("/LogoutController")
-                || path.contains("/assets/")
-                || path.contains("/css/")
-                || path.contains("/js/")
+        // 1. RISORSE E PAGINE PUBBLICHE
+        if (path.equals("/login.jsp")
+                || path.equals("/register.jsp")
+                || path.equals("/index.jsp")
+                || path.equals("/passwordDimenticata.jsp")
+                || path.equals("/resetPassword.jsp")
+                || path.equals("/forgot-password.jsp")
+                || path.startsWith("/RichiestaResetPasswordController")
+                || path.startsWith("/ResetPasswordController")
+                || path.equals("/AutenticazioneController")
+                || path.equals("/RegistrazioneController")
+                || path.equals("/LogoutController")
+                || path.startsWith("/BachecaEventiController")
+                || path.startsWith("/assets/")
+                || path.startsWith("/css/")
+                || path.startsWith("/js/")
                 || path.endsWith(".png")
                 || path.endsWith(".jpg")
                 || path.endsWith(".svg")
@@ -40,27 +47,23 @@ public class AuthFilter implements Filter{
             return;
         }
 
-        //Controllo autenticazione
+        // 2. CONTROLLO AUTENTICAZIONE
         if (session == null || session.getAttribute("utente") == null) {
-            System.out.println("Accesso BLOCCATO → redirect login");
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        //CONTROLLO AUTORIZZAZIONE (RUOLI)
+        // 3. CONTROLLO AUTORIZZAZIONE RUOLI
         Utente utente = (Utente) session.getAttribute("utente");
 
-        // URL riservate ai supervisori
-                if (path.contains("/supervisore") || path.contains("/supervisore")) {
+        if (path.startsWith("/supervisore") || path.contains("Supervisore")) {
+            if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
+                response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
+                return;
+            }
+        }
 
-                    if (!"SUPERVISORE".equalsIgnoreCase(utente.getRuolo())) {
-                        System.out.println("Accesso BLOCCATO → area supervisore");
-                        response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
-                        return;
-                    }
-                }
-
-        System.out.println("Accesso CONSENTITO");
+        // 4. ACCESSO CONSENTITO
         chain.doFilter(req, res);
     }
 }

@@ -1,50 +1,32 @@
 package it.unisa.oikonaos.dao;
 
+import it.unisa.oikonaos.model.Risorsa;
 import it.unisa.oikonaos.model.Utente;
 import util.database;
-import java.sql.*;
 import org.mindrot.jbcrypt.BCrypt;
+import java.util.List;
+import java.util.ArrayList;
+import java.sql.*;
 
 public class UserDAO {
-
-    public void registerUser(
+    public long registerUser(
+            Connection con,
             String nome,
             String cognome,
             String email,
             String telefono,
             String username,
-            String password,
-            String codiceID
+            String password
     ) throws Exception {
 
-        Connection con = database.getConnection();
-        con.setAutoCommit(false);
+        // 1. Inserimento utente
+        long idUtente = insertUtente(con, nome, cognome, email, telefono);
 
-        try {
+        // 2. Inserimento credenziali
+        insertCredenziali(con, username, password, idUtente);
 
-            // 1. Inserimento utente con comunità
-            long idUtente = insertUtente(con, nome, cognome, email, telefono);
-
-            // 2. Inserimento credenziali (con hash)
-            insertCredenziali(con, username, password, idUtente);
-
-            // 3. Marca codice come usato
-            markCodiceUsato(con, codiceID, idUtente);
-
-            con.commit();
-
-        } catch (Exception e) {
-            con.rollback();
-            throw e;
-        } finally {
-            con.setAutoCommit(true);
-            con.close();
-        }
+        return idUtente;
     }
-
-    /* ==========================
-       METODI DI SUPPORTO
-       ========================== */
 
     private long insertUtente(
             Connection con,
@@ -54,7 +36,10 @@ public class UserDAO {
             String telefono
     ) throws Exception {
 
-        String sql = "INSERT INTO Utente (Nome, Cognome, Email, Telefono, Ruolo VALUES (?, ?, ?, ?, 'COINQUILINO')";
+        String sql = """
+                INSERT INTO utente (Nome, Cognome, Email, Telefono, Ruolo)
+                VALUES (?, ?, ?, ?, 'COINQUILINO')
+            """;
 
         try (PreparedStatement ps =
                      con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -63,12 +48,14 @@ public class UserDAO {
             ps.setString(2, cognome);
             ps.setString(3, email);
             ps.setString(4, telefono);
-
             ps.executeUpdate();
 
-            ResultSet rs = ps.getGeneratedKeys();
-            rs.next();
-            return rs.getLong(1);
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (!rs.next()) {
+                    throw new SQLException("Errore creazione utente");
+                }
+                return rs.getLong(1);
+            }
         }
     }
 
@@ -81,7 +68,10 @@ public class UserDAO {
 
         String hash = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
-        String sql = "INSERT INTO Credenziali (Username, PasswordHash, ID_Utente) VALUES (?, ?, ?)";
+        String sql = """
+            INSERT INTO credenziali (Username, PasswordHash, ID_Utente)
+            VALUES (?, ?, ?)
+        """;
 
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, username);
@@ -91,24 +81,15 @@ public class UserDAO {
         }
     }
 
-    private void markCodiceUsato(
-            Connection con,
-            String codiceID,
-            long idUtente
-    ) throws Exception {
-
-        String sql = "UPDATE CodiceIdentificativo SET Stato = 'USATO',  ID_Utente_Utilizzatore = ? WHERE Codice = ?";
-
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setLong(1, idUtente);
-            ps.setString(2, codiceID);
-            ps.executeUpdate();
-        }
-    }
-       //LOGIN
     public Utente login(String username, String password) throws Exception {
 
-        String sql = "SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email, u.Ruolo, c.PasswordHash FROM Utente u JOIN Credenziali c ON u.ID_Utente = c.ID_Utente WHERE c.Username = ?";
+        String sql = """
+            SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email,
+                   u.Telefono, u.Ruolo, c.PasswordHash
+            FROM utente u
+            JOIN credenziali c ON u.ID_Utente = c.ID_Utente
+            WHERE c.Username = ?
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -130,9 +111,116 @@ public class UserDAO {
             u.setNome(rs.getString("Nome"));
             u.setCognome(rs.getString("Cognome"));
             u.setEmail(rs.getString("Email"));
+            u.setTelefono(rs.getString("Telefono"));
             u.setRuolo(rs.getString("Ruolo"));
 
             return u;
         }
+    }
+
+    public void updateProfilo(Utente u) throws Exception {
+
+        String sql = """
+            UPDATE utente
+            SET Nome = ?, Cognome = ?, Email = ?, Telefono = ?
+            WHERE ID_Utente = ?
+        """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setString(1, u.getNome());
+            ps.setString(2, u.getCognome());
+            ps.setString(3, u.getEmail());
+            ps.setString(4, u.getTelefono());
+            ps.setLong(5, u.getIdUtente());
+
+            ps.executeUpdate();
+        }
+    }
+
+    public List<Utente> doRetrieveAllCoinquilini() throws Exception {
+        List<Utente> lista = new ArrayList<>();
+
+        String sql = """
+            SELECT ID_Utente, Nome, Cognome, Email, Telefono, Ruolo
+            FROM utente
+        """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Utente u = new Utente();
+                u.setIdUtente(rs.getLong("ID_Utente"));
+                u.setNome(rs.getString("Nome"));
+                u.setCognome(rs.getString("Cognome"));
+                u.setEmail(rs.getString("Email"));
+                u.setTelefono(rs.getString("Telefono"));
+                u.setRuolo(rs.getString("Ruolo"));
+                lista.add(u);
+            }
+        }
+        return lista;
+    }
+
+    public Utente getUtenteById(long idUtente) throws Exception {
+
+        String sql = """
+        SELECT ID_Utente, Nome, Cognome, Email, Telefono, Ruolo
+        FROM utente
+        WHERE ID_Utente = ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idUtente);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Utente u = new Utente();
+                u.setIdUtente(rs.getLong("ID_Utente"));
+                u.setNome(rs.getString("Nome"));
+                u.setCognome(rs.getString("Cognome"));
+                u.setEmail(rs.getString("Email"));
+                u.setTelefono(rs.getString("Telefono"));
+                u.setRuolo(rs.getString("Ruolo"));
+                return u;
+            }
+        }
+        return null;
+    }
+
+    public List<Utente> doRetrieveCoinquiliniEscluso(long idDaEscludere)
+            throws Exception {
+
+        List<Utente> utenti = new ArrayList<>();
+
+        String sql = """
+        SELECT ID_Utente, Nome, Cognome
+        FROM utente
+        WHERE Ruolo = 'COINQUILINO'
+          AND ID_Utente <> ?
+    """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+
+            ps.setLong(1, idDaEscludere);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    Utente u = new Utente();
+                    u.setIdUtente(rs.getLong("ID_Utente"));
+                    u.setNome(rs.getString("Nome"));
+                    u.setCognome(rs.getString("Cognome"));
+                    utenti.add(u);
+                }
+            }
+        }
+
+        return utenti;
     }
 }

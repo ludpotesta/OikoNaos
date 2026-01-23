@@ -43,3 +43,6 @@ out/
 # =========================
 .DS_Store
 Thumbs.db
+
+# Tomcat / DB config
+src/main/webapp/META-INF/context.xml

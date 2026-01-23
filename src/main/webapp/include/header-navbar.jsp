@@ -1,78 +1,100 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/navbar.css" />
+<%@ page import="it.unisa.oikonaos.model.Utente" %>
 
-<header class="on-navbar">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css" />
 
-    <div class="on-left">
-        <a href="${pageContext.request.contextPath}/index.jsp"
-           class="on-logo-link"
-           aria-label="Vai alla home">
-            <img class="on-logo"
+<%
+    Object obj = session.getAttribute("utente");
+    Utente u = (obj instanceof Utente) ? (Utente) obj : null;
+%>
+
+<header class="topbar">
+
+    <div class="brand">
+        <a href="<%=
+        (u == null)
+            ? request.getContextPath() + "/index.jsp"
+            : (
+                "SUPERVISORE".equalsIgnoreCase(u.getRuolo())
+                    ? request.getContextPath() + "/supervisore/home.jsp"
+                    : request.getContextPath() + "/home.jsp"
+              )
+    %>" class="brand-link">
+
+            <img class="logo"
                  src="${pageContext.request.contextPath}/assets/oikonaosLogo.png"
                  alt="Logo OikoNaos" />
+
+            <span class="brand-name">
+            Oiko<span class="brand-accent">Naos</span>
+        </span>
         </a>
-        <%
-            Object obj = session.getAttribute("utente");
-            if (obj == null) {
-        %>
-        <a href="${pageContext.request.contextPath}/login.jsp">Login</a>
-        |
-        <a href="${pageContext.request.contextPath}/register.jsp">Registrati</a>
-        <%
-        } else {
-        %>
-        <a href="${pageContext.request.contextPath}/home.jsp">Profilo</a>
-        |
-        <a href="${pageContext.request.contextPath}/PrenotazioneController">Prenotazioni</a>
-        |
-        <a href="${pageContext.request.contextPath}/TicketController">Ticket</a>
-        <%
-            }
-        %>
     </div>
 
-    <div class="on-right">
-        <input type="checkbox" id="onToggle" class="on-toggle" aria-hidden="true" />
+    <div></div>
 
-        <label for="onToggle"
-               class="on-hamb"
-               aria-label="Apri menu di navigazione"
-               role="button">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="3" y1="6"  x2="21" y2="6"/>
-                <line x1="3" y1="12" x2="21" y2="12"/>
-                <line x1="3" y1="18" x2="21" y2="18"/>
-            </svg>
-        </label>
+    <nav class="nav-links">
 
-        <nav class="on-menu" aria-label="Menu principale">
-            <%
-                if (obj != null) {
-                    it.unisa.oikonaos.model.Utente u =
-                            (it.unisa.oikonaos.model.Utente) obj;
+        <% if (u == null) { %>
 
-                    if ("SUPERVISORE".equalsIgnoreCase(u.getRuolo())) {
-            %>
-            <a href="${pageContext.request.contextPath}/supervisore/dashboard.jsp" style="font-weight: bold; color: #ffc107;">
-                Dashboard Supervisore
-            </a>
-            <a href="${pageContext.request.contextPath}/AdminTicketController">
-                Gestione Ticket
-            </a>
-            <a href="${pageContext.request.contextPath}/AdminPrenotazioniController">
-                Gestione Prenotazioni
-            </a>
-            <hr style="border-color: rgba(255,255,255,0.1); margin: 5px 0;">
-            <%
-                }
-            %>
-            <a href="${pageContext.request.contextPath}/LogoutController">
-                Logout
-            </a>
-            <%
-                }
-            %>
-        </nav>
-    </div>
+        <a class="btn ghost"
+           href="${pageContext.request.contextPath}/login.jsp">
+            Login
+        </a>
+
+        <a class="btn primary"
+           href="${pageContext.request.contextPath}/register.jsp">
+            Registrati
+        </a>
+
+        <% } else { %>
+
+        <div class="user-menu-container">
+
+            <button type="button"
+                    class="burger"
+                    id="menuBtn"
+                    onclick="toggleMenu()"
+                    aria-label="Menu utente">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+
+            <div class="menu" id="userMenu">
+                <div class="menu-header">
+                    <small>Loggato come</small>
+                    <strong><%= u.getNome() %></strong>
+                </div>
+
+                <a href="${pageContext.request.contextPath}/LogoutController"
+                   class="logout-link">
+                    Esci
+                </a>
+            </div>
+
+        </div>
+
+        <% } %>
+
+    </nav>
+
 </header>
+
+
+<script>
+    function toggleMenu() {
+        const menu = document.getElementById("userMenu");
+        if (!menu) return;
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+    }
+
+    document.addEventListener("click", function (e) {
+        const menu = document.getElementById("userMenu");
+        const btn = document.getElementById("menuBtn");
+        if (!menu || !btn) return;
+        if (!menu.contains(e.target) && !btn.contains(e.target)) {
+            menu.style.display = "none";
+        }
+    });
+</script>

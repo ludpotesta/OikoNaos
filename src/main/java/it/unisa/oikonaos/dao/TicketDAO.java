@@ -2,23 +2,36 @@ package it.unisa.oikonaos.dao;
 
 import util.database; // Manteniamo la tua classe di connessione
 import it.unisa.oikonaos.model.Ticket;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class TicketDAO {
 
-    // CREAZIONE TICKET (Per Utente)
-    public long creaTicket(String titolo, String descrizione, String categoria, String priorita, long idAutore) throws Exception {
-        String sql = "INSERT INTO Ticket (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato) VALUES (?, ?, ?, ?, ?, ?)";
-        Connection con = database.getConnection();
-        PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-        try {
+    /* CREAZIONE TICKET */
+    public long creaTicket(String titolo,
+                           String descrizione,
+                           String categoria,
+                           String priorita,
+                           long idAutore) throws Exception {
+
+        String sql = """
+            INSERT INTO ticket
+            (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato)
+            VALUES (?, ?, ?, ?, ?, 'APERTO')
+        """;
+
+        try (Connection con = database.getConnection();
+             PreparedStatement ps =
+                     con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
             ps.setString(1, titolo);
             ps.setString(2, descrizione);
             ps.setString(3, categoria);
             ps.setString(4, priorita);
             ps.setLong(5, idAutore);
+
             ps.setString(6, "APERTO"); // Stato iniziale di default
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
@@ -123,4 +136,5 @@ public class TicketDAO {
             return ps.executeUpdate() > 0;
         }
     }
+
 }

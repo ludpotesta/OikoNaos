@@ -8,7 +8,7 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.util.List;
 
-    @WebServlet(name = "SupervisorePrenotazioniController", value = "/SupervisorePrenotazioniController")
+@WebServlet(name = "SupervisorePrenotazioniController", value = "/SupervisorePrenotazioniController")
 public class SupervisorePrenotazioniController extends HttpServlet {
 
     @Override
@@ -18,7 +18,7 @@ public class SupervisorePrenotazioniController extends HttpServlet {
 
         // PROTEZIONE: Se non è supervisore, torna alla home o al login
         if (utente == null || !utente.getRuolo().equalsIgnoreCase("SUPERVISORE")) {
-            response.sendRedirect(request.getContextPath() + "/home.jsp?error=ruolo");
+            response.sendRedirect(request.getContextPath() + "/homeSupervisore.jsp?error=ruolo");
             return;
         }
 
@@ -31,7 +31,7 @@ public class SupervisorePrenotazioniController extends HttpServlet {
             request.getRequestDispatcher("supervisore/prenotazioniSupervisore.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            response.sendRedirect("home.jsp?error=db");
+            response.sendRedirect("homeSupervisore.jsp?error=db");
         }
     }
 }
