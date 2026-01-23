@@ -141,6 +141,13 @@
         <div><span style="background:#dfe6e9; border:1px solid #636e72;"></span>Edifici</div>
         <div><span style="border:1px dashed #2ecc71;"></span>Area Esterna</div>
     </div>
+
+    <div style="margin-bottom: 20px;">
+        <a href="${pageContext.request.contextPath}/home.jsp"
+           class="btn ghost">
+            Torna alla Home
+        </a>
+    </div>
 </div>
 
 </body>
