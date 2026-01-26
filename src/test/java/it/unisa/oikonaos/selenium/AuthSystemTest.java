@@ -40,28 +40,25 @@ public class AuthSystemTest {
     void testLoginValido() {
         driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
 
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
-
-        driver.findElement(By.name("username")).sendKeys("giulia.b");
-        driver.findElement(By.name("password")).sendKeys("2930Oliver!");
+        driver.findElement(By.name("username")).sendKeys("test.user");
+        driver.findElement(By.name("password")).sendKeys("Prova123!");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
         wait.until(ExpectedConditions.urlContains("home.jsp"));
-        WebElement saluto = wait.until(
-                ExpectedConditions.visibilityOfElementLocated(
-                        By.xpath("//h1[contains(text(),'Giulia')]")
-                )
+
+        WebElement menu = wait.until(
+                ExpectedConditions.visibilityOfElementLocated(By.id("menuBtn"))
         );
 
-        assertTrue(saluto.getText().contains("Giulia"));
+        assertTrue(menu.isDisplayed());
     }
 
     @Test
     void testLogout() {
         driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
 
-        driver.findElement(By.name("username")).sendKeys("giulia.b");
-        driver.findElement(By.name("password")).sendKeys("2930Oliver!");
+        driver.findElement(By.name("username")).sendKeys("test.user");
+        driver.findElement(By.name("password")).sendKeys("Prova123!");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5));
@@ -82,7 +79,7 @@ public class AuthSystemTest {
     void testLoginErrato() {
         driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
 
-        driver.findElement(By.name("username")).sendKeys("giulia.b");
+        driver.findElement(By.name("username")).sendKeys("test.user");
         driver.findElement(By.name("password")).sendKeys("password_sbagliata");
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
