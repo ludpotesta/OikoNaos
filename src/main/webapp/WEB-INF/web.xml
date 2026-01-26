@@ -37,4 +37,24 @@
         <url-pattern>/download-allegato</url-pattern>
     </servlet-mapping>
 
+    <servlet>
+        <servlet-name>RecuperaPasswordServlet</servlet-name>
+        <servlet-class>it.unisa.oikonaos.controller.RecuperaPasswordServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RecuperaPasswordServlet</servlet-name>
+        <url-pattern>/recupera-password</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ModificaPasswordServlet</servlet-name>
+        <servlet-class>it.unisa.oikonaos.controller.ModificaPasswordServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ModificaPasswordServlet</servlet-name>
+        <url-pattern>/modifica-password</url-pattern>
+    </servlet-mapping>
+
 </web-app>
