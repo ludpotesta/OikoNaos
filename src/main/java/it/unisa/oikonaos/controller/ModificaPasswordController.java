@@ -33,26 +33,26 @@ public class ModificaPasswordController extends HttpServlet {
 
         if (vecchiaPassword == null || nuovaPassword == null || confermaPassword == null) {
             request.setAttribute("errore", "Tutti i campi sono obbligatori.");
-            request.getRequestDispatcher("/views/modifica-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/modifica-password.jsp").forward(request, response);
             return;
         }
 
         if (!nuovaPassword.equals(confermaPassword)) {
             request.setAttribute("errore", "Le nuove password non coincidono");
-            request.getRequestDispatcher("/views/modifica-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/modifica-password.jsp").forward(request, response);
             return;
         }
 
         if (!recupero) {
             if (!PasswordUtil.checkPassword(vecchiaPassword, utente.getPassword())) {
                 request.setAttribute("errore", "Password attuale errata");
-                request.getRequestDispatcher("/views/modifica-password.jsp").forward(request, response);
+                request.getRequestDispatcher("/modifica-password.jsp").forward(request, response);
                 return;
             }
         } else {
             if (!PasswordUtil.checkPassword(vecchiaPassword, utente.getPassword())) {
                 request.setAttribute("errore", "Password temporanea errata");
-                request.getRequestDispatcher("/views/modifica-password.jsp?recupero=true").forward(request, response);
+                request.getRequestDispatcher("/modifica-password.jsp?recupero=true").forward(request, response);
                 return;
             }
         }
@@ -64,7 +64,7 @@ public class ModificaPasswordController extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login.jsp?msg=Password modificata correttamente");
         } else {
             request.setAttribute("errore", "Errore durante la modifica");
-            request.getRequestDispatcher("/views/modifica-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/modifica-password.jsp").forward(request, response);
         }
     }
 }
