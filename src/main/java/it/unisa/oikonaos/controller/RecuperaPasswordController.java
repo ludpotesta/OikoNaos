@@ -47,7 +47,7 @@ public class RecuperaPasswordController extends HttpServlet {
                 request.setAttribute("errore", "Email non trovata");
             }
 
-            request.getRequestDispatcher("/views/recupera-password.jsp").forward(request, response);
+            request.getRequestDispatcher("/recupera-password.jsp").forward(request, response);
 
         } catch (Exception e) {
             e.printStackTrace();
