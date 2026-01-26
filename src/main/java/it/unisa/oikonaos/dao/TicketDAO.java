@@ -42,7 +42,7 @@ public class TicketDAO {
     // LISTA TICKET DI UN SINGOLO UTENTE
     public List<Ticket> doRetrieveByAutore(long idAutore) throws Exception {
         List<Ticket> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Ticket WHERE ID_Autore = ?";
+        String sql = "SELECT * FROM ticket WHERE ID_Autore = ?";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -71,7 +71,7 @@ public class TicketDAO {
     // 1. RECUPERA TUTTI I TICKET (Per la tabella generale)
     public List<Ticket> doRetrieveAll() throws Exception {
         List<Ticket> lista = new ArrayList<>();
-        String sql = "SELECT * FROM Ticket ORDER BY DataApertura DESC";
+        String sql = "SELECT * FROM ticket ORDER BY DataApertura DESC";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql);
@@ -95,7 +95,7 @@ public class TicketDAO {
 
     // 2. RECUPERA SINGOLO TICKET PER ID
     public Ticket doRetrieveById(long idTicket) throws Exception {
-        String sql = "SELECT * FROM Ticket WHERE ID_Ticket = ?";
+        String sql = "SELECT * FROM ticket WHERE ID_Ticket = ?";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -121,7 +121,7 @@ public class TicketDAO {
 
     // 3. AGGIORNA STATO
     public void updateStato(long idTicket, String nuovoStato) throws Exception {
-        String sql = "UPDATE Ticket SET Stato = ? WHERE ID_Ticket = ?";
+        String sql = "UPDATE ticket SET Stato = ? WHERE ID_Ticket = ?";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
@@ -134,7 +134,7 @@ public class TicketDAO {
 
     // CANCELLAZIONE
     public boolean deleteTicketIfAperto(long idTicket, long idAutore) throws Exception {
-        String sql = "DELETE FROM Ticket WHERE ID_Ticket = ? AND ID_Autore = ? AND Stato = 'APERTO'";
+        String sql = "DELETE FROM ticket WHERE ID_Ticket = ? AND ID_Autore = ? AND Stato = 'APERTO'";
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
