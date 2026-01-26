@@ -170,7 +170,7 @@
     </form>
 
     <%
-        List<Ticket> lista = (List<Ticket>) request.getAttribute("listaGlobaleTicket");
+        List<Ticket> lista = (List<Ticket>) request.getAttribute("listaTicket");
     %>
 
     <div class="table-container">

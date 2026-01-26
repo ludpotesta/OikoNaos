@@ -1,17 +1,12 @@
 package it.unisa.oikonaos.controller;
 
-import it.unisa.oikonaos.dao.AllegatoDAO;
 import it.unisa.oikonaos.dao.TicketDAO;
+import it.unisa.oikonaos.dao.AllegatoDAO;
 import it.unisa.oikonaos.model.Ticket;
 import it.unisa.oikonaos.model.Utente;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import jakarta.servlet.http.Part;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,7 +15,6 @@ import java.io.IOException;
 @MultipartConfig
 public class TicketController extends HttpServlet {
 
-    // LOGICA COINQUILINO (Solo i propri ticket)
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -38,6 +32,7 @@ public class TicketController extends HttpServlet {
 
         try {
             if ("new".equals(action)) {
+
                 request.getRequestDispatcher("nuovoTicket.jsp")
                         .forward(request, response);
 
@@ -61,7 +56,7 @@ public class TicketController extends HttpServlet {
                 request.getRequestDispatcher("dettagliTicket.jsp")
                         .forward(request, response);
             } else {
-                // Recupera solo i ticket dell'utente
+
                 request.setAttribute("listaTicket",
                         dao.doRetrieveByAutore(utente.getIdUtente()));
 

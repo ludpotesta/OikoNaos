@@ -28,6 +28,9 @@
               enctype="multipart/form-data"
               class="form">
 
+            <!-- FIX: parametro action richiesto dal controller -->
+            <input type="hidden" name="action" value="create">
+
             <!-- TITOLO -->
             <div class="form-group">
                 <label for="titolo">Titolo</label>
@@ -83,8 +86,7 @@
                 <button type="submit" class="btn primary">
                     Invia Segnalazione
                 </button>
-
-                <a href="${pageContext.request.contextPath}/TicketController"
+                <a href="${pageContext.request.contextPath}/TicketController?action=list"
                    class="btn ghost">
                     Annulla
                 </a>
