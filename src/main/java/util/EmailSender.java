@@ -10,8 +10,8 @@ public class EmailSender {
         String envUser = System.getenv("oikonaos@gmail.com");
         String envPass = System.getenv("llro ouyg bgsx myvd");
 
-        final String mittente = (envUser != null) ? envUser : "beenaturalpw@gmail.com";
-        final String password = (envPass != null) ? envPass : "yurk xuat crfq bfga";
+        final String mittente = (envUser != null) ? envUser : "oikonaos@gmail.com";
+        final String password = (envPass != null) ? envPass : "llro ouyg bgsx myvd";
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
