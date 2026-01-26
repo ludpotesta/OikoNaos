@@ -223,4 +223,69 @@ public class UserDAO {
 
         return utenti;
     }
+
+    public Utente doRetrieveByEmail(String email) throws Exception {
+        String sql = """
+            SELECT ID_Utente, Nome, Cognome, Email, Telefono, Ruolo
+            FROM utente
+            WHERE Email = ?
+        """;
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Utente u = new Utente();
+                u.setIdUtente(rs.getLong("ID_Utente"));
+                u.setNome(rs.getString("Nome"));
+                u.setCognome(rs.getString("Cognome"));
+                u.setEmail(rs.getString("Email"));
+                u.setTelefono(rs.getString("Telefono"));
+                u.setRuolo(rs.getString("Ruolo"));
+                return u;
+            }
+        }
+        return null;
+    }
+
+    public static boolean aggiornaUtenteConPassword(Utente utente, String nuovaPassword) {
+        String hashed = BCrypt.hashpw(nuovaPassword, BCrypt.gensalt(12));
+        String sql = "UPDATE credenziali SET PasswordHash = ? WHERE ID_Utente = ?";
+        try (Connection con = database.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, hashed);
+            ps.setLong(2, utente.getIdUtente());
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean aggiornaPasswordByEmail(String email, String hashed) {
+        String sqlSelect = "SELECT ID_Utente FROM utente WHERE Email = ?";
+        String sqlUpdate = "UPDATE credenziali SET PasswordHash = ? WHERE ID_Utente = ?";
+
+        try (Connection con = database.getConnection()) {
+            long idUtente = -1;
+            try (PreparedStatement ps = con.prepareStatement(sqlSelect)) {
+                ps.setString(1, email);
+                ResultSet rs = ps.executeQuery();
+                if (rs.next()) {
+                    idUtente = rs.getLong("ID_Utente");
+                } else {
+                    return false;
+                }
+            }
+
+            try (PreparedStatement ps = con.prepareStatement(sqlUpdate)) {
+                ps.setString(1, hashed);
+                ps.setLong(2, idUtente);
+                return ps.executeUpdate() > 0;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
