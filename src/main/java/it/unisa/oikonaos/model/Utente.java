@@ -9,6 +9,7 @@ public class Utente implements Serializable {
     private String email;
     private String telefono;
     private String ruolo;
+    private String password;
 
     public Utente() {
     }
@@ -55,6 +56,14 @@ public class Utente implements Serializable {
 
     public void setRuolo(String ruolo) {
         this.ruolo = ruolo;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     @Override

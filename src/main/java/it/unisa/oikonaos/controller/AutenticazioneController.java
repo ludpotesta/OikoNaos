@@ -42,6 +42,7 @@ public class AutenticazioneController extends HttpServlet {
 
             UserDAO userDAO = new UserDAO();
             Utente utente = userDAO.getUtenteById(idUtente);
+            utente.setPassword(hashDB);
 
             HttpSession session = request.getSession(true);
             session.setAttribute("utente", utente);

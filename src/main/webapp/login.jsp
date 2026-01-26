@@ -108,7 +108,7 @@
                 </button>
 
                 <p style="margin-top: 16px; text-align: center;">
-                    <a href="${pageContext.request.contextPath}/passwordDimenticata.jsp"
+                    <a href="${pageContext.request.contextPath}/views/recupera-password.jsp"
                        style="color: #dbe5f0; font-size: 0.9rem;">
                         Password dimenticata?
                     </a>
