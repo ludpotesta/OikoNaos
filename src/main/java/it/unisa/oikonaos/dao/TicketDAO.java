@@ -1,9 +1,8 @@
 package it.unisa.oikonaos.dao;
 
-// ATTENZIONE: Se questa riga sotto diventa rossa, cambiala in "import util.database;"
 
-import it.unisa.oikonaos.model.Ticket;
 import util.database;
+import it.unisa.oikonaos.model.Ticket;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -17,6 +16,7 @@ public class TicketDAO {
                            String categoria,
                            String priorita,
                            long idAutore) throws Exception {
+
 
         String sql = "INSERT INTO ticket (Titolo, Descrizione, Categoria, Priorita, ID_Autore, Stato) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -130,59 +130,6 @@ public class TicketDAO {
             ps.setLong(2, idTicket);
             ps.executeUpdate();
         }
-    }
-
-    // 4. RICERCA FILTRATA (IL METODO CHE MANCAVA)
-    public List<Ticket> doRetrieveFiltered(String stato, String categoria, String priorita) throws Exception {
-        List<Ticket> lista = new ArrayList<>();
-
-        // Iniziamo con una query base
-        StringBuilder sql = new StringBuilder("SELECT * FROM Ticket WHERE 1=1");
-
-        // Aggiungiamo i filtri solo se sono stati selezionati
-        if (stato != null && !stato.isEmpty()) {
-            sql.append(" AND Stato = ?");
-        }
-        if (categoria != null && !categoria.isEmpty()) {
-            sql.append(" AND Categoria = ?");
-        }
-        if (priorita != null && !priorita.isEmpty()) {
-            sql.append(" AND Priorita = ?");
-        }
-
-        sql.append(" ORDER BY DataApertura DESC");
-
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql.toString())) {
-
-            // Riempiamo i punti interrogativi dinamicamente
-            int index = 1;
-            if (stato != null && !stato.isEmpty()) {
-                ps.setString(index++, stato);
-            }
-            if (categoria != null && !categoria.isEmpty()) {
-                ps.setString(index++, categoria);
-            }
-            if (priorita != null && !priorita.isEmpty()) {
-                ps.setString(index++, priorita);
-            }
-
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    Ticket t = new Ticket();
-                    t.setIdTicket(rs.getLong("ID_Ticket"));
-                    t.setTitolo(rs.getString("Titolo"));
-                    t.setDescrizione(rs.getString("Descrizione"));
-                    t.setCategoria(rs.getString("Categoria"));
-                    t.setPriorita(rs.getString("Priorita"));
-                    t.setStato(rs.getString("Stato"));
-                    t.setIdAutore(rs.getLong("ID_Autore"));
-                    t.setDataApertura(rs.getTimestamp("DataApertura"));
-                    lista.add(t);
-                }
-            }
-        }
-        return lista;
     }
 
     // CANCELLAZIONE
