@@ -1,14 +1,10 @@
 package it.unisa.oikonaos.controller;
 
 import it.unisa.oikonaos.dao.TicketDAO;
-import it.unisa.oikonaos.dao.AllegatoDAO;
-import it.unisa.oikonaos.model.Ticket;
 import it.unisa.oikonaos.model.Utente;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-
-import java.io.File;
 import java.io.IOException;
 
 @WebServlet(name = "TicketController", value = "/TicketController")
@@ -33,36 +29,11 @@ public class TicketController extends HttpServlet {
 
         try {
             if ("new".equals(action)) {
-
-                request.getRequestDispatcher("nuovoTicket.jsp")
-                        .forward(request, response);
-
-            } else if ("details".equals(action)) {
-
-                long idTicket = Long.parseLong(request.getParameter("idTicket"));
-
-                // recupero ticket
-                Ticket ticket = dao.doRetrieveById(idTicket);
-                if (ticket == null || ticket.getIdAutore() != utente.getIdUtente()) {
-                    response.sendRedirect("TicketController");
-                    return;
-                }
-
-                request.setAttribute("ticket", ticket);
-                AllegatoDAO allegatoDAO = new AllegatoDAO();
-                request.setAttribute(
-                        "allegati",
-                        allegatoDAO.doRetrieveByTicket(idTicket)
-                );
-                request.getRequestDispatcher("dettagliTicket.jsp")
-                        .forward(request, response);
+                request.getRequestDispatcher("nuovoTicket.jsp").forward(request, response);
             } else {
-
-                request.setAttribute("listaTicket",
-                        dao.doRetrieveByAutore(utente.getIdUtente()));
-
-                request.getRequestDispatcher("ticket.jsp")
-                        .forward(request, response);
+                // Recupera solo i ticket dell'utente
+                request.setAttribute("listaTicket", dao.doRetrieveByAutore(utente.getIdUtente()));
+                request.getRequestDispatcher("ticket.jsp").forward(request, response);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -87,41 +58,14 @@ public class TicketController extends HttpServlet {
 
         try {
             if ("create".equals(action)) {
-
                 String titolo = request.getParameter("titolo");
                 String descrizione = request.getParameter("descrizione");
                 String categoria = request.getParameter("categoria");
                 String priorita = request.getParameter("priorita");
 
-                long idTicket = dao.creaTicket(
-                        titolo, descrizione, categoria, priorita,
-                        utente.getIdUtente()
-                );
-
-                AllegatoDAO allegatoDAO = new AllegatoDAO();
-                for (Part part : request.getParts()) {
-                    if ("allegati".equals(part.getName()) && part.getSize() > 0) {
-
-                        String nomeFile = part.getSubmittedFileName();
-                        String tipoFile = part.getContentType();
-
-                        String uploadDir = "C:/OikoNaos/uploads";
-                        File dir = new File(uploadDir);
-                        if (!dir.exists()) dir.mkdirs();
-
-                        File file = new File(uploadDir, nomeFile);
-                        part.write(file.getAbsolutePath());
-
-                        allegatoDAO.salva(
-                                nomeFile,
-                                file.getAbsolutePath(),
-                                tipoFile,
-                                idTicket
-                        );
-                    }
-                }
-
+                dao.creaTicket(titolo, descrizione, categoria, priorita, utente.getIdUtente());
                 response.sendRedirect("TicketController");
+
             } else if ("delete".equals(action)) {
                 long idTicket = Long.parseLong(request.getParameter("idTicket"));
                 dao.deleteTicketIfAperto(idTicket, utente.getIdUtente());
