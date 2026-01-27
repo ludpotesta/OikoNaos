@@ -9,6 +9,11 @@ import java.util.List;
 public class RisorsaDAO {
 
     public void doSave(Risorsa r) throws Exception {
+        try (Connection con = database.getConnection()) {
+            doSave(con, r);
+        }
+    }
+    public void doSave(Connection con, Risorsa r) throws Exception {
 
         String sql = """
             INSERT INTO risorsacondivisa
@@ -16,8 +21,7 @@ public class RisorsaDAO {
             VALUES (?, ?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, r.getNome());
             ps.setString(2, r.getDescrizione());
@@ -34,6 +38,11 @@ public class RisorsaDAO {
     }
 
     public List<Risorsa> doRetrieveAll() throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveAll(con);
+        }
+    }
+    public List<Risorsa> doRetrieveAll(Connection con) throws Exception {
 
         List<Risorsa> lista = new ArrayList<>();
 
@@ -42,8 +51,7 @@ public class RisorsaDAO {
             FROM risorsacondivisa
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {

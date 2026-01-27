@@ -11,7 +11,12 @@ import java.util.Base64;
 public class TokenResetPasswordDAO {
 
     public String createToken(long idUtente) throws Exception {
-        deleteByUtente(idUtente);
+        try (Connection con = database.getConnection()) {
+            return createToken(con, idUtente);
+        }
+    }
+    public String createToken(Connection con, long idUtente) throws Exception {
+        deleteByUtente(con, idUtente); // Aggiunto con per il testing
 
         String token = generateSecureToken();
 
@@ -22,8 +27,7 @@ public class TokenResetPasswordDAO {
             VALUES (?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
             ps.setTimestamp(2, Timestamp.valueOf(scadenza));
@@ -36,6 +40,11 @@ public class TokenResetPasswordDAO {
     }
 
     public TokenResetPassword findByToken(String token) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return findByToken(con, token);
+        }
+    }
+    public TokenResetPassword findByToken(Connection con, String token) throws Exception {
 
         String sql = """
             SELECT ID_Token, Token, DataScadenza, ID_Utente
@@ -43,8 +52,7 @@ public class TokenResetPasswordDAO {
             WHERE Token = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
             ResultSet rs = ps.executeQuery();
@@ -66,11 +74,15 @@ public class TokenResetPasswordDAO {
     }
 
     public void deleteByToken(String token) throws Exception {
+        try (Connection con = database.getConnection()) {
+            deleteByToken(con, token);
+        }
+    }
+    public void deleteByToken(Connection con, String token) throws Exception {
 
         String sql = "DELETE FROM tokenresetpassword WHERE Token = ?";
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
             ps.executeUpdate();
@@ -78,11 +90,15 @@ public class TokenResetPasswordDAO {
     }
 
     public void deleteByUtente(long idUtente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            deleteByUtente(con, idUtente);
+        }
+    }
+    public void deleteByUtente(Connection con, long idUtente) throws Exception {
 
         String sql = "DELETE FROM tokenresetpassword WHERE ID_Utente = ?";
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
             ps.executeUpdate();
@@ -101,6 +117,11 @@ public class TokenResetPasswordDAO {
     }
 
     public Long getIdUtenteByToken(String token) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return getIdUtenteByToken(con, token);
+        }
+    }
+    public Long getIdUtenteByToken(Connection con, String token) throws Exception {
 
         String sql = """
         SELECT ID_Utente
@@ -109,8 +130,7 @@ public class TokenResetPasswordDAO {
           AND DataScadenza > NOW()
     """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
             ResultSet rs = ps.executeQuery();
@@ -123,11 +143,15 @@ public class TokenResetPasswordDAO {
     }
 
     public void invalidateToken(String token) throws Exception {
+        try (Connection con = database.getConnection()) {
+            invalidateToken(con, token);
+        }
+    }
+    public void invalidateToken(Connection con, String token) throws Exception {
 
         String sql = "DELETE FROM tokenresetpassword WHERE Token = ?";
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, token);
             ps.executeUpdate();

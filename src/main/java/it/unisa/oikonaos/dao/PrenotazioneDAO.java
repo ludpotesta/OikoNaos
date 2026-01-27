@@ -10,14 +10,18 @@ public class PrenotazioneDAO {
 
     /* CREAZIONE PRENOTAZIONE */
     public void creaPrenotazione(Prenotazione p) throws Exception {
+        try (Connection con = database.getConnection()) {
+            creaPrenotazione(con, p);
+        }
+    }
+    public void creaPrenotazione(Connection con, Prenotazione p) throws Exception {
         String sql = """
             INSERT INTO prenotazione
             (DataPrenotazione, Stato, ID_Utente, ID_Postazione, ID_Fascia)
             VALUES (?, ?, ?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setDate(1, p.getData());
             ps.setString(2, p.getStato());
@@ -29,7 +33,12 @@ public class PrenotazioneDAO {
         }
     }
 
-    public boolean verificaConflitto(Date dataPrenotazione,
+    public boolean verificaConflitto(Date dataPrenotazione, long idPostazione, long idFascia) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return verificaConflitto(con, dataPrenotazione, idPostazione, idFascia);
+        }
+    }
+    public boolean verificaConflitto(Connection con, Date dataPrenotazione,
                                      long idPostazione,
                                      long idFascia) throws Exception {
 
@@ -42,8 +51,7 @@ public class PrenotazioneDAO {
           AND Stato = 'ATTIVA'
     """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setDate(1, dataPrenotazione);
             ps.setLong(2, idPostazione);
@@ -58,7 +66,12 @@ public class PrenotazioneDAO {
         }
     }
 
-    public List<Prenotazione> doRetrieveByUtente(long idUtente)
+    public List<Prenotazione> doRetrieveByUtente(long idUtente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveByUtente(con, idUtente);
+        }
+    }
+    public List<Prenotazione> doRetrieveByUtente(Connection con, long idUtente)
             throws Exception {
 
         List<Prenotazione> lista = new ArrayList<>();
@@ -80,8 +93,7 @@ public class PrenotazioneDAO {
             ORDER BY pr.DataPrenotazione DESC
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
 
@@ -103,8 +115,12 @@ public class PrenotazioneDAO {
         return lista;
     }
 
-    public List<Prenotazione> doRetrieveAll()
-            throws Exception {
+    public List<Prenotazione> doRetrieveAll() throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveAll(con);
+        }
+    }
+    public List<Prenotazione> doRetrieveAll(Connection con) throws Exception {
 
         List<Prenotazione> lista = new ArrayList<>();
 
@@ -123,8 +139,7 @@ public class PrenotazioneDAO {
             ORDER BY pr.DataPrenotazione DESC
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
@@ -176,7 +191,12 @@ public class PrenotazioneDAO {
     }
 
     /* CANCELLAZIONE SICURA PRENOTAZIONE*/
-    public boolean doDelete(long idPrenotazione, long idUtente)
+    public boolean doDelete(long idPrenotazione, long idUtente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doDelete(con, idPrenotazione, idUtente);
+        }
+    }
+    public boolean doDelete(Connection con, long idPrenotazione, long idUtente)
             throws Exception {
 
         String sql = """
@@ -186,8 +206,7 @@ public class PrenotazioneDAO {
               AND Stato = 'ATTIVA'
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idPrenotazione);
             ps.setLong(2, idUtente);
@@ -197,13 +216,17 @@ public class PrenotazioneDAO {
     }
 
     public List<Object[]> doRetrieveAmbienti() throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveAmbienti(con);
+        }
+    }
+    public List<Object[]> doRetrieveAmbienti(Connection con) throws Exception {
 
         List<Object[]> lista = new ArrayList<>();
 
         String sql = "SELECT ID_Ambiente, Nome FROM ambiente ORDER BY Nome";
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
@@ -217,6 +240,11 @@ public class PrenotazioneDAO {
     }
 
     public List<long[]> doRetrievePostazioniByAmbiente(long idAmbiente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrievePostazioniByAmbiente(con, idAmbiente);
+        }
+    }
+    public List<long[]> doRetrievePostazioniByAmbiente(Connection con, long idAmbiente) throws Exception {
 
         List<long[]> lista = new ArrayList<>();
 
@@ -227,8 +255,7 @@ public class PrenotazioneDAO {
         ORDER BY Numero
     """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idAmbiente);
 

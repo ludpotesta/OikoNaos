@@ -36,7 +36,7 @@ public class CodiceIdentificativoDAO {
         return null;
     }
 
-    public void marcaComeUsato(
+    public boolean marcaComeUsato(
             Connection con, String codice, long idUtente) throws SQLException {
 
         String sql = """
@@ -49,11 +49,16 @@ public class CodiceIdentificativoDAO {
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, idUtente);
             ps.setString(2, codice);
-            ps.executeUpdate();
+            return ps.executeUpdate() == 1;
         }
     }
 
     public boolean codiceEsisteEdAttivo(String codice) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return codiceEsisteEdAttivo(con, codice);
+        }
+    }
+    public boolean codiceEsisteEdAttivo(Connection con, String codice) throws Exception {
 
         String sql = """
             SELECT 1
@@ -62,8 +67,7 @@ public class CodiceIdentificativoDAO {
               AND Stato = 'ATTIVO'
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, codice);
 
