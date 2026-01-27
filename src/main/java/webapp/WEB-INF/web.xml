@@ -4,16 +4,57 @@
          xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
          version="5.0">
     <display-name>OikoNaos</display-name>
-
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
     <resource-ref>
-        <description>DB OikoNaos</description>
+        <description>DB Connection</description>
         <res-ref-name>jdbc/OikoNaosDB</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
         <res-auth>Container</res-auth>
     </resource-ref>
 
-    <welcome-file-list>
-        <welcome-file>index.jsp</welcome-file>
-        <welcome-file>index.html</welcome-file>
-    </welcome-file-list>
+    <servlet>
+        <servlet-name>HomeController</servlet-name>
+        <servlet-class>it.unisa.oikonaos.controller.HomeController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HomeController</servlet-name>
+        <url-pattern>/HomeController</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DownloadAllegato</servlet-name>
+        <servlet-class>
+            it.unisa.oikonaos.controller.DownloadAllegatoController
+        </servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DownloadAllegato</servlet-name>
+        <url-pattern>/download-allegato</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>RecuperaPasswordServlet</servlet-name>
+        <servlet-class>it.unisa.oikonaos.controller.RecuperaPasswordController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>RecuperaPasswordServlet</servlet-name>
+        <url-pattern>/recupera-password</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>ModificaPasswordServlet</servlet-name>
+        <servlet-class>it.unisa.oikonaos.controller.ModificaPasswordController</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>ModificaPasswordServlet</servlet-name>
+        <url-pattern>/modifica-password</url-pattern>
+    </servlet-mapping>
+
 </web-app>

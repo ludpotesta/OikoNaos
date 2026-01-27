@@ -34,6 +34,7 @@ public class SupervisoreEventiController extends HttpServlet {
 
         try {
 
+            /* MODIFICA EVENTO */
             if ("edit".equals(action)) {
 
                 long idEvento = Long.parseLong(request.getParameter("id"));
@@ -44,7 +45,6 @@ public class SupervisoreEventiController extends HttpServlet {
                     return;
                 }
 
-                // evento passato → bloccato
                 if (e.getDataFine() != null &&
                         e.getDataFine().isBefore(LocalDateTime.now())) {
 
@@ -70,6 +70,7 @@ public class SupervisoreEventiController extends HttpServlet {
             /* LISTA EVENTI */
             List<Evento> eventi = dao.getAllEventi();
             LocalDateTime now = LocalDateTime.now();
+
             DateTimeFormatter formatter =
                     DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
@@ -145,7 +146,7 @@ public class SupervisoreEventiController extends HttpServlet {
                 }
 
                 long idEvento = Long.parseLong(rawId);
-                dao.eliminaEvento(idEvento);   // HARD DELETE
+                dao.eliminaEvento(idEvento);
 
                 response.sendRedirect(
                         request.getContextPath() +
@@ -163,60 +164,72 @@ public class SupervisoreEventiController extends HttpServlet {
             }
         }
 
-    /* CREAZIONE NUOVO EVENTO */
-        try {
-            String titolo = request.getParameter("titolo");
-            String descrizione = request.getParameter("descrizione");
-            String luogo = request.getParameter("luogo");
+        /* CREAZIONE EVENTO */
+        if ("create".equals(action)) {
+            try {
+                String titolo = request.getParameter("titolo");
+                String descrizione = request.getParameter("descrizione");
+                String luogo = request.getParameter("luogo");
 
-            String postiParam = request.getParameter("posti");
-            String dataInizioParam = request.getParameter("dataInizio");
-            String dataFineParam = request.getParameter("dataFine");
+                String postiParam = request.getParameter("posti");
+                String dataInizioParam = request.getParameter("dataInizio");
+                String dataFineParam = request.getParameter("dataFine");
 
-            if (titolo == null || titolo.isBlank()
-                    || postiParam == null || postiParam.isBlank()
-                    || dataInizioParam == null || dataInizioParam.isBlank()) {
+                if (titolo == null || titolo.isBlank()
+                        || postiParam == null || postiParam.isBlank()
+                        || dataInizioParam == null || dataInizioParam.isBlank()) {
+
+                    response.sendRedirect(
+                            request.getContextPath() +
+                                    "/SupervisoreEventiController?error=campi"
+                    );
+                    return;
+                }
+
+                int postiTotali = Integer.parseInt(postiParam);
+
+                DateTimeFormatter formatter =
+                        DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+
+                LocalDateTime dataInizio =
+                        LocalDateTime.parse(dataInizioParam, formatter);
+
+                LocalDateTime dataFine = null;
+                if (dataFineParam != null && !dataFineParam.isBlank()) {
+                    dataFine = LocalDateTime.parse(dataFineParam, formatter);
+                }
+
+                Evento evento = new Evento();
+                evento.setTitolo(titolo);
+                evento.setDescrizione(descrizione);
+                evento.setLuogo(luogo);
+                evento.setPostiTotali(postiTotali);
+                evento.setPostiDisponibili(postiTotali);
+                evento.setDataInizio(dataInizio);
+                evento.setDataFine(dataFine);
+                evento.setIdOrganizzatore(u.getIdUtente());
+
+                dao.creaEvento(evento);
 
                 response.sendRedirect(
                         request.getContextPath() +
-                                "/SupervisoreEventiController?error=campi"
+                                "/SupervisoreEventiController"
+                );
+                return;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                response.sendRedirect(
+                        request.getContextPath() +
+                                "/SupervisoreEventiController?error=generic"
                 );
                 return;
             }
-
-            int postiTotali = Integer.parseInt(postiParam);
-
-            LocalDateTime dataInizio = LocalDateTime.parse(dataInizioParam);
-            LocalDateTime dataFine = null;
-
-            if (dataFineParam != null && !dataFineParam.isBlank()) {
-                dataFine = LocalDateTime.parse(dataFineParam);
-            }
-
-            Evento evento = new Evento();
-            evento.setTitolo(titolo);
-            evento.setDescrizione(descrizione);
-            evento.setLuogo(luogo);
-            evento.setPostiTotali(postiTotali);
-            evento.setPostiDisponibili(postiTotali);
-            evento.setDataInizio(dataInizio);
-            evento.setDataFine(dataFine);
-            evento.setIdOrganizzatore(u.getIdUtente());
-
-            dao.creaEvento(evento);
-
-            response.sendRedirect(
-                    request.getContextPath() +
-                            "/SupervisoreEventiController"
-            );
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendRedirect(
-                    request.getContextPath() +
-                            "/SupervisoreEventiController?error=generic"
-            );
         }
-    }
 
+        response.sendRedirect(
+                request.getContextPath() +
+                        "/SupervisoreEventiController?error=generic"
+        );
+    }
 }

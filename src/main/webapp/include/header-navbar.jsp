@@ -10,31 +10,29 @@
 
 <header class="topbar">
 
-    <!-- LOGO / BRAND -->
     <div class="brand">
         <a href="<%=
-            (u == null)
-                ? request.getContextPath() + "/index.jsp"
-                : (
-                    "SUPERVISORE".equalsIgnoreCase(u.getRuolo())
-                        ? request.getContextPath() + "/supervisore/home.jsp"
-                        : request.getContextPath() + "/home.jsp"
-                  )
-        %>" class="brand-link">
+        (u == null)
+            ? request.getContextPath() + "/index.jsp"
+            : (
+                "SUPERVISORE".equalsIgnoreCase(u.getRuolo())
+                    ? request.getContextPath() + "/supervisore/home.jsp"
+                    : request.getContextPath() + "/home.jsp"
+              )
+    %>" class="brand-link">
 
             <img class="logo"
                  src="${pageContext.request.contextPath}/assets/oikonaosLogo.png"
                  alt="Logo OikoNaos" />
 
             <span class="brand-name">
-                Oiko<span class="brand-accent">Naos</span>
-            </span>
+            Oiko<span class="brand-accent">Naos</span>
+        </span>
         </a>
     </div>
 
     <div></div>
 
-    <!-- NAV -->
     <nav class="nav-links">
 
         <% if (u == null) { %>
@@ -51,7 +49,6 @@
 
         <% } else { %>
 
-        <!-- MENU UTENTE -->
         <div class="user-menu-container">
 
             <button type="button"
@@ -70,15 +67,6 @@
                     <strong><%= u.getNome() %></strong>
                 </div>
 
-                <!-- MAPPA -->
-                <a href="${pageContext.request.contextPath}/MappaController"
-                   class="menu-link">
-                    🗺️ Mappa struttura
-                </a>
-
-                <hr>
-
-                <!-- LOGOUT -->
                 <a href="${pageContext.request.contextPath}/LogoutController"
                    class="logout-link">
                     Esci
@@ -92,6 +80,7 @@
     </nav>
 
 </header>
+
 
 <script>
     function toggleMenu() {

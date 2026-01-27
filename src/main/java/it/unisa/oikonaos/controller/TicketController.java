@@ -15,7 +15,6 @@ import java.io.IOException;
 @MultipartConfig
 public class TicketController extends HttpServlet {
 
-    // LOGICA COINQUILINO (Solo i propri ticket)
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
