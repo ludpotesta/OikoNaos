@@ -82,6 +82,11 @@ public class UserDAO {
     }
 
     public Utente login(String username, String password) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return login(con, username, password); // Chiama la versione testabile
+        }
+    }
+    public Utente login(Connection con, String username, String password) throws Exception {
 
         String sql = """
             SELECT u.ID_Utente, u.Nome, u.Cognome, u.Email,
@@ -91,8 +96,7 @@ public class UserDAO {
             WHERE c.Username = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
@@ -119,6 +123,11 @@ public class UserDAO {
     }
 
     public void updateProfilo(Utente u) throws Exception {
+        try (Connection con = database.getConnection()) {
+            updateProfilo(con, u);
+        }
+    }
+    public void updateProfilo(Connection con, Utente u) throws Exception {
 
         String sql = """
             UPDATE utente
@@ -126,8 +135,7 @@ public class UserDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, u.getNome());
             ps.setString(2, u.getCognome());
@@ -166,6 +174,11 @@ public class UserDAO {
     }
 
     public Utente getUtenteById(long idUtente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return getUtenteById(con, idUtente);
+        }
+    }
+    public Utente getUtenteById(Connection con, long idUtente) throws Exception {
 
         String sql = """
         SELECT ID_Utente, Nome, Cognome, Email, Telefono, Ruolo
@@ -173,8 +186,7 @@ public class UserDAO {
         WHERE ID_Utente = ?
     """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
             ResultSet rs = ps.executeQuery();
@@ -193,7 +205,12 @@ public class UserDAO {
         return null;
     }
 
-    public List<Utente> doRetrieveCoinquiliniEscluso(long idDaEscludere)
+    public List<Utente> doRetrieveCoinquiliniEscluso(long idDaEscludere) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveCoinquiliniEscluso(con, idDaEscludere);
+        }
+    }
+    public List<Utente> doRetrieveCoinquiliniEscluso(Connection con, long idDaEscludere)
             throws Exception {
 
         List<Utente> utenti = new ArrayList<>();
@@ -205,8 +222,7 @@ public class UserDAO {
           AND ID_Utente <> ?
     """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idDaEscludere);
 

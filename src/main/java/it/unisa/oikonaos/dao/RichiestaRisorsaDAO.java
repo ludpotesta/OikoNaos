@@ -13,6 +13,11 @@ public class RichiestaRisorsaDAO {
                               long idUtente,
                               Date dataInizio,
                               Date dataFine) throws Exception {
+        try (Connection con = database.getConnection()) {
+            creaRichiesta(con, idRisorsa, idUtente, dataInizio, dataFine);
+        }
+    }
+    public void creaRichiesta(Connection con, long idRisorsa, long idUtente, Date dataInizio, Date dataFine) throws Exception {
 
         String sql = """
         INSERT INTO richiestarisorsa
@@ -20,8 +25,7 @@ public class RichiestaRisorsaDAO {
         VALUES (?, ?, ?, ?, 'RICHIESTA')
     """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idRisorsa);
             ps.setLong(2, idUtente);
@@ -33,6 +37,11 @@ public class RichiestaRisorsaDAO {
     }
 
     public List<RichiestaRisorsa> doRetrieveAll() throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveAll(con);
+        }
+    }
+    public List<RichiestaRisorsa> doRetrieveAll(Connection con) throws Exception {
         List<RichiestaRisorsa> lista = new ArrayList<>();
 
         String sql = """
@@ -46,8 +55,7 @@ public class RichiestaRisorsaDAO {
             ORDER BY rr.DataInizio DESC
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
 
             while (rs.next()) {
@@ -67,6 +75,11 @@ public class RichiestaRisorsaDAO {
     }
 
     public List<RichiestaRisorsa> doRetrieveByUtente(long idUtente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveByUtente(con, idUtente);
+        }
+    }
+    public List<RichiestaRisorsa> doRetrieveByUtente(Connection con, long idUtente) throws Exception {
         List<RichiestaRisorsa> lista = new ArrayList<>();
 
         String sql = """
@@ -81,8 +94,7 @@ public class RichiestaRisorsaDAO {
             ORDER BY rr.DataInizio DESC
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
             ResultSet rs = ps.executeQuery();
@@ -101,14 +113,18 @@ public class RichiestaRisorsaDAO {
     }
 
     public void aggiornaStato(long idRichiesta, String stato) throws Exception {
+        try (Connection con = database.getConnection()) {
+            aggiornaStato(con, idRichiesta, stato);
+        }
+    }
+    public void aggiornaStato(Connection con, long idRichiesta, String stato) throws Exception {
         String sql = """
             UPDATE richiestarisorsa
             SET Stato = ?
             WHERE ID_Richiesta = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, stato);
             ps.setLong(2, idRichiesta);
@@ -117,6 +133,11 @@ public class RichiestaRisorsaDAO {
     }
 
     public boolean esisteConflitto(long idRisorsa, LocalDate giorno) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return esisteConflitto(con, idRisorsa, giorno);
+        }
+    }
+    public boolean esisteConflitto(Connection con, long idRisorsa, LocalDate giorno) throws Exception {
 
         String sql = """
             SELECT COUNT(*)
@@ -125,8 +146,7 @@ public class RichiestaRisorsaDAO {
               AND DATE(DataInizio) = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idRisorsa);
             ps.setDate(2, Date.valueOf(giorno));
@@ -137,6 +157,11 @@ public class RichiestaRisorsaDAO {
     }
 
     public List<LocalDate> getDateOccupate(long idRisorsa) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return getDateOccupate(con, idRisorsa);
+        }
+    }
+    public List<LocalDate> getDateOccupate(Connection con, long idRisorsa) throws Exception {
         List<LocalDate> date = new ArrayList<>();
 
         String sql = """
@@ -145,8 +170,7 @@ public class RichiestaRisorsaDAO {
             WHERE ID_Risorsa = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idRisorsa);
             ResultSet rs = ps.executeQuery();

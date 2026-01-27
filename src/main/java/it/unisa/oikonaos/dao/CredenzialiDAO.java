@@ -6,11 +6,15 @@ import java.sql.*;
 public class CredenzialiDAO {
 
     public boolean usernameEsistente(String username) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return usernameEsistente(con, username);
+        }
+    }
+    public boolean usernameEsistente(Connection con, String username) throws Exception {
 
         String sql = "SELECT 1 FROM credenziali WHERE Username = ?";
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
             return ps.executeQuery().next();
@@ -18,6 +22,11 @@ public class CredenzialiDAO {
     }
 
     public Long getIdUtenteByEmail(String email) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return getIdUtenteByEmail(con, email);
+        }
+    }
+    public Long getIdUtenteByEmail(Connection con, String email) throws Exception {
 
         String sql = """
             SELECT ID_Utente
@@ -25,8 +34,7 @@ public class CredenzialiDAO {
             WHERE Email = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, email);
             ResultSet rs = ps.executeQuery();
@@ -35,6 +43,11 @@ public class CredenzialiDAO {
     }
 
     public Long getIdUtenteByUsername(String username) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return getIdUtenteByUsername(con, username);
+        }
+    }
+    public Long getIdUtenteByUsername(Connection con, String username) throws Exception {
 
         String sql = """
             SELECT ID_Utente
@@ -42,8 +55,7 @@ public class CredenzialiDAO {
             WHERE Username = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, username);
             ResultSet rs = ps.executeQuery();
@@ -52,6 +64,11 @@ public class CredenzialiDAO {
     }
 
     public String getPasswordHashByUtente(long idUtente) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return getPasswordHashByUtente(con, idUtente);
+        }
+    }
+    public String getPasswordHashByUtente(Connection con, long idUtente) throws Exception {
 
         String sql = """
             SELECT PasswordHash
@@ -59,8 +76,7 @@ public class CredenzialiDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idUtente);
             ResultSet rs = ps.executeQuery();
@@ -69,6 +85,11 @@ public class CredenzialiDAO {
     }
 
     public boolean updateUsername(long idUtente, String nuovoUsername) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return updateUsername(con, idUtente, nuovoUsername);
+        }
+    }
+    public boolean updateUsername(Connection con, long idUtente, String nuovoUsername) throws Exception {
 
         String sql = """
             UPDATE credenziali
@@ -76,8 +97,7 @@ public class CredenzialiDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nuovoUsername);
             ps.setLong(2, idUtente);
@@ -86,6 +106,11 @@ public class CredenzialiDAO {
     }
 
     public boolean updatePassword(long idUtente, String nuovaPasswordHash) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return updatePassword(con, idUtente, nuovaPasswordHash);
+        }
+    }
+    public boolean updatePassword(Connection con, long idUtente, String nuovaPasswordHash) throws Exception {
 
         String sql = """
             UPDATE credenziali
@@ -93,8 +118,7 @@ public class CredenzialiDAO {
             WHERE ID_Utente = ?
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, nuovaPasswordHash);
             ps.setLong(2, idUtente);
