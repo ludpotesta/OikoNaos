@@ -23,9 +23,10 @@ public class AuthFilter implements Filter {
         HttpSession session = request.getSession(false);
 
         // 1. RISORSE E PAGINE PUBBLICHE
-        if (path.equals("/login.jsp")
-                || path.equalsIgnoreCase("/register.jsp")
-                || path.equals("/index.jsp")
+        // Usiamo contains per maggiore robustezza (es. evitare problemi di equals esatto)
+        if (path.contains("/login.jsp")
+                || path.contains("/register.jsp")
+                || path.contains("/index.jsp")
                 || path.equals("/passwordDimenticata.jsp")
                 || path.equals("/resetPassword.jsp")
                 || path.equals("/forgot-password.jsp")

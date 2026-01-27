@@ -35,7 +35,10 @@ public class RegistrazioneSystemTest {
     @Test
     void testPaginaRegistrazione() {
         driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
-        assertTrue(driver.getTitle().contains("Registrazione"));
+        String title = driver.getTitle();
+        String currentUrl = driver.getCurrentUrl();
+        assertTrue(title.contains("Registrazione"),
+            "Titolo atteso 'Registrazione', trovato '" + title + "'. Sei stato reindirizzato a: " + currentUrl);
         assertTrue(driver.findElement(By.tagName("h2")).getText().contains("Registrati a OikoNaos"));
     }
 
