@@ -83,10 +83,10 @@ public class TassaDAO {
                           Long idUtente) throws Exception {
 
         String sql = """
-        INSERT INTO tassatrimestrale
-        (TrimestreRiferimento, ImportoDovuto, Scadenza, Tipo, ID_Utente)
-        VALUES (?, ?, ?, ?, ?)
-    """;
+            INSERT INTO tassatrimestrale
+            (TrimestreRiferimento, ImportoDovuto, Scadenza, Tipo, ID_Utente, Stato)
+            VALUES (?, ?, ?, ?, ?, 'DA_PAGARE')
+        """;
 
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {

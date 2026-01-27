@@ -90,6 +90,10 @@ public class SupervisoreTasseController extends HttpServlet {
             String tipo = request.getParameter("tipo"); // ORDINARIA / STRAORDINARIA
             String destinatario = request.getParameter("destinatario");
 
+            if (destinatario == null || destinatario.isBlank()) {
+                destinatario = "TUTTI"; // default logico
+            }
+
             double importo = Double.parseDouble(request.getParameter("importo"));
             Date scadenza = Date.valueOf(request.getParameter("scadenza"));
 
