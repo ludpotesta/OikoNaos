@@ -43,12 +43,11 @@ public class RegistrazioneSystemTest {
     void testRegistrazioneUsernameEsistente() {
         driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
 
-        // Riempio i campi
-        driver.findElement(By.name("nome")).sendKeys("Mario");
-        driver.findElement(By.name("cognome")).sendKeys("Rossi");
-        driver.findElement(By.name("email")).sendKeys("mario.rossi@example.com");
+        driver.findElement(By.name("nome")).sendKeys("Luigi");
+        driver.findElement(By.name("cognome")).sendKeys("Potestà");
+        driver.findElement(By.name("email")).sendKeys("luigi.potesta@example.com");
         driver.findElement(By.name("telefono")).sendKeys("3331234567");
-        driver.findElement(By.name("username")).sendKeys("test.user"); // Username esistente
+        driver.findElement(By.name("username")).sendKeys("Ludpotesta"); // Username esistente
         driver.findElement(By.name("password")).sendKeys("Password123!");
         driver.findElement(By.name("codiceID")).sendKeys("CODICE_QUALSIASI");
 
@@ -105,9 +104,7 @@ public class RegistrazioneSystemTest {
 
     @Test
     void testRegistrazioneSuccesso() {
-        // Nota: Questo test richiede un codice ID valido e non utilizzato nel DB.
-        // Si assume che "CODICE_VALIDO_TEST" esista nel database per il test.
-        String codiceValido = "CODICE_VALIDO_TEST";
+        String codiceValido = "OKN-2026-0003";
 
         driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
 

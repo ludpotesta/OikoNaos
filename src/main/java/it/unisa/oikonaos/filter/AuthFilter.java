@@ -24,7 +24,7 @@ public class AuthFilter implements Filter {
 
         // 1. RISORSE E PAGINE PUBBLICHE
         if (path.equals("/login.jsp")
-                || path.equals("/register.jsp")
+                || path.equalsIgnoreCase("/register.jsp")
                 || path.equals("/index.jsp")
                 || path.equals("/passwordDimenticata.jsp")
                 || path.equals("/resetPassword.jsp")
