@@ -30,7 +30,7 @@ public class RegistrazioneSystemTest {
 
     private void goToRegister() {
         driver.get(url("/register.jsp"));
-        // Aspetta che il form sia pronto (campo 'nome' presente)
+
         wait.until(ExpectedConditions.presenceOfElementLocated(By.name("nome")));
     }
 
@@ -87,11 +87,8 @@ public class RegistrazioneSystemTest {
         driver.findElement(By.name("password")).sendKeys("debole"); // volutamente debole
         driver.findElement(By.name("codiceID")).sendKeys("CODICE_QUALSIASI");
 
-        // La pagina ha validazioni HTML5 (minlength/pattern) che bloccano il submit e impediscono il redirect.
-        // Usiamo submit via JS per bypassare la constraint validation del browser e testare la validazione server-side.
         ((JavascriptExecutor) driver).executeScript("document.querySelector('form').submit();");
 
-        // Alcune implementazioni usano querystring (error=pwd), altre mostrano solo il messaggio in pagina.
         wait.until(ExpectedConditions.or(
                 ExpectedConditions.urlContains("error=pwd"),
                 ExpectedConditions.visibilityOfElementLocated(By.className("login-error"))
@@ -140,7 +137,7 @@ public class RegistrazioneSystemTest {
 
         driver.findElement(By.cssSelector("button[type='submit']")).click();
 
-        // Successo: in genere redirect a login o home. Adatta se hai un URL preciso.
+
         wait.until(ExpectedConditions.not(ExpectedConditions.urlContains("register.jsp")));
         assertTrue(!driver.getCurrentUrl().contains("error="));
     }
