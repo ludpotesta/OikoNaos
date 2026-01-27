@@ -19,7 +19,7 @@ public class RecuperoPasswordSystemTest {
     // Override da IntelliJ/JUnit: -DbaseUrl=http://localhost:8080/OikoNaos_war
     private static final String BASE_URL = System.getProperty(
             "baseUrl",
-            "http://localhost:8080/OikoNaos_war"
+            "http://localhost:8080/OikoNaos_war_exploded"
     );
 
     private static final String FORCED_TEMP = "Ciao1205!";

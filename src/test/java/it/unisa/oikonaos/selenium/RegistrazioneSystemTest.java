@@ -16,7 +16,7 @@ public class RegistrazioneSystemTest {
     // Override from IntelliJ/JUnit: -DbaseUrl=http://localhost:8080/OikoNaos_war
     private static final String BASE_URL = System.getProperty(
             "baseUrl",
-            "http://localhost:8080/OikoNaos_war"
+            "http://localhost:8080/OikoNaos_war_exploded"
     );
 
     private WebDriver driver;
