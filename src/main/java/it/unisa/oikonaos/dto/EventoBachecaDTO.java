@@ -1,6 +1,7 @@
 package it.unisa.oikonaos.dto;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class EventoBachecaDTO {
 
@@ -10,19 +11,16 @@ public class EventoBachecaDTO {
     private String luogo;
     private LocalDateTime dataInizio;
     private LocalDateTime dataFine;
-    private String dataInizioFormatted;
-    private String dataFineFormatted;
     private int postiDisponibili;
     private boolean iscritto;
-    private boolean iscrivibile;
-    private boolean disiscrivibile;
 
-    public EventoBachecaDTO() {
-    }
+    private static final DateTimeFormatter FORMATTER =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     public long getIdEvento() {
         return idEvento;
     }
+
     public void setIdEvento(long idEvento) {
         this.idEvento = idEvento;
     }
@@ -84,35 +82,25 @@ public class EventoBachecaDTO {
     }
 
     public boolean isIscrivibile() {
-        return iscrivibile;
-    }
-
-    public void setIscrivibile(boolean iscrivibile) {
-        this.iscrivibile = iscrivibile;
+        return !iscritto
+                && postiDisponibili > 0
+                && (dataFine == null || dataFine.isAfter(LocalDateTime.now()));
     }
 
     public boolean isDisiscrivibile() {
-        return disiscrivibile;
-    }
-
-    public void setDisiscrivibile(boolean disiscrivibile) {
-        this.disiscrivibile = disiscrivibile;
+        return iscritto
+                && (dataFine == null || dataFine.isAfter(LocalDateTime.now()));
     }
 
     public String getDataInizioFormatted() {
-        return dataInizioFormatted;
-    }
-
-    public void setDataInizioFormatted(String dataInizioFormatted) {
-        this.dataInizioFormatted = dataInizioFormatted;
+        return dataInizio != null
+                ? dataInizio.format(FORMATTER)
+                : "";
     }
 
     public String getDataFineFormatted() {
-        return dataFineFormatted;
+        return dataFine != null
+                ? dataFine.format(FORMATTER)
+                : "—";
     }
-
-    public void setDataFineFormatted(String dataFineFormatted) {
-        this.dataFineFormatted = dataFineFormatted;
-    }
-
 }

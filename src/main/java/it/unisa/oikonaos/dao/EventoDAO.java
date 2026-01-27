@@ -38,23 +38,34 @@ public class EventoDAO {
         try (Connection con = database.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
-            ps.setLong(1, idUtente); // ✔ SOLO UNO
+            ps.setLong(1, idUtente);
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
 
-            while (rs.next()) {
-                EventoBachecaDTO e = new EventoBachecaDTO();
+                while (rs.next()) {
+                    EventoBachecaDTO e = new EventoBachecaDTO();
 
-                e.setIdEvento(rs.getLong("ID_Evento"));
-                e.setTitolo(rs.getString("Titolo"));
-                e.setDescrizione(rs.getString("Descrizione"));
-                e.setLuogo(rs.getString("Luogo"));
-                e.setDataInizio(rs.getTimestamp("DataInizio").toLocalDateTime());
-                e.setDataFine(rs.getTimestamp("DataFine").toLocalDateTime());
-                e.setPostiDisponibili(rs.getInt("PostiDisponibili"));
-                e.setIscritto(rs.getBoolean("Iscritto"));
+                    e.setIdEvento(rs.getLong("ID_Evento"));
+                    e.setTitolo(rs.getString("Titolo"));
+                    e.setDescrizione(rs.getString("Descrizione"));
+                    e.setLuogo(rs.getString("Luogo"));
 
-                eventi.add(e);
+                    e.setDataInizio(
+                            rs.getTimestamp("DataInizio").toLocalDateTime()
+                    );
+
+                    Timestamp fine = rs.getTimestamp("DataFine");
+                    if (fine != null) {
+                        e.setDataFine(fine.toLocalDateTime());
+                    } else {
+                        e.setDataFine(null);
+                    }
+
+                    e.setPostiDisponibili(rs.getInt("PostiDisponibili"));
+                    e.setIscritto(rs.getBoolean("Iscritto"));
+
+                    eventi.add(e);
+                }
             }
         }
 
@@ -290,8 +301,9 @@ public class EventoDAO {
             }
 
             ps.setInt(6, e.getPostiTotali());
-            ps.setInt(7, e.getPostiTotali());
+            ps.setInt(7, e.getPostiDisponibili());
             ps.setLong(8, e.getIdOrganizzatore());
+
             ps.executeUpdate();
         }
     }
