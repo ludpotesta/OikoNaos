@@ -83,27 +83,12 @@
                        placeholder="Lascia vuoto per non modificarlo">
             </div>
 
-            <div class="form-group">
-                <label>Password attuale *</label>
-                <input type="password"
-                       name="passwordAttuale"
-                       class="form-input"
-                       required>
-            </div>
-
-            <div class="form-group">
-                <label>Nuova password (opzionale)</label>
-                <input type="password"
-                       name="nuovaPassword"
-                       class="form-input">
-            </div>
-
-            <div class="form-group">
-                <label>Conferma nuova password</label>
-                <input type="password"
-                       name="confermaPassword"
-                       class="form-input">
-            </div>
+            <p style="margin-top: 16px; text-align: center;">
+                <a href="${pageContext.request.contextPath}/recupera-password.jsp"
+                   style="color: #000000; font-size: 0.9rem;">
+                    Password dimenticata?
+                </a>
+            </p>
 
             <button type="submit" class="btn primary">
                 Aggiorna credenziali
