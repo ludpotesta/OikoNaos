@@ -17,6 +17,8 @@ public class AuthSystemTest {
     private WebDriver driver;
     private WebDriverWait wait;
 
+    private static final String BASE_URL = "http://localhost:8080/OikoNaos_war_exploded";
+
     @BeforeEach
     void setUp() {
         WebDriverManager.chromedriver().setup();
@@ -30,15 +32,17 @@ public class AuthSystemTest {
         driver.quit();
     }
 
+    //TC-AUTH-01
     @Test
     void testAperturaPaginaLogin() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
+        driver.get(BASE_URL + "/login.jsp");
         assertTrue(driver.getTitle().contains("Login"));
     }
 
+    //TC-AUTH-01
     @Test
     void testLoginValido() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
+        driver.get(BASE_URL + "/login.jsp");
 
         driver.findElement(By.name("username")).sendKeys("test.user");
         driver.findElement(By.name("password")).sendKeys("Prova123!");
@@ -55,7 +59,7 @@ public class AuthSystemTest {
 
     @Test
     void testLogout() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
+        driver.get(BASE_URL + "/login.jsp");
 
         driver.findElement(By.name("username")).sendKeys("test.user");
         driver.findElement(By.name("password")).sendKeys("Prova123!");
@@ -77,7 +81,7 @@ public class AuthSystemTest {
 
     @Test
     void testLoginErrato() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
+        driver.get(BASE_URL + "/login.jsp");
 
         driver.findElement(By.name("username")).sendKeys("test.user");
         driver.findElement(By.name("password")).sendKeys("password_sbagliata");
@@ -96,7 +100,7 @@ public class AuthSystemTest {
 
     @Test
     void testLoginUsernameInesistente() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/login.jsp");
+        driver.get(BASE_URL + "/login.jsp");
 
         driver.findElement(By.name("username"))
                 .sendKeys("utente_che_non_esiste");
@@ -122,5 +126,29 @@ public class AuthSystemTest {
                 driver.findElements(By.className("login-error")).isEmpty(),
                 "Il messaggio di errore deve essere mostrato"
         );
+    }
+
+    @Test
+    void testAccessoAreaSupervisoreNegato() {
+        driver.get(BASE_URL + "/login.jsp");
+
+        driver.findElement(By.name("username")).sendKeys("test.user");
+        driver.findElement(By.name("password")).sendKeys("Prova123!");
+        driver.findElement(By.cssSelector("button[type='submit']")).click();
+
+        wait.until(ExpectedConditions.urlContains("home.jsp"));
+
+        // Accesso diretto area supervisore
+        driver.get(BASE_URL + "/supervisore/home.jsp");
+
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.urlContains("error=ruolo"),
+                ExpectedConditions.urlContains("home.jsp")
+        ));
+
+        String currentUrl = driver.getCurrentUrl();
+
+        assertTrue(currentUrl.contains("home.jsp"));
+        assertTrue(currentUrl.contains("error=ruolo"));
     }
 }
