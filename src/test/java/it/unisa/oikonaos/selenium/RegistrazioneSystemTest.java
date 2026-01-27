@@ -34,7 +34,7 @@ public class RegistrazioneSystemTest {
 
     @Test
     void testPaginaRegistrazione() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
+        driver.get("http://localhost:8080/OikoNaos_war_exploded/registrazione.jsp");
         String title = driver.getTitle();
         String currentUrl = driver.getCurrentUrl();
         assertTrue(title.contains("Registrazione"),
@@ -44,7 +44,7 @@ public class RegistrazioneSystemTest {
 
     @Test
     void testRegistrazioneUsernameEsistente() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
+        driver.get("http://localhost:8080/OikoNaos_war_exploded/registrazione.jsp");
 
         driver.findElement(By.name("nome")).sendKeys("Luigi");
         driver.findElement(By.name("cognome")).sendKeys("Potestà");
@@ -65,7 +65,7 @@ public class RegistrazioneSystemTest {
 
     @Test
     void testRegistrazionePasswordDebole() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
+        driver.get("http://localhost:8080/OikoNaos_war_exploded/registrazione.jsp");
 
         driver.findElement(By.name("nome")).sendKeys("Luigi");
         driver.findElement(By.name("cognome")).sendKeys("Verdi");
@@ -86,7 +86,7 @@ public class RegistrazioneSystemTest {
 
     @Test
     void testRegistrazioneCodiceNonValido() {
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
+        driver.get("http://localhost:8080/OikoNaos_war_exploded/registrazione.jsp");
 
         driver.findElement(By.name("nome")).sendKeys("Anna");
         driver.findElement(By.name("cognome")).sendKeys("Bianchi");
@@ -109,7 +109,7 @@ public class RegistrazioneSystemTest {
     void testRegistrazioneSuccesso() {
         String codiceValido = "OKN-2026-0003";
 
-        driver.get("http://localhost:8080/OikoNaos_war_exploded/register.jsp");
+        driver.get("http://localhost:8080/OikoNaos_war_exploded/registrazione.jsp");
 
         driver.findElement(By.name("nome")).sendKeys("Giulia");
         driver.findElement(By.name("cognome")).sendKeys("Neri");

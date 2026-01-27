@@ -43,7 +43,7 @@
         </a>
 
         <a class="btn primary"
-           href="${pageContext.request.contextPath}/register.jsp">
+           href="${pageContext.request.contextPath}/registrazione.jsp">
             Registrati
         </a>
 

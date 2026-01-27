@@ -37,7 +37,7 @@ public class RegistrazioneController extends HttpServlet {
                 username.isBlank() || password.isBlank() ||
                 codice.isBlank()) {
 
-            response.sendRedirect(request.getContextPath() + "/register.jsp?error=campi");
+            response.sendRedirect(request.getContextPath() + "/registrazione.jsp?error=campi");
             return;
         }
 
@@ -46,7 +46,7 @@ public class RegistrazioneController extends HttpServlet {
         if (pwdError != null) {
             String enc = URLEncoder.encode(pwdError, StandardCharsets.UTF_8);
             response.sendRedirect(
-                    request.getContextPath() + "/register.jsp?error=pwd&msg=" + enc
+                    request.getContextPath() + "/registrazione.jsp?error=pwd&msg=" + enc
             );
             return;
         }
@@ -62,7 +62,7 @@ public class RegistrazioneController extends HttpServlet {
 
             // Username già esistente
             if (credenzialiDAO.usernameEsistente(username)) {
-                response.sendRedirect(request.getContextPath() + "/register.jsp?error=username");
+                response.sendRedirect(request.getContextPath() + "/registrazione.jsp?error=username");
                 return;
             }
 
@@ -71,7 +71,7 @@ public class RegistrazioneController extends HttpServlet {
                     codiceDAO.getCodiceValidoForUpdate(con, codice);
 
             if (codiceValido == null) {
-                response.sendRedirect(request.getContextPath() + "/register.jsp?error=codice");
+                response.sendRedirect(request.getContextPath() + "/registrazione.jsp?error=codice");
                 return;
             }
 
@@ -94,7 +94,7 @@ public class RegistrazioneController extends HttpServlet {
         } catch (Exception e) {
             e.printStackTrace();
             String msg = URLEncoder.encode("Errore durante la registrazione", "UTF-8");
-            response.sendRedirect(request.getContextPath() + "/register.jsp?error=" + msg);
+            response.sendRedirect(request.getContextPath() + "/registrazione.jsp?error=" + msg);
         }
     }
 

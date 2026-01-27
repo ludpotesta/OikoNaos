@@ -25,7 +25,7 @@ public class AuthFilter implements Filter {
         // 1. RISORSE E PAGINE PUBBLICHE
         // Usiamo contains per maggiore robustezza (es. evitare problemi di equals esatto)
         if (path.contains("/login.jsp")
-                || path.contains("/register.jsp")
+                || path.contains("/registrazione.jsp")
                 || path.contains("/index.jsp")
                 || path.equals("/passwordDimenticata.jsp")
                 || path.equals("/resetPassword.jsp")
