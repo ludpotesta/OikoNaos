@@ -18,8 +18,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import static org.mockito.Mockito.*;
 
-public class AutenticazioneBloccoAIT {
-    
+public class AutenticazioneControllerIT {
+
     @Test
     void IT_AUTH_01_loginValido_creaSessione() throws Exception {
 
