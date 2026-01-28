@@ -34,9 +34,7 @@ public class TasseSystemTest {
         if (driver != null) driver.quit();
     }
 
-    // =========================
-    // TC-TAS-01 Creazione Tassa
-    // =========================
+    // TC-TAS-01
     @Test
     void testCreazioneTassaSupervisore() {
         loginSupervisore();
@@ -66,9 +64,7 @@ public class TasseSystemTest {
         assertFalse(driver.getPageSource().toLowerCase().contains("errore"));
     }
 
-    // =========================
-    // TC-TAS-02 Avvio Pagamento
-    // =========================
+    // TC-TAS-02
     @Test
     void testAvvioPagamentoSpesaCoinquilino() {
 
@@ -96,10 +92,7 @@ public class TasseSystemTest {
         );
     }
 
-
-    // =========================
-    // TC-TAS-03 Visualizza Ricevuta
-    // =========================
+    // TC-TAS-03
     @Test
     void testVisualizzazioneRicevutaCoinquilino() {
 
@@ -123,9 +116,7 @@ public class TasseSystemTest {
         );
     }
 
-    // =========================
-    // TC-TAS-04 Dettagli Tassa
-    // =========================
+    // TC-TAS-04
     @Test
     void testVisualizzazioneDettagliTassaSupervisore() {
 
@@ -142,9 +133,7 @@ public class TasseSystemTest {
         assertTrue(driver.getPageSource().contains("Scadenza"));
     }
 
-    // =========================
     // METODI DI SUPPORTO
-    // =========================
     private void creaTassaGlobaleDiTest() {
         loginSupervisore();
         driver.get(BASE_URL + "/SupervisoreTasseController");
