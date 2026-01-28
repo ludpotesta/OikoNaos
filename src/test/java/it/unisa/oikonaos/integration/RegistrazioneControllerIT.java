@@ -11,56 +11,132 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedConstruction;
+import org.mockito.MockedStatic;
+import util.database;
 
-import javax.naming.Context;
-import javax.naming.InitialContext;
+import javax.naming.*;
+import javax.naming.spi.InitialContextFactory;
 import javax.sql.DataSource;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Hashtable;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 class RegistrazioneControllerIT {
-
-    /**
-     * RegistrazioneController usa util.database (JNDI lookup java:comp/env/jdbc/OikoNaosDB).
-     * Per farlo funzionare nei test senza Tomcat, inizializziamo un contesto JNDI in-memory
-     * (Apache Naming) e bindiamo un DataSource mock.
-     */
     private static void initJndiWithDataSource(DataSource ds) throws Exception {
-        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, "org.apache.naming.java.javaURLContextFactory");
-        System.setProperty(Context.URL_PKG_PREFIXES, "org.apache.naming");
+        System.setProperty(Context.INITIAL_CONTEXT_FACTORY, InMemoryInitialContextFactory.class.getName());
 
         InitialContext ic = new InitialContext();
-
-        // crea sotto-contesti se mancanti
-        try { ic.createSubcontext("java:"); } catch (Exception ignored) {}
-        try { ic.createSubcontext("java:comp"); } catch (Exception ignored) {}
-        try { ic.createSubcontext("java:comp/env"); } catch (Exception ignored) {}
-        try { ic.createSubcontext("java:comp/env/jdbc"); } catch (Exception ignored) {}
-
-        // rebind DS
         ic.rebind("java:comp/env/jdbc/OikoNaosDB", ds);
+        ic.rebind("java:/comp/env/jdbc/OikoNaosDB", ds);
+    }
+
+    public static class InMemoryInitialContextFactory implements InitialContextFactory {
+        private static final InMemoryContext CTX = new InMemoryContext();
+
+        @Override
+        public Context getInitialContext(Hashtable<?, ?> environment) {
+            return CTX;
+        }
+    }
+
+    public static class InMemoryContext implements Context {
+        private final ConcurrentHashMap<String, Object> bindings = new ConcurrentHashMap<>();
+
+        @Override
+        public Object lookup(String name) throws NamingException {
+            Object obj = bindings.get(name);
+            if (obj == null) throw new NameNotFoundException(name);
+            return obj;
+        }
+
+        @Override
+        public Object lookup(Name name) throws NamingException {
+            return lookup(name.toString());
+        }
+
+        @Override
+        public void bind(String name, Object obj) throws NamingException {
+            if (bindings.putIfAbsent(name, obj) != null) {
+                throw new NameAlreadyBoundException(name);
+            }
+        }
+
+        @Override
+        public void bind(Name name, Object obj) throws NamingException {
+            bind(name.toString(), obj);
+        }
+
+        @Override
+        public void rebind(String name, Object obj) {
+            bindings.put(name, obj);
+        }
+
+        @Override
+        public void rebind(Name name, Object obj) {
+            rebind(name.toString(), obj);
+        }
+
+        @Override
+        public void unbind(String name) {
+            bindings.remove(name);
+        }
+
+        @Override
+        public void unbind(Name name) {
+            unbind(name.toString());
+        }
+
+        @Override public void close() {}
+
+        @Override public void rename(String oldName, String newName) { throw new UnsupportedOperationException(); }
+        @Override public void rename(Name oldName, Name newName) { throw new UnsupportedOperationException(); }
+
+        @Override public NamingEnumeration<NameClassPair> list(String name) { throw new UnsupportedOperationException(); }
+        @Override public NamingEnumeration<NameClassPair> list(Name name) { throw new UnsupportedOperationException(); }
+
+        @Override public NamingEnumeration<Binding> listBindings(String name) { throw new UnsupportedOperationException(); }
+        @Override public NamingEnumeration<Binding> listBindings(Name name) { throw new UnsupportedOperationException(); }
+
+        @Override public void destroySubcontext(String name) { throw new UnsupportedOperationException(); }
+        @Override public void destroySubcontext(Name name) { throw new UnsupportedOperationException(); }
+
+        @Override public Context createSubcontext(String name) { throw new UnsupportedOperationException(); }
+        @Override public Context createSubcontext(Name name) { throw new UnsupportedOperationException(); }
+
+        @Override public Object lookupLink(String name) { throw new UnsupportedOperationException(); }
+        @Override public Object lookupLink(Name name) { throw new UnsupportedOperationException(); }
+
+        @Override public NameParser getNameParser(String name) { throw new UnsupportedOperationException(); }
+        @Override public NameParser getNameParser(Name name) { throw new UnsupportedOperationException(); }
+
+        @Override public Name composeName(Name name, Name prefix) { throw new UnsupportedOperationException(); }
+        @Override public String composeName(String name, String prefix) { throw new UnsupportedOperationException(); }
+
+        @Override public Object addToEnvironment(String propName, Object propVal) { return null; }
+        @Override public Object removeFromEnvironment(String propName) { return null; }
+        @Override public Hashtable<?, ?> getEnvironment() { return new Hashtable<>(); }
+        @Override public String getNameInNamespace() { return ""; }
     }
 
     private static void stubValidRegistrationParams(HttpServletRequest request) {
         when(request.getMethod()).thenReturn("POST");
-        when(request.getContextPath()).thenReturn("/OikoNaos_war");
+        when(request.getContextPath()).thenReturn("/OikoNaos_war_exploded");
 
         when(request.getParameter("nome")).thenReturn("Mario");
         when(request.getParameter("cognome")).thenReturn("Rossi");
         when(request.getParameter("email")).thenReturn("mario.rossi@test.it");
         when(request.getParameter("telefono")).thenReturn("3331234567");
         when(request.getParameter("username")).thenReturn("mario");
-        when(request.getParameter("password")).thenReturn("Zxcvbn9!"); // valida per PasswordValidator
+        when(request.getParameter("password")).thenReturn("Zxcvbn9!");
         when(request.getParameter("codiceID")).thenReturn("ABC123");
     }
 
-    // IT-REG-01 — Registrazione valida
     @Test
     void registrazioneValida() throws Exception {
         RegistrazioneController controller = new RegistrazioneController();
@@ -72,11 +148,9 @@ class RegistrazioneControllerIT {
         stubValidRegistrationParams(request);
         when(request.getSession(true)).thenReturn(session);
 
-        // JNDI DS -> conn mock
         DataSource ds = mock(DataSource.class);
         Connection con = mock(Connection.class);
         when(ds.getConnection()).thenReturn(con);
-        when(con.getCatalog()).thenReturn("oikonaos");
         initJndiWithDataSource(ds);
 
         long newId = 77L;
@@ -112,17 +186,20 @@ class RegistrazioneControllerIT {
                          when(mock.marcaComeUsato(con, "ABC123", newId)).thenReturn(true);
                      })) {
 
-            controller.service(request, response);
+            try (MockedStatic<database> dbMock = mockStatic(database.class)) {
+                dbMock.when(database::getConnection).thenReturn(con);
+
+                controller.service(request, response);
+            }
 
             verify(con).setAutoCommit(false);
             verify(con).commit();
 
             verify(session).setAttribute("utente", utenteLoggato);
-            verify(response).sendRedirect("/OikoNaos_war/home.jsp?msg=registrato");
+            verify(response).sendRedirect("/OikoNaos_war_exploded/home.jsp?msg=registrato");
         }
     }
 
-    // IT-REG-02 — Campi obbligatori vuoti
     @Test
     void campiObbligatoriVuoti() throws Exception {
         RegistrazioneController controller = new RegistrazioneController();
@@ -131,9 +208,8 @@ class RegistrazioneControllerIT {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         when(request.getMethod()).thenReturn("POST");
-        when(request.getContextPath()).thenReturn("/OikoNaos_war");
+        when(request.getContextPath()).thenReturn("/OikoNaos_war_exploded");
 
-        // nome blank => trigger error=campi
         when(request.getParameter("nome")).thenReturn("  ");
         when(request.getParameter("cognome")).thenReturn("Rossi");
         when(request.getParameter("email")).thenReturn("mario.rossi@test.it");
@@ -144,10 +220,9 @@ class RegistrazioneControllerIT {
 
         controller.service(request, response);
 
-        verify(response).sendRedirect("/OikoNaos_war/register.jsp?error=campi");
+        verify(response).sendRedirect("/OikoNaos_war_exploded/register.jsp?error=campi");
     }
 
-    // IT-REG-03 — Codice identificativo non valido
     @Test
     void codiceIdentificativoNonValido() throws Exception {
         RegistrazioneController controller = new RegistrazioneController();
@@ -157,11 +232,9 @@ class RegistrazioneControllerIT {
 
         stubValidRegistrationParams(request);
 
-        // JNDI DS -> conn mock
         DataSource ds = mock(DataSource.class);
         Connection con = mock(Connection.class);
         when(ds.getConnection()).thenReturn(con);
-        when(con.getCatalog()).thenReturn("oikonaos");
         initJndiWithDataSource(ds);
 
         try (MockedConstruction<CredenzialiDAO> credMocked =
@@ -172,22 +245,23 @@ class RegistrazioneControllerIT {
                      mockConstruction(UserDAO.class);
              MockedConstruction<CodiceIdentificativoDAO> codiceMocked =
                      mockConstruction(CodiceIdentificativoDAO.class, (mock, ctx) -> {
-                         // codice NON valido
                          when(mock.getCodiceValidoForUpdate(con, "ABC123")).thenReturn(null);
                      })) {
 
-            controller.service(request, response);
+            try (MockedStatic<database> dbMock = mockStatic(database.class)) {
+                dbMock.when(database::getConnection).thenReturn(con);
 
-            // deve fermarsi prima di registerUser
+                controller.service(request, response);
+            }
+
             UserDAO userDao = userMocked.constructed().get(0);
             verify(userDao, never()).registerUser(any(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
             verify(con, never()).commit();
 
-            verify(response).sendRedirect("/OikoNaos_war/register.jsp?error=codice");
+            verify(response).sendRedirect("/OikoNaos_war_exploded/register.jsp?error=codice");
         }
     }
 
-    // IT-REG-04 — Username già esistente
     @Test
     void usernameGiaEsistente() throws Exception {
         RegistrazioneController controller = new RegistrazioneController();
@@ -197,11 +271,9 @@ class RegistrazioneControllerIT {
 
         stubValidRegistrationParams(request);
 
-        // JNDI DS -> conn mock (serve perché il controller apre la connessione prima del check username)
         DataSource ds = mock(DataSource.class);
         Connection con = mock(Connection.class);
         when(ds.getConnection()).thenReturn(con);
-        when(con.getCatalog()).thenReturn("oikonaos");
         initJndiWithDataSource(ds);
 
         try (MockedConstruction<CredenzialiDAO> credMocked =
@@ -213,21 +285,20 @@ class RegistrazioneControllerIT {
              MockedConstruction<CodiceIdentificativoDAO> codiceMocked =
                      mockConstruction(CodiceIdentificativoDAO.class)) {
 
-            controller.service(request, response);
+            try (MockedStatic<database> dbMock = mockStatic(database.class)) {
+                dbMock.when(database::getConnection).thenReturn(con);
 
-            // stop subito
+                controller.service(request, response);
+            }
+
             verify(con, never()).commit();
-            verify(response).sendRedirect("/OikoNaos_war/register.jsp?error=username");
+            verify(response).sendRedirect("/OikoNaos_war_exploded/register.jsp?error=username");
 
-            // non deve mai chiamare registerUser
             UserDAO userDao = userMocked.constructed().get(0);
             verify(userDao, never()).registerUser(any(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString());
         }
     }
 
-    // IT-REG-05 — Email già esistente
-    // Nota: nel codice attuale NON c’è un controllo esplicito sull’email (es. emailEsistente()).
-    // Quindi simuliamo lo scenario come “vincolo DB/errore in insertUtente” => eccezione => redirect error generico.
     @Test
     void emailGiaEsistente() throws Exception {
         RegistrazioneController controller = new RegistrazioneController();
@@ -240,7 +311,6 @@ class RegistrazioneControllerIT {
         DataSource ds = mock(DataSource.class);
         Connection con = mock(Connection.class);
         when(ds.getConnection()).thenReturn(con);
-        when(con.getCatalog()).thenReturn("oikonaos");
         initJndiWithDataSource(ds);
 
         CodiceIdentificativo codiceOk = new CodiceIdentificativo();
@@ -257,15 +327,17 @@ class RegistrazioneControllerIT {
                      });
              MockedConstruction<UserDAO> userMocked =
                      mockConstruction(UserDAO.class, (mock, ctx) -> {
-                         // Simula “email duplicata” -> eccezione DB durante registerUser
                          when(mock.registerUser(any(), anyString(), anyString(), anyString(), anyString(), anyString(), anyString()))
                                  .thenThrow(new SQLException("Duplicate entry for Email"));
                      })) {
 
-            controller.service(request, response);
+            try (MockedStatic<database> dbMock = mockStatic(database.class)) {
+                dbMock.when(database::getConnection).thenReturn(con);
 
-            // redirect error generico (come da catch)
-            String expected = "/OikoNaos_war/register.jsp?error=" +
+                controller.service(request, response);
+            }
+
+            String expected = "/OikoNaos_war_exploded/register.jsp?error=" +
                     URLEncoder.encode("Errore durante la registrazione", StandardCharsets.UTF_8);
             verify(response).sendRedirect(expected);
 
@@ -273,7 +345,6 @@ class RegistrazioneControllerIT {
         }
     }
 
-    // IT-REG-06 — Password non valida
     @Test
     void passwordNonValida() throws Exception {
         RegistrazioneController controller = new RegistrazioneController();
@@ -282,21 +353,20 @@ class RegistrazioneControllerIT {
         HttpServletResponse response = mock(HttpServletResponse.class);
 
         when(request.getMethod()).thenReturn("POST");
-        when(request.getContextPath()).thenReturn("/OikoNaos_war");
+        when(request.getContextPath()).thenReturn("/OikoNaos_war_exploded");
 
         when(request.getParameter("nome")).thenReturn("Mario");
         when(request.getParameter("cognome")).thenReturn("Rossi");
         when(request.getParameter("email")).thenReturn("mario.rossi@test.it");
         when(request.getParameter("telefono")).thenReturn("3331234567");
         when(request.getParameter("username")).thenReturn("mario");
-        when(request.getParameter("password")).thenReturn("short"); // NON valida: < 8
+        when(request.getParameter("password")).thenReturn("short");
         when(request.getParameter("codiceID")).thenReturn("ABC123");
 
         controller.service(request, response);
 
-        // PasswordValidator -> "deve contenere almeno 8 caratteri"
         String msg = URLEncoder.encode("deve contenere almeno 8 caratteri", StandardCharsets.UTF_8);
-        String expected = "/OikoNaos_war/register.jsp?error=pwd&msg=" + msg;
+        String expected = "/OikoNaos_war_exploded/register.jsp?error=pwd&msg=" + msg;
 
         verify(response).sendRedirect(expected);
     }
