@@ -50,5 +50,41 @@ public class ConfermaIscrizioneEventoController extends HttpServlet {
             response.sendRedirect("bachecaEventi.jsp?error=generico");
         }
     }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        Utente u = (session != null) ? (Utente) session.getAttribute("utente") : null;
+
+        if (u == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
+        }
+
+        try {
+            long idEvento = Long.parseLong(request.getParameter("idEvento"));
+
+            EventoDAO dao = new EventoDAO();
+            dao.iscriviUtenteEvento(u.getIdUtente(), idEvento);
+
+            response.sendRedirect(
+                    request.getContextPath() + "/BachecaEventiController"
+            );
+
+        }catch (IllegalStateException e) {
+            response.sendRedirect(
+                    request.getContextPath() +
+                            "/BachecaEventiController?error=duplicata"
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendRedirect(
+                    request.getContextPath() + "/BachecaEventiController?error=generic"
+            );
+        }
+    }
+
 }
 
