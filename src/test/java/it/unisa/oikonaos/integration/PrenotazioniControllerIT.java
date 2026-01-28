@@ -209,4 +209,54 @@ class PrenotazioniControllerIT {
 
         System.out.println("[IT-PREN-03] Test completato");
     }
+
+    // IT-PREN-04
+    @Test
+    void cancellazionePrenotazioneValida() throws Exception {
+
+        System.out.println("[IT-PREN-04] Avvio test");
+
+        PrenotazioneController controller = new PrenotazioneController();
+
+        HttpServletRequest request = mock(HttpServletRequest.class);
+        HttpServletResponse response = mock(HttpServletResponse.class);
+        HttpSession session = mock(HttpSession.class);
+
+        Utente u = new Utente();
+        u.setIdUtente(10L);
+        u.setRuolo("COINQUILINO");
+
+        when(request.getSession(false)).thenReturn(session);
+        when(session.getAttribute("utente")).thenReturn(u);
+
+        when(request.getMethod()).thenReturn("POST");
+        when(request.getParameter("action")).thenReturn("delete");
+        when(request.getParameter("idPrenotazione")).thenReturn("50");
+
+        when(request.getContextPath()).thenReturn("/OikoNaos_war_exploded");
+
+        try (MockedConstruction<PrenotazioneDAO> mocked =
+                     mockConstruction(PrenotazioneDAO.class,
+                             (mock, context) ->
+                                     when(mock.doDelete(50L, 10L)).thenReturn(true)
+                     )) {
+
+            controller.service(request, response);
+
+            PrenotazioneDAO daoMock = mocked.constructed().get(0);
+
+            System.out.println("[IT-PREN-04] Verifica invocazione DAO");
+
+            verify(daoMock).doDelete(50L, 10L);
+
+            System.out.println("[IT-PREN-04] Verifica redirect finale");
+
+            verify(response).sendRedirect(
+                    "/OikoNaos_war_exploded/PrenotazioneController?action=list"
+            );
+        }
+
+        System.out.println("[IT-PREN-04] Test completato");
+    }
+
 }
