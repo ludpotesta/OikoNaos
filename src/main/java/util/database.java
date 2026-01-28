@@ -5,23 +5,20 @@ import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.Connection;
 
-/* Questa classe serve a centralizzare la gestione delle connessioni al DB */
 public class database {
 
     private static DataSource dataSource;
 
-    static {
-        try {
-            /* Qui viene preso il pool delle connessioni di tomcat */
+    public static Connection getConnection() throws Exception {
+        // MODIFICA FONDAMENTALE:
+        // Spostiamo la connessione qui dentro.
+        // Se siamo in un TEST, questo IF non verrà mai eseguito (grazie al Mock).
+        // Se siamo sul SITO VERO, verrà eseguito la prima volta e funzionerà come prima.
+        if (dataSource == null) {
             Context ctx = new InitialContext();
             dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/OikoNaosDB");
-        } catch (Exception e) {
-            throw new RuntimeException(e);
         }
-    }
-
-    public static Connection getConnection() throws Exception {
-        return dataSource.getConnection(); /* getConnection occupa e poi libera una connessione dal pool estratto in precedenza */
+        return dataSource.getConnection();
     }
 }
 
