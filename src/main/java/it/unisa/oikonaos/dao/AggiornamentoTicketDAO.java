@@ -9,14 +9,18 @@ import java.util.List;
 public class AggiornamentoTicketDAO {
 
     public void creaAggiornamento(long idTicket, long idAutore, String msg) throws Exception {
+        try (Connection con = database.getConnection()) {
+            creaAggiornamento(con, idTicket, idAutore, msg);
+        }
+    }
+    public void creaAggiornamento(Connection con, long idTicket, long idAutore, String msg) throws Exception {
 
         String sql = """
             INSERT INTO aggiornamentoticket (Messaggio, ID_Ticket, ID_Autore)
             VALUES (?, ?, ?)
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, msg);
             ps.setLong(2, idTicket);
@@ -27,6 +31,11 @@ public class AggiornamentoTicketDAO {
     }
 
     public List<AggiornamentoTicket> doRetrieveByTicket(long idTicket) throws Exception {
+        try (Connection con = database.getConnection()) {
+            return doRetrieveByTicket(con, idTicket);
+        }
+    }
+    public List<AggiornamentoTicket> doRetrieveByTicket(Connection con, long idTicket) throws Exception {
 
         List<AggiornamentoTicket> lista = new ArrayList<>();
 
@@ -41,8 +50,7 @@ public class AggiornamentoTicketDAO {
             ORDER BY a.DataAggiornamento DESC
         """;
 
-        try (Connection con = database.getConnection();
-             PreparedStatement ps = con.prepareStatement(sql)) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setLong(1, idTicket);
             ResultSet rs = ps.executeQuery();
