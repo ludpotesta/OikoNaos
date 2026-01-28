@@ -21,6 +21,7 @@ import static org.mockito.Mockito.*;
 
 public class RisorseControllerIT {
 
+    //IT-RIS-01
     @Test
     void richiestaRisorsaValida() throws Exception {
 
@@ -86,6 +87,7 @@ public class RisorseControllerIT {
         System.out.println("[IT-RIS-01] Test completato");
     }
 
+    //IT-RIS-02
     @Test
     void richiestaRisorsa_dataPassata_redirectErrore() throws Exception {
 
@@ -141,6 +143,7 @@ public class RisorseControllerIT {
         System.out.println("[IT-RIS-02] Test completato");
     }
 
+    //IT-RIS-03
     @Test
     void richiestaRisorsa_conflitto_redirectNonDisponibile() throws Exception {
 
@@ -200,6 +203,7 @@ public class RisorseControllerIT {
         System.out.println("[IT-RIS-03] Test completato");
     }
 
+    //IT-RIS-04
     @Test
     void richiestaRisorsa_regoleNonAccettate_redirectErroreRegole() throws Exception {
 
@@ -255,6 +259,7 @@ public class RisorseControllerIT {
         System.out.println("[IT-RIS-04] Test completato");
     }
 
+    //IT-RIS-05
     @Test
     void supervisoreAccettaRichiesta() throws Exception {
 
@@ -301,6 +306,7 @@ public class RisorseControllerIT {
         System.out.println("[IT-RIS-05] Test completato");
     }
 
+    //IT-RIS-06
     @Test
     void supervisoreRifiutaRichiesta() throws Exception {
 
