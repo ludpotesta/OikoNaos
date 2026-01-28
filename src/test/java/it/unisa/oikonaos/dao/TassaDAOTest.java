@@ -42,18 +42,18 @@ class TassaDAOTest {
         // ID Utente di prova
         long idUtente = 1L;
 
-        // --- FASE 1: ISTRUISCI IL MOCK (La Recita) ---
+        // ISTRUISCI IL MOCK  ---
 
-        // Questo blocco try serve a "congelare" la classe statica database per evitare che cerchi Tomcat
+        // Questo serve a "congelare" la classe statica database per evitare che cerchi Tomcat
         try (MockedStatic<database> mockedDb = Mockito.mockStatic(database.class)) {
 
-            // Quando il DAO chiede la connessione, dagli quella finta
+            // Quando il DAO chiede la connessione, passare quella finta
             mockedDb.when(database::getConnection).thenReturn(mockConnection);
 
-            // Quando la connessione prepara lo statement, dagli quello finto
+            // Quando la connessione prepara lo statement, passare quello finto
             when(mockConnection.prepareStatement(anyString())).thenReturn(mockPs);
 
-            // Quando lo statement esegue la query, dagli il ResultSet finto
+            // Quando lo statement esegue la query, passare il ResultSet finto
             when(mockPs.executeQuery()).thenReturn(mockRs);
 
             // Simuliamo che il ResultSet trovi 1 riga (next = true, poi false)
@@ -68,10 +68,10 @@ class TassaDAOTest {
             when(mockRs.getObject("ID_Pagamento", Long.class)).thenReturn(null);
             when(mockRs.getObject("ID_Ricevuta")).thenReturn(null);
 
-            // --- FASE 2: AZIONE (Chiama il metodo vero) ---
+            // AZIONE (Chiama il metodo vero) ---
             List<TassaTrimestrale> risultato = tassaDAO.getTasseByUtente(idUtente);
 
-            // --- FASE 3: VERIFICA (Controlla se ha funzionato) ---
+            // VERIFICA
             assertNotNull(risultato);
             assertEquals(1, risultato.size(), "Dovrebbe esserci 1 tassa");
 
@@ -100,7 +100,7 @@ class TassaDAOTest {
             mockedDb.when(database::getConnection).thenReturn(mockConnection);
             when(mockConnection.prepareStatement(anyString())).thenReturn(mockPs);
 
-            // Quando fa executeUpdate, fingiamo che restituisca 1 (1 riga inserita)
+
             when(mockPs.executeUpdate()).thenReturn(1);
 
             // --- AZIONE ---

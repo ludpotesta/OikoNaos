@@ -56,7 +56,7 @@ public class ModificaDatiController extends HttpServlet {
                 return;
             }
 
-            // 3️⃣ Creo oggetto aggiornato
+            // Creo oggetto aggiornato
             Utente u = new Utente();
             u.setIdUtente(utenteSessione.getIdUtente());
             u.setNome(nome);
@@ -64,11 +64,11 @@ public class ModificaDatiController extends HttpServlet {
             u.setEmail(email);
             u.setTelefono(telefono);
 
-            // 4️⃣ Update DB
+            // Update DB
             UserDAO dao = new UserDAO();
             dao.updateProfilo(u);
 
-            // 5️⃣ Aggiorno sessione
+            // Aggiorno sessione
             utenteSessione.setNome(nome);
             utenteSessione.setCognome(cognome);
             utenteSessione.setEmail(email);
@@ -76,7 +76,7 @@ public class ModificaDatiController extends HttpServlet {
 
             session.setAttribute("utente", utenteSessione);
 
-            // 6️⃣ Redirect OK
+            // Redirect
             response.sendRedirect("home.jsp?success=profilo");
 
         } catch (Exception e) {

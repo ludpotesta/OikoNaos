@@ -15,7 +15,7 @@ import static org.mockito.Mockito.*;
 
 class TicketControllerIT {
 
-    // IT-TICK-01
+
     @Test
     void creazioneTicketValida() throws Exception {
 
@@ -83,7 +83,7 @@ class TicketControllerIT {
         System.out.println("[IT-TICK-01] Test completato");
     }
 
-    // IT-TICK-02
+
     @Test
     void creazioneTicketErrore_redirectErroreGenerico() throws Exception {
 
@@ -151,7 +151,7 @@ class TicketControllerIT {
         System.out.println("[IT-TICK-02] Test completato");
     }
 
-    // IT-TICK-03
+
     @Test
     void dettagliTicket_nonAutore_redirect() throws Exception {
 
@@ -207,7 +207,7 @@ class TicketControllerIT {
         System.out.println("[IT-TICK-03] Test completato");
     }
 
-    // IT-TICK-04
+
     @Test
     void aggiornamentoStatoTicket_supervisore() throws Exception {
 

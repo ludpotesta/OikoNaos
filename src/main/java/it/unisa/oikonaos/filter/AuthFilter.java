@@ -51,13 +51,13 @@ public class AuthFilter implements Filter {
             return;
         }
 
-        // 2. CONTROLLO AUTENTICAZIONE
+        // CONTROLLO AUTENTICAZIONE
         if (session == null || session.getAttribute("utente") == null) {
             response.sendRedirect(request.getContextPath() + "/login.jsp");
             return;
         }
 
-        // 3. CONTROLLO AUTORIZZAZIONE RUOLI
+        // CONTROLLO AUTORIZZAZIONE RUOLI
         Utente utente = (Utente) session.getAttribute("utente");
 
         if (path.startsWith("/supervisore") || path.contains("Supervisore")) {
@@ -67,7 +67,7 @@ public class AuthFilter implements Filter {
             }
         }
 
-        // 4. ACCESSO CONSENTITO
+        // ACCESSO CONSENTITO
         chain.doFilter(req, res);
     }
 }

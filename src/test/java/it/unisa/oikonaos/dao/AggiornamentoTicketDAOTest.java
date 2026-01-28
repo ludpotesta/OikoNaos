@@ -51,7 +51,7 @@ class AggiornamentoTicketDAOTest {
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
         when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
 
-        // Simuliamo 2 aggiornamenti trovati
+        // Simulazione: 2 aggiornamenti trovati
         when(mockResultSet.next()).thenReturn(true, true, false);
 
         // Riga 1 (Messaggio più recente)
@@ -76,9 +76,8 @@ class AggiornamentoTicketDAOTest {
         assertEquals("Mario", result.get(0).getNomeUtente());
 
         // Verifica che la query contenga l'ordinamento corretto
-        // Non possiamo verificare l'ordinamento reale dei dati (perché li mockiamo noi),
-        // ma possiamo verificare che SQL sia quello giusto se necessario,
-        // oppure fidarci del fatto che il codice usa la query corretta.
+
+
     }
 
     @Test
@@ -97,7 +96,7 @@ class AggiornamentoTicketDAOTest {
     }
 
     // --- CASO PARTICOLARE: Messaggio Vuoto ---
-    // Verifica che il DAO accetti stringhe vuote (se il DB lo permette) o le passi comunque
+
     @Test
     void testCreaAggiornamento_EmptyString() throws Exception {
         // ARRANGE
@@ -124,7 +123,7 @@ class AggiornamentoTicketDAOTest {
 
         // ASSERT
         // Verifichiamo che il DAO passi la stringa *esattamente così com'è* al driver,
-        // senza eseguirla. Se usassi Statement normale, questo sarebbe un disastro.
+
         verify(mockPreparedStatement).setString(1, messaggioPericoloso);
         verify(mockPreparedStatement).executeUpdate();
     }

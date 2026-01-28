@@ -28,12 +28,12 @@ public class RichiestaResetPasswordController extends HttpServlet {
             CredenzialiDAO credDAO = new CredenzialiDAO();
             Long idUtente = credDAO.getIdUtenteByEmail(email);
 
-            // Non riveliamo se l’email esiste
+
             if (idUtente != null) {
                 TokenResetPasswordDAO tokenDAO = new TokenResetPasswordDAO();
                 String token = tokenDAO.createToken(idUtente);
 
-                //SALVIAMO IL TOKEN IN SESSIONE
+                //Salvataggio del token in sessione
                 HttpSession session = request.getSession(true);
                 session.setAttribute("resetToken", token);
             }

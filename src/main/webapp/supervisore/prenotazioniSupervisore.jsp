@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/css/main.css">
 
     <style>
-        /* Tabella coerente con il design system */
+        /* Tabella */
         .table-container {
             background: var(--card);
             border-radius: 18px;

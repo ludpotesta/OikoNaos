@@ -19,10 +19,10 @@ public class UserDAO {
             String password
     ) throws Exception {
 
-        // 1. Inserimento utente
+        // Inserimento utente
         long idUtente = insertUtente(con, nome, cognome, email, telefono);
 
-        // 2. Inserimento credenziali
+        // Inserimento credenziali
         insertCredenziali(con, username, password, idUtente);
 
         return idUtente;

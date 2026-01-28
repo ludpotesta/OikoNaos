@@ -17,7 +17,7 @@ public class Pagamento {
     private LocalDateTime dataPagamento;
     private String metodoPagamento;
 
-    // Campi DERIVATI (non DB)
+    // Campi DERIVATI
     private String periodo; // es. "Q1 2025"
 
     public Pagamento() {
@@ -79,7 +79,7 @@ public class Pagamento {
         this.dataScadenza = dataScadenza;
     }
 
-    /* CAMPI DERIVATI*/
+
     public boolean isPagato() {
         return dataPagamento != null;
     }

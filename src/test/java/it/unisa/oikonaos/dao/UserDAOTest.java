@@ -162,12 +162,10 @@ class UserDAOTest {
         when(mockPreparedStatement.executeQuery()).thenReturn(mockResultSet);
 
         // Simuliamo il ciclo while(rs.next()):
-        // 1^ volta -> true (trova Utente A)
-        // 2^ volta -> true (trova Utente B)
-        // 3^ volta -> false (finito)
+
         when(mockResultSet.next()).thenReturn(true, true, false);
 
-        // Definizione dei dati per il primo giro (Utente A)
+        // Definizione dei dati per il primo giro
         when(mockResultSet.getLong("ID_Utente")).thenReturn(1L, 2L);
         when(mockResultSet.getString("Nome")).thenReturn("Anna", "Marco");
         when(mockResultSet.getString("Cognome")).thenReturn("Bianchi", "Neri");

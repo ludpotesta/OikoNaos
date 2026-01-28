@@ -24,7 +24,7 @@ public class SupervisorePrenotazioniController extends HttpServlet {
 
         try {
             PrenotazioneDAO dao = new PrenotazioneDAO();
-            // Usiamo il metodo doRetrieveAll() che abbiamo aggiunto al DAO prima
+
             List<Prenotazione> tutteLePrenotazioni = dao.doRetrieveAll();
 
             request.setAttribute("listaGlobalePrenotazioni", tutteLePrenotazioni);

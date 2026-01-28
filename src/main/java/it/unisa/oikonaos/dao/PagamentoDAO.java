@@ -146,7 +146,7 @@ public class PagamentoDAO {
 
         try (Connection con = database.getConnection()) {
 
-            // 1️⃣ Controllo: esiste già un pagamento per questa tassa e utente?
+            // Controllo se esiste già un pagamento per questa tassa e utente
             try (PreparedStatement ps = con.prepareStatement(checkSql)) {
                 ps.setLong(1, idTassa);
                 ps.setLong(2, idUtente);
@@ -157,7 +157,7 @@ public class PagamentoDAO {
                 }
             }
 
-            // 2️⃣ Creazione pagamento con ImportoPagato valorizzato
+            // Creazione pagamento con ImportoPagato valorizzato
             try (PreparedStatement ps = con.prepareStatement(
                     insertSql, Statement.RETURN_GENERATED_KEYS)) {
 

@@ -29,13 +29,13 @@ class TokenResetPasswordDAOTest {
         tokenDAO = new TokenResetPasswordDAO();
     }
 
-    // --- TEST CREAZIONE TOKEN (Il più complesso) ---
+    // TEST CREAZIONE TOKEN
     @Test
     void testCreateToken_Success() throws Exception {
         // ARRANGE
         // Prepariamo il mock per DUE query diverse:
-        // 1. DELETE (pulizia vecchi token)
-        // 2. INSERT (nuovo token)
+        // DELETE (pulizia vecchi token)
+        // INSERT (nuovo token)
         when(mockConnection.prepareStatement(anyString())).thenReturn(mockPreparedStatement);
 
         // ACT
@@ -51,8 +51,7 @@ class TokenResetPasswordDAOTest {
         // Verifica avanzata: controlliamo che il token salvato nel DB sia quello ritornato
         ArgumentCaptor<String> captorToken = ArgumentCaptor.forClass(String.class);
         // Catturiamo il primo argomento (Token) passato alla INSERT
-        // Nota: Poiché setString viene chiamato anche per la DELETE, dobbiamo fare attenzione.
-        // Ma nel INSERT il token è il parametro 1.
+
         verify(mockPreparedStatement, atLeastOnce()).setString(eq(1), captorToken.capture());
 
         // Controlliamo se uno dei valori catturati corrisponde al token generato

@@ -54,7 +54,7 @@ public class ResetPasswordController extends HttpServlet {
             new CredenzialiDAO().updatePassword(idUtente, hash);
 
             tokenDAO.invalidateToken(token);
-            session.invalidate(); // 🔥 IMPORTANTISSIMO
+            session.invalidate();
 
             response.sendRedirect(request.getContextPath() + "/login.jsp?success=reset");
 

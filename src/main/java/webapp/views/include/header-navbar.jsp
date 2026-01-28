@@ -8,7 +8,7 @@
         </a>
     </div>
 
-    <!-- HAMBURGER + MENU (CSS-only) -->
+
     <div class="on-right">
         <!-- Checkbox invisibile per il toggle -->
         <input type="checkbox" id="onToggle" class="on-toggle" aria-hidden="true" />

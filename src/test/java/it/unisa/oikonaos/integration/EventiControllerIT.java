@@ -217,7 +217,7 @@ public class EventiControllerIT {
         System.out.println("[IT-EVE-04] Test completato");
     }
 
-    // IT-EVE-05
+
     @Test
     void eventoPostiEsauriti_nonMostraIscriviti() throws Exception {
 
@@ -256,7 +256,7 @@ public class EventiControllerIT {
 
             controller.service(request, response);
 
-            // il controller deve SOLO forwardare la bacheca
+
             verify(dispatcher).forward(request, response);
             verify(response, never()).sendRedirect(anyString());
         }
@@ -264,7 +264,7 @@ public class EventiControllerIT {
         System.out.println("[IT-EVE-05] Test completato");
     }
 
-    // IT-EVE-06
+
     @Test
     void eventoConcluso_nonPermetteIscrizione() throws Exception {
 
@@ -311,7 +311,7 @@ public class EventiControllerIT {
         System.out.println("[IT-EVE-06] Test completato");
     }
 
-    // IT-EVE-07
+
     @Test
     void eliminazioneEventoSupervisore() throws Exception {
 

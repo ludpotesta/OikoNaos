@@ -190,7 +190,7 @@ public class PrenotazioneDAO {
         return null;
     }
 
-    /* CANCELLAZIONE SICURA PRENOTAZIONE*/
+    /* CANCELLAZIONE PRENOTAZIONE*/
     public boolean doDelete(long idPrenotazione, long idUtente) throws Exception {
         try (Connection con = database.getConnection()) {
             return doDelete(con, idPrenotazione, idUtente);

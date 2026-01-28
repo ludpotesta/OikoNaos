@@ -103,7 +103,7 @@
     </section>
 </main>
 
-<!-- MODAL (LOGICA IDENTICA) -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal">
     <div class="modal">
         <h3>Conferma annullamento</h3>

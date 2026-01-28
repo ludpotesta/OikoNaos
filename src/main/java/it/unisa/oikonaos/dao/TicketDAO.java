@@ -131,7 +131,7 @@ public class TicketDAO {
         }
     }
 
-    // CANCELLAZIONE (Solo se APERTO e dall'autore)
+    // CANCELLAZIONE
     public boolean deleteTicketIfAperto(long idTicket, long idAutore) throws Exception {
         try (Connection con = database.getConnection()) {
             return deleteTicketIfAperto(con, idTicket, idAutore);

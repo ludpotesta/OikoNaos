@@ -72,7 +72,7 @@ class EventoDAOTest {
             when(mockRs.next()).thenReturn(true);
             when(mockRs.getInt("PostiDisponibili")).thenReturn(5); // Ci sono 5 posti
 
-            // 2. INSERT e UPDATE: Restituiscono 1 (successo)
+            // INSERT e UPDATE: Restituiscono 1 (successo)
             when(mockPs.executeUpdate()).thenReturn(1);
 
             // Esecuzione

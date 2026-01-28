@@ -112,7 +112,7 @@
             <h3>${r.nome}</h3>
             <p>${r.descrizione}</p>
 
-            <!-- REGOLE D'USO (UC13) -->
+            <!-- REGOLE D'USO -->
             <p class="regole-uso">
                 <strong>Regole d’uso:</strong><br>
                     ${r.regoleUso}<br>

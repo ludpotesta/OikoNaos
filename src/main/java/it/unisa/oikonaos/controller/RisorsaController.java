@@ -37,7 +37,7 @@ public class RisorsaController extends HttpServlet {
             RisorsaDAO risorsaDAO = new RisorsaDAO();
             RichiestaRisorsaDAO richiestaDAO = new RichiestaRisorsaDAO();
 
-            // tutte le risorse (NON filtrate per data)
+            // lista di tutte le risorse (NON filtrate)
             List<Risorsa> risorse = risorsaDAO.doRetrieveAll();
             request.setAttribute("risorseDisponibili", risorse);
 
@@ -47,7 +47,7 @@ public class RisorsaController extends HttpServlet {
                     richiestaDAO.doRetrieveByUtente(utente.getIdUtente())
             );
 
-            // data odierna (per min nel date picker)
+            // data odierna
             request.setAttribute("oggi", LocalDate.now().toString());
 
             // mappa: idRisorsa -> lista date occupate

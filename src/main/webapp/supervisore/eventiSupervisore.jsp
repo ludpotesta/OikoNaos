@@ -14,7 +14,7 @@
 
     <div class="card">
 
-        <!-- BLOCCO CONFERMA CANCELLAZIONE (COME PRENOTAZIONI) -->
+        <!-- BLOCCO CONFERMA CANCELLAZIONE -->
         <div id="deleteEventBox" class="confirm-box" style="display:none;">
 
             <h3>Conferma cancellazione</h3>

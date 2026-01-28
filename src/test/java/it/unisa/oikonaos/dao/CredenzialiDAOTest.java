@@ -135,7 +135,7 @@ class CredenzialiDAOTest {
         doThrow(new SQLException("Duplicate entry 'mario' for key 'username_UNIQUE'"))
                 .when(mockPreparedStatement).executeUpdate();
 
-        // 2. ACT & ASSERT
+        // ACT & ASSERT
         // Ci aspettiamo che il metodo fallisca lanciando l'eccezione
         SQLException exception = assertThrows(SQLException.class, () -> {
             credenzialiDAO.updateUsername(mockConnection, 10L, "mario");

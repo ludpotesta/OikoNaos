@@ -79,7 +79,7 @@ class CodiceIdentificativoDAOTest {
         verify(mockPreparedStatement).setString(2, "CODICE_123");
     }
 
-    // --- TEST 3: VERIFICA ESISTENZA ---
+    // VERIFICA ESISTENZA ---
     @Test
     void testCodiceEsisteEdAttivo_True() throws Exception {
         // ARRANGE

@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
 
 public class TasseControllerIT {
 
-    //IT_TAS_01
+
     @Test
     void creazioneTassa() throws Exception {
 
@@ -97,7 +97,7 @@ public class TasseControllerIT {
         System.out.println("[IT-TAS-01] Test completato");
     }
 
-    //IT_TAS_02
+
     @Test
     void avvioFlussoPagamento() throws Exception {
 
@@ -152,7 +152,7 @@ public class TasseControllerIT {
         System.out.println("[IT-TAS-02] Test completato");
     }
 
-    // IT-TAS-03
+
     @Test
     void visualizzazioneRicevuta() throws Exception {
 
@@ -205,7 +205,7 @@ public class TasseControllerIT {
         System.out.println("[IT-TAS-03] Test completato");
     }
 
-    // IT-TAS-04
+
     @Test
     void dettaglioTasseSupervisore() throws Exception {
 

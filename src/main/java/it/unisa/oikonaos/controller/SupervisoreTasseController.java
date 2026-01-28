@@ -43,7 +43,7 @@ public class SupervisoreTasseController extends HttpServlet {
             List<TassaTrimestrale> tasse = tassaDAO.doRetrieveAll();
             request.setAttribute("tasse", tasse);
 
-            // Coinquilini per eventuali penali singole
+            // Coinquilini per eventuali penali
             List<Utente> coinquilini =
                     utenteDAO.doRetrieveCoinquiliniEscluso(utente.getIdUtente());
             request.setAttribute("coinquilini", coinquilini);

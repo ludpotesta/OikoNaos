@@ -18,7 +18,7 @@ import static org.mockito.Mockito.*;
 
 class PrenotazioniControllerIT {
 
-    // IT-PREN-01
+
     @Test
     void creazionePrenotazioneValida() throws Exception {
 
@@ -97,7 +97,7 @@ class PrenotazioniControllerIT {
         System.out.println("[IT-PREN-01] Test completato");
     }
 
-    // IT-PREN-02
+
     @Test
     void conflitto_temporale_bloccaCreazione() throws Exception {
 
@@ -164,7 +164,7 @@ class PrenotazioniControllerIT {
         System.out.println("[IT-PREN-02] Test completato");
     }
 
-    // IT-PREN-03
+
     @Test
     void dataNonValida_lanciaServletException() {
 
@@ -210,7 +210,7 @@ class PrenotazioniControllerIT {
         System.out.println("[IT-PREN-03] Test completato");
     }
 
-    // IT-PREN-04
+
     @Test
     void cancellazionePrenotazioneValida() throws Exception {
 

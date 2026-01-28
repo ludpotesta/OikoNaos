@@ -124,7 +124,7 @@ public class PrenotazioneController extends HttpServlet {
                 return;
             }
 
-            //CANCELLAZIONE PRENOTAZIONE (IT-PREN-04)
+            //CANCELLAZIONE PRENOTAZIONE
             if ("delete".equals(action)) {
 
                 long idPrenotazione =

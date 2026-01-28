@@ -41,7 +41,7 @@ public class RegistrazioneController extends HttpServlet {
             return;
         }
 
-        // Controllo requisiti password (RAD UC06)
+        // Controllo requisiti password
         String pwdError = PasswordValidator.validate(password, nome, cognome, username);
         if (pwdError != null) {
             String enc = URLEncoder.encode(pwdError, StandardCharsets.UTF_8);
@@ -116,7 +116,7 @@ public class RegistrazioneController extends HttpServlet {
                 CredenzialiDAO credDAO = new CredenzialiDAO();
                 Long idUtente = credDAO.getIdUtenteByUsername(username);
 
-                // 🔒 Non riveliamo se l’utente esiste o meno
+                // Non riveliamo se l’utente esiste o meno
                 if (idUtente == null) {
                     response.sendRedirect("forgot-password.jsp?success=ok");
                     return;
@@ -125,7 +125,7 @@ public class RegistrazioneController extends HttpServlet {
                 TokenResetPasswordDAO tokenDAO = new TokenResetPasswordDAO();
                 String token = tokenDAO.createToken(idUtente);
 
-                // Per ora mostriamo il link (NO email)
+                // Mostriamo il link (NO email)
                 String link = request.getContextPath()
                         + "/reset-password.jsp?token=" + URLEncoder.encode(token, "UTF-8");
 

@@ -18,7 +18,7 @@ public class Prenotazione implements Serializable {
 
     public Prenotazione() {}
 
-    // Segue convenzione camelCase dell'ODD [cite: 113]
+
     public long getIdPrenotazione() { return idPrenotazione; }
     public void setIdPrenotazione(long idPrenotazione) { this.idPrenotazione = idPrenotazione; }
     public Date getData() { return data; }

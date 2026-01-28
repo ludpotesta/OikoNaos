@@ -35,7 +35,7 @@ public class SpeseController extends HttpServlet {
 
         String action = request.getParameter("action");
 
-        // CONFERMA PAGAMENTO
+        // conferma pagamento
         if ("confirm".equals(action)) {
 
             long idPagamento;
@@ -69,7 +69,7 @@ public class SpeseController extends HttpServlet {
             return;
         }
 
-        // LE MIE SPESE
+        // sezione spese
         TassaDAO tassaDAO = new TassaDAO();
         PagamentoDAO pagamentoDAO = new PagamentoDAO();
 
@@ -138,7 +138,7 @@ public class SpeseController extends HttpServlet {
             );
         }
 
-        // CONFERMA PAGAMENTO
+        // conferma pagamento
         if ("pay".equals(action)) {
 
             long idPagamento = Long.parseLong(request.getParameter("idPagamento"));
