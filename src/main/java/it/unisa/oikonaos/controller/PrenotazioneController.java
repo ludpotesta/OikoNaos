@@ -93,6 +93,7 @@ public class PrenotazioneController extends HttpServlet {
 
         try {
 
+            // CREAZIONE PRENOTAZIONE
             if ("create".equals(action)) {
 
                 Date data = Date.valueOf(request.getParameter("data"));
@@ -123,6 +124,20 @@ public class PrenotazioneController extends HttpServlet {
                 return;
             }
 
+            //CANCELLAZIONE PRENOTAZIONE (IT-PREN-04)
+            if ("delete".equals(action)) {
+
+                long idPrenotazione =
+                        Long.parseLong(request.getParameter("idPrenotazione"));
+
+                dao.doDelete(idPrenotazione, u.getIdUtente());
+
+                response.sendRedirect(
+                        request.getContextPath() +
+                                "/PrenotazioneController?action=list"
+                );
+                return;
+            }
             response.sendRedirect(
                     request.getContextPath() +
                             "/PrenotazioneController?action=list"
